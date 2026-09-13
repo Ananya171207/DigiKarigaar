@@ -1,22 +1,31 @@
-// This file handles saving products locally and syncing them to the
-// server once there's a connection. Nothing here talks to the real UI --
-// app.js calls addProduct() and everything else happens automatically.
+// Handles saving products, orders, subsidy forms, and photos locally,
+// and syncing all of them to the server once there's a connection.
+// app.js calls addProduct() / acceptOrder() / submitSubsidyForm() /
+// capturePhoto() -- everything else happens automatically.
 
 const DB_NAME = 'artisan_offline_db';
-const DB_VERSION = 1;
-const STORE_NAME = 'products';
+const DB_VERSION = 2; // bumped: added orders, subsidy_forms, photos stores
+const STORE_NAMES = ['products', 'orders', 'subsidy_forms', 'photos'];
 
-// Opens (or creates, the first time) the local database.
+// Opens (or creates/upgrades) the local database. Each store uses its
+// own id field as the key -- product_id, order_id, form_id, photo_id.
 function openDB() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    // Runs only once, the very first time -- sets up the storage "table".
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'product_id' });
-      }
+      const keyPaths = {
+        products: 'product_id',
+        orders: 'order_id',
+        subsidy_forms: 'form_id',
+        photos: 'photo_id',
+      };
+      STORE_NAMES.forEach((name) => {
+        if (!db.objectStoreNames.contains(name)) {
+          db.createObjectStore(name, { keyPath: keyPaths[name] });
+        }
+      });
     };
 
     request.onsuccess = () => resolve(request.result);
@@ -24,32 +33,32 @@ function openDB() {
   });
 }
 
-// Saves (or updates, if the same product_id already exists) one product.
-async function saveProductLocally(product) {
+// Saves (or updates) one record in the given store.
+async function saveRecordLocally(storeName, record) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    tx.objectStore(STORE_NAME).put(product);
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).put(record);
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });
 }
 
-// Returns every product currently saved locally, regardless of status.
-async function getAllProducts() {
+// Returns every record currently saved in the given store.
+async function getAllRecords(storeName) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction(STORE_NAME, 'readonly');
-    const request = tx.objectStore(STORE_NAME).getAll();
+    const tx = db.transaction(storeName, 'readonly');
+    const request = tx.objectStore(storeName).getAll();
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error);
   });
 }
 
 // TEMPORARY stand-in for the real backend call. Replace the inside of
-// this function with a real fetch('/api/products', {...}) once the
-// Flask backend exists -- nothing else in this file needs to change.
-function fakeSendToServer(product) {
+// this function with real fetch() calls per data type once the Flask
+// backend exists -- nothing else in this file needs to change.
+function fakeSendToServer(record) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (navigator.onLine) resolve();
@@ -58,34 +67,61 @@ function fakeSendToServer(product) {
   });
 }
 
-// Call this from app.js whenever the artisan adds a product.
-// It ALWAYS saves locally first, so nothing is ever lost even if the
-// network call below fails.
-async function addProduct(product) {
-  product.status = 'pending';
-  await saveProductLocally(product);
-  await tryToSync(product);
-}
-
-// Attempts to send one product to the server. On success, marks it
-// synced. On failure, leaves it pending -- it'll be retried automatically.
-async function tryToSync(product) {
+// Shared sync logic used by all four data types below.
+async function trySyncRecord(storeName, record) {
   try {
-    await fakeSendToServer(product);
-    product.status = 'synced';
-    await saveProductLocally(product);
+    await fakeSendToServer(record);
+    record.status = 'synced';
+    await saveRecordLocally(storeName, record);
   } catch (err) {
-    // stays 'pending' in IndexedDB -- syncAllPending() will retry it later
+    // stays 'pending' -- syncAllPending() retries it once back online
   }
 }
 
-// Runs through everything still marked pending and retries sending it.
-// This is what "syncs" everything the moment connectivity returns.
+// --- Products ---
+async function addProduct(product) {
+  product.status = 'pending';
+  await saveRecordLocally('products', product);
+  await trySyncRecord('products', product);
+}
+
+// --- Orders ---
+async function acceptOrder(order) {
+  order.status = 'pending';
+  await saveRecordLocally('orders', order);
+  await trySyncRecord('orders', order);
+}
+
+// --- Subsidy forms ---
+async function submitSubsidyForm(form) {
+  form.status = 'pending';
+  await saveRecordLocally('subsidy_forms', form);
+  await trySyncRecord('subsidy_forms', form);
+}
+
+// --- Photos ---
+// Blobs/Files can be stored directly in IndexedDB, so the raw photo
+// itself is saved locally -- not just a filename or a broken link.
+async function capturePhoto(file, productId) {
+  const photo = {
+    photo_id: crypto.randomUUID(),
+    product_id: productId,
+    blob: file,
+    status: 'pending',
+  };
+  await saveRecordLocally('photos', photo);
+  await trySyncRecord('photos', photo);
+  return photo;
+}
+
+// Runs through every store and retries anything still marked pending.
 async function syncAllPending() {
-  const products = await getAllProducts();
-  const pending = products.filter((p) => p.status === 'pending');
-  for (const product of pending) {
-    await tryToSync(product);
+  for (const storeName of STORE_NAMES) {
+    const records = await getAllRecords(storeName);
+    const pending = records.filter((r) => r.status === 'pending');
+    for (const record of pending) {
+      await trySyncRecord(storeName, record);
+    }
   }
 }
 

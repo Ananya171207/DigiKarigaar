@@ -1,7 +1,7 @@
 // A version name for this cache. Bump this (v2, v3...) whenever you change
 // the app shell files, so browsers pick up the new versions instead of
 // serving stale cached copies forever.
-const CACHE_NAME = 'artisan-app-shell-v2';
+const CACHE_NAME = 'artisan-app-shell-v3';
 
 // Every file the app needs just to OPEN -- not product data, just the shell.
 // Bumped to v2 and added js/offline.js since the file list changed --

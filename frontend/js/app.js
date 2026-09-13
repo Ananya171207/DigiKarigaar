@@ -15,40 +15,123 @@ window.addEventListener('online', updateStatus);
 window.addEventListener('offline', updateStatus);
 updateStatus();
 
-// --- Step 2: the test form for adding products ---
+// Small helper so every list renders status the same way.
+function statusLabel(status) {
+  return status === 'synced' ? 'Synced' : 'Pending (will sync)';
+}
+
+// --- Products ---
 
 document.getElementById('product-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-
   const product = {
-    // Generated on-device so it works with zero connection, and so
-    // retrying never creates a duplicate on the server later.
     product_id: crypto.randomUUID(),
     title: document.getElementById('title').value,
     material: document.getElementById('material').value,
   };
-
-  await addProduct(product);   // from offline.js
+  await addProduct(product);
   renderProducts();
   e.target.reset();
 });
 
-// Redraws the product list from whatever is currently in IndexedDB.
 async function renderProducts() {
   const list = document.getElementById('product-list');
-  const products = await getAllProducts();  // from offline.js
+  const products = await getAllRecords('products');
   list.innerHTML = '';
   products.forEach((p) => {
     const li = document.createElement('li');
-    const badge = p.status === 'synced' ? 'Synced' : 'Pending (will sync)';
-    li.textContent = `${p.title} (${p.material}) \u2014 ${badge}`;
+    li.textContent = `${p.title} (${p.material}) \u2014 ${statusLabel(p.status)}`;
     li.className = p.status;
     list.appendChild(li);
   });
 }
 
-// Re-check the list a moment after coming back online, so synced
-// statuses show up once syncAllPending() (in offline.js) finishes.
-window.addEventListener('online', () => setTimeout(renderProducts, 800));
+// --- Orders ---
 
-renderProducts(); // show anything saved from a previous session on load
+document.getElementById('accept-order-btn').addEventListener('click', async () => {
+  const order = {
+    order_id: crypto.randomUUID(),
+    buyer_name: 'Test buyer',
+    product_id: 'demo-product',
+  };
+  await acceptOrder(order);
+  renderOrders();
+});
+
+async function renderOrders() {
+  const list = document.getElementById('order-list');
+  const orders = await getAllRecords('orders');
+  list.innerHTML = '';
+  orders.forEach((o) => {
+    const li = document.createElement('li');
+    li.textContent = `Order from ${o.buyer_name} \u2014 ${statusLabel(o.status)}`;
+    li.className = o.status;
+    list.appendChild(li);
+  });
+}
+
+// --- Subsidy forms ---
+
+document.getElementById('submit-form-btn').addEventListener('click', async () => {
+  const form = {
+    form_id: crypto.randomUUID(),
+    scheme_name: 'Test scheme',
+  };
+  await submitSubsidyForm(form);
+  renderForms();
+});
+
+async function renderForms() {
+  const list = document.getElementById('form-list');
+  const forms = await getAllRecords('subsidy_forms');
+  list.innerHTML = '';
+  forms.forEach((f) => {
+    const li = document.createElement('li');
+    li.textContent = `${f.scheme_name} \u2014 ${statusLabel(f.status)}`;
+    li.className = f.status;
+    list.appendChild(li);
+  });
+}
+
+// --- Photos ---
+
+document.getElementById('photo-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  await capturePhoto(file, 'demo-product');
+  renderPhotos();
+  e.target.value = '';
+});
+
+async function renderPhotos() {
+  const list = document.getElementById('photo-list');
+  const photos = await getAllRecords('photos');
+  list.innerHTML = '';
+  photos.forEach((p) => {
+    const li = document.createElement('li');
+    li.className = p.status;
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(p.blob);
+    img.style.width = '48px';
+    img.style.verticalAlign = 'middle';
+    img.style.marginRight = '8px';
+    img.style.borderRadius = '4px';
+    li.appendChild(img);
+    li.appendChild(document.createTextNode(statusLabel(p.status)));
+    list.appendChild(li);
+  });
+}
+
+// Re-check every list a moment after coming back online.
+window.addEventListener('online', () => setTimeout(() => {
+  renderProducts();
+  renderOrders();
+  renderForms();
+  renderPhotos();
+}, 800));
+
+// Show anything saved from a previous session on load.
+renderProducts();
+renderOrders();
+renderForms();
+renderPhotos();
