@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artisan Marketplace</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Artisan Marketplace</h1>
+  <p id="status">Checking connection...</p>
+
+  <h2>Add product (test)</h2>
+  <form id="product-form">
+    <input type="text" id="title" placeholder="Product title" required>
+    <input type="text" id="material" placeholder="Material" required>
+    <button type="submit">Add product</button>
+  </form>
+
+  <h2>Products</h2>
+  <ul id="product-list"></ul>
+
+  <script src="js/offline.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "Artisan Marketplace",
+  "short_name": "Artisan",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": []
+}
