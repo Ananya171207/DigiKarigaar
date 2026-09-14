@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Digi-Karigar</title>
+<link rel="stylesheet" href="css/style.css" />
+<link rel="manifest" href="manifest.json" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Persistent top bar: AI manager avatar + online/offline dot. app.js fills in text/state. -->
+  <header id="topbar" class="topbar" hidden>
+    <div class="avatar">K</div>
+    <div class="topbar-text">
+      <div id="topbarTitle" class="topbar-title"></div>
+      <div id="topbarSub" class="topbar-sub"></div>
+    </div>
+    <span id="onlineDot" class="online-dot"></span>
+    <button id="backBtn" class="backbtn" hidden>&#10005;</button>
+  </header>
+
+  <!-- ===================== SCREEN: language ===================== -->
+  <section data-screen="lang" class="screen">
+    <div class="ks-body">
+      <p class="ks-prompt center-text">
+        सुनने के लिए टैप करें<br />
+        <span class="hint">Tap to hear it, tap again to choose</span>
+      </p>
+      <div id="langGrid" class="lang-grid"><!-- app.js renders language buttons here --></div>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: home ===================== -->
+  <section data-screen="home" class="screen" hidden>
+    <div class="ks-body">
+      <div class="spacer"></div>
+      <p id="homeGreeting" class="ks-prompt center-text"></p>
+      <div class="mic-wrap">
+        <button id="addProductBtn" class="mic-btn">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+        </button>
+      </div>
+      <div class="spacer"></div>
+    </div>
+    <nav class="navrow">
+      <button data-nav="home" class="navicon active">&#8962;</button>
+      <button data-nav="inventory" class="navicon">&#128230;</button>
+    </nav>
+  </section>
+
+  <!-- ===================== SCREEN: photo ===================== -->
+  <section data-screen="photo" class="screen" hidden>
+    <div class="ks-body">
+      <label for="photoInput" class="upload-box">
+        <img id="photoPreview" src="" alt="" hidden />
+        <span id="photoPlaceholder">Tap to take or choose a photo</span>
+      </label>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" hidden />
+      <div class="spacer"></div>
+      <button id="enhanceBtn" class="btn btn-primary" disabled>Enhance &amp; continue</button>
+      <button id="skipPhotoBtn" class="btn btn-secondary">Skip for this demo</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: enhance (before/after) ===================== -->
+  <section data-screen="enhance" class="screen" hidden>
+    <div class="ks-body">
+      <div class="compare-row">
+        <div class="compare-col"><img id="originalImg" src="" alt="Original" /><div class="compare-label">Original</div></div>
+        <div class="compare-col"><img id="enhancedImg" src="" alt="Enhanced" /><div class="compare-label">Enhanced</div></div>
+      </div>
+      <div class="spacer"></div>
+      <button id="continueToQABtn" class="btn btn-primary">Continue</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: qa (Person C's voice_flow.js runs the whole conversation) ===================== -->
+  <section data-screen="qa" class="screen" hidden>
+    <div class="ks-body">
+      <div id="qaDots" class="dots"><!-- optional progress dots, only shown if voice_flow.js reports progress --></div>
+      <p id="qaStatus" class="ks-prompt center-text">Tap to start talking to your AI manager</p>
+      <div class="mic-wrap">
+        <button id="qaStartBtn" class="mic-btn">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+        </button>
+        <div id="qaLiveTranscript" class="live-transcript"></div>
+      </div>
+      <!-- Manual fallback in case voice fails entirely for a given device/browser -->
+      <details id="qaManualFallback" class="field" hidden>
+        <summary class="hint">Type answers instead</summary>
+        <textarea id="qaManualInput" placeholder="material: cotton, size: large, ..."></textarea>
+        <button id="qaManualSubmitBtn" class="btn btn-secondary">Use typed answers</button>
+      </details>
+      <div class="spacer"></div>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: listing (review) ===================== -->
+  <section data-screen="listing" class="screen" hidden>
+    <div class="ks-body">
+      <div id="listingError" class="error-box" hidden></div>
+      <img id="listingImg" src="" alt="" class="listing-photo" hidden />
+      <div class="card">
+        <div class="card-title">Title</div>
+        <div id="listingTitle" class="card-body"></div>
+      </div>
+      <div class="card">
+        <button id="descSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
+        <div id="listingDescription" class="card-body"></div>
+      </div>
+      <div class="price-box">
+        <button id="priceSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
+        <div id="listingPrice" class="price-value"></div>
+      </div>
+      <button id="confirmListingBtn" class="btn btn-primary">Yes, list it</button>
+      <button id="editAnswersBtn" class="btn btn-secondary">Change my answers</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN: done (publish confirmation) ===================== -->
+  <section data-screen="done" class="screen" hidden>
+    <div class="ks-body center-text">
+      <div class="spacer"></div>
+      <div id="doneIcon"></div>
+      <p id="doneMessage" class="ks-prompt"></p>
+      <div class="spacer"></div>
+      <button id="createAnotherBtn" class="btn btn-secondary">Create another listing</button>
+    </div>
+    <nav class="navrow">
+      <button data-nav="home" class="navicon">&#8962;</button>
+      <button data-nav="inventory" class="navicon">&#128230;</button>
+    </nav>
+  </section>
+
+  <!-- ===================== SCREEN: inventory ===================== -->
+  <section data-screen="inventory" class="screen" hidden>
+    <div class="ks-body">
+      <div id="inventoryGrid" class="grid2"><!-- app.js renders product tiles here --></div>
+      <div class="spacer"></div>
+    </div>
+    <nav class="navrow">
+      <button data-nav="home" class="navicon">&#8962;</button>
+      <button data-nav="inventory" class="navicon active">&#128230;</button>
+    </nav>
+  </section>
+
+</div>
+
+<!-- Load order matters: contract files first, then your wiring code. -->
+<script src="js/voice_flow.js"></script>   <!-- TEMP STUB — Person C's real file drops in here -->
+<script src="js/api.js"></script>          <!-- calls backend routes / offline.js -->
+<script src="js/app.js"></script>          <!-- YOU: screen state + wiring -->
+</body>
+</html>

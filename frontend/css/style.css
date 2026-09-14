@@ -1,0 +1,82 @@
+:root {
+  --terracotta: #B85042; --terracotta-tint: #F5E9E6;
+  --sage: #50808E; --sage-tint: #E9F0EC;
+  --warn: #B8863E; --warn-tint: #F6EEE0;
+  --cream: #FBF8F3; --ink: #3A2E29; --muted: #8A7B72; --line: #E4D9D2;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--cream); color: var(--ink); }
+#app { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ---- top bar ---- */
+.topbar { display:flex; align-items:center; gap:10px; padding:14px 18px; }
+.avatar { width:38px; height:38px; border-radius:50%; background:var(--terracotta); color:#fff; display:flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-weight:700; font-size:16px; flex-shrink:0; }
+.topbar-title { font-family:Georgia,serif; font-size:16px; font-weight:700; }
+.topbar-sub { font-size:12px; color:var(--muted); }
+.online-dot { width:9px; height:9px; border-radius:50%; background:#4C9A6A; margin-left:auto; }
+.online-dot.offline { background: var(--warn); }
+.backbtn { border:none; background:none; color:var(--muted); font-size:18px; cursor:pointer; }
+
+/* ---- screens ---- */
+.screen { flex:1; display:flex; flex-direction:column; padding:20px 18px 24px; }
+.screen[hidden] { display:none; }
+.ks-body { flex:1; display:flex; flex-direction:column; }
+.ks-prompt { font-family:Georgia,serif; font-size:17px; line-height:1.45; margin-bottom:16px; }
+.center-text { text-align:center; }
+.hint { font-size:12.5px; color:var(--muted); font-family:inherit; }
+.spacer { flex:1; }
+
+/* ---- language grid ---- */
+.lang-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; flex:1; }
+.lang-btn { border:2px solid var(--line); background:#fff; border-radius:16px; font-size:16px; font-weight:700; color:var(--ink); cursor:pointer; padding:18px 8px; }
+.lang-btn.previewing { background:var(--terracotta-tint); border-color:var(--terracotta); color:var(--terracotta); }
+
+/* ---- mic / voice ---- */
+.mic-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+.mic-btn { width:82px; height:82px; border-radius:50%; border:none; background:var(--terracotta-tint); color:var(--terracotta); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.mic-btn.live { background:var(--terracotta); color:#fff; animation:pulse 1.4s infinite; }
+@keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(184,80,66,.35);} 70%{box-shadow:0 0 0 16px rgba(184,80,66,0);} 100%{box-shadow:0 0 0 0 rgba(184,80,66,0);} }
+.live-transcript { min-height:40px; font-family:Georgia,serif; font-size:14px; text-align:center; padding:0 8px; color:var(--ink); }
+
+/* ---- buttons ---- */
+.btn { border:none; border-radius:14px; padding:14px; font-size:15px; font-weight:600; cursor:pointer; width:100%; font-family:inherit; margin-top:10px; }
+.btn-primary { background:var(--terracotta); color:#fff; }
+.btn-secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+
+/* ---- photo ---- */
+.upload-box { border:2px dashed var(--line); border-radius:16px; min-height:170px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; cursor:pointer; color:var(--muted); font-size:13px; text-align:center; padding:12px; }
+.upload-box img { max-width:100%; max-height:190px; border-radius:10px; }
+.compare-row { display:flex; gap:10px; margin-bottom:14px; }
+.compare-col { flex:1; text-align:center; }
+.compare-col img { width:100%; height:110px; object-fit:cover; border-radius:10px; background:#eee; }
+.compare-label { font-size:11px; color:var(--muted); margin-top:4px; }
+.listing-photo { width:100%; height:130px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
+
+/* ---- qa dots ---- */
+.dots { display:flex; gap:6px; justify-content:center; margin-bottom:10px; }
+.dot { width:7px; height:7px; border-radius:50%; background:var(--line); }
+.dot.done { background:var(--sage); }
+.dot.active { background:var(--terracotta); }
+textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:#fff; font-size:14px; font-family:inherit; min-height:70px; resize:vertical; }
+
+/* ---- cards / listing review ---- */
+.card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px; margin-bottom:12px; display:flex; align-items:flex-start; gap:10px; }
+.card-title { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px; }
+.card-body { font-family:Georgia,serif; font-size:14px; line-height:1.5; flex:1; }
+.speak-btn { border:none; background:var(--terracotta-tint); color:var(--terracotta); width:34px; height:34px; border-radius:50%; font-size:15px; cursor:pointer; flex-shrink:0; }
+.price-box { background:var(--sage-tint); border-radius:14px; padding:16px; text-align:center; margin-bottom:14px; display:flex; align-items:center; justify-content:center; gap:8px; }
+.price-value { font-family:Georgia,serif; font-size:24px; font-weight:700; color:var(--sage); }
+.error-box { background:#FBEAE8; color:#9A3B2E; border-radius:12px; padding:12px 14px; font-size:13px; margin-bottom:14px; }
+
+/* ---- done screen ---- */
+.success-icon, .offline-icon { width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:8px auto 14px; }
+.success-icon { background:var(--sage-tint); color:var(--sage); }
+.offline-icon { background:var(--warn-tint); color:var(--warn); }
+
+/* ---- inventory + nav ---- */
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.thumb { background:#fff; border:1px solid var(--line); border-radius:10px; min-height:90px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:var(--muted); font-size:12px; }
+.navrow { display:flex; justify-content:space-around; padding-top:12px; border-top:1px solid var(--line); }
+.navicon { background:none; border:none; color:var(--muted); font-size:20px; cursor:pointer; }
+.navicon.active { color:var(--terracotta); }
