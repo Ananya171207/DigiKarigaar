@@ -1,0 +1,6 @@
+uploads/*
+!uploads/.gitkeep
+__pycache__/
+*.pyc
+sample.png
+sample.jpg
