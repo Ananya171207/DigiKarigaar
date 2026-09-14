@@ -3,6 +3,16 @@
  * module together. This is YOUR integration layer.
  */
 
+// ---- Register the service worker so cached screens/assets work offline ----
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("sw.js")
+      .then((reg) => console.log("Service worker registered:", reg.scope))
+      .catch((err) => console.error("Service worker registration failed:", err));
+  });
+}
+
 // ---- Language list (grows to 100s later; UI just loops over this array) ----
 const LANGUAGES = [
   { code: "hi-IN", short: "hi", label: "हिंदी", greeting: "नमस्ते" },
@@ -69,6 +79,7 @@ function setTopbar(title, sub) {
   document.getElementById("topbarSub").textContent = sub || "";
 }
 
+// isOnline() comes from offline.js (loaded before app.js in index.html)
 function updateOnlineDot() {
   const dot = document.getElementById("onlineDot");
   dot.classList.toggle("offline", !isOnline());
@@ -288,6 +299,9 @@ function speakText(text) {
 
 document.getElementById("editAnswersBtn").addEventListener("click", startQAFlow);
 
+// saveProduct() lives in api.js — it should call the backend when online
+// and fall back to offline.js's local queue (e.g. addProduct/getAllRecords)
+// when isOnline() is false, so this call site doesn't need to branch itself.
 document.getElementById("confirmListingBtn").addEventListener("click", async () => {
   const saved = await saveProduct(state.product);
   state.product = saved;
@@ -312,16 +326,30 @@ document.getElementById("createAnotherBtn").addEventListener("click", () => {
 });
 
 // ==================== SCREEN: inventory ====================
+// getProducts() (api.js) should merge synced + still-pending local records
+// so a product added offline shows up here right away.
 async function renderInventory() {
   const products = await getProducts();
   const grid = document.getElementById("inventoryGrid");
   grid.innerHTML = products
-    .map((p) => `<div class="thumb">&#128247;<span>₹${p.predicted_price}</span></div>`)
+    .map((p) => {
+      const pendingBadge = p.status && p.status !== "synced" ? '<span class="pending-badge">Pending</span>' : "";
+      return `<div class="thumb">&#128247;<span>₹${p.predicted_price}</span>${pendingBadge}</div>`;
+    })
     .join("") + '<button class="thumb" onclick="document.getElementById(\'addProductBtn\').click()">+</button>';
 }
 
 // ==================== Boot ====================
 renderLanguageGrid();
 showScreen("lang");
+updateOnlineDot();
 window.addEventListener("online", updateOnlineDot);
 window.addEventListener("offline", updateOnlineDot);
+
+// Once connectivity returns, give any offline-queued products a chance to
+// sync and refresh the inventory view if it's currently open.
+window.addEventListener("online", () => {
+  setTimeout(() => {
+    if (state.screen === "inventory") renderInventory();
+  }, 800);
+});

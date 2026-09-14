@@ -11,7 +11,8 @@
 
 <div id="app">
 
-  <!-- Persistent top bar: AI manager avatar + online/offline dot. app.js fills in text/state. -->
+  <!-- Persistent top bar: AI manager avatar + online/offline dot. app.js fills in text/state.
+       onlineDot doubles as the connection-status indicator from the offline-first branch -->
   <header id="topbar" class="topbar" hidden>
     <div class="avatar">K</div>
     <div class="topbar-text">
@@ -155,8 +156,12 @@
 
 </div>
 
-<!-- Load order matters: contract files first, then your wiring code. -->
+<!-- Load order matters:
+     1. voice_flow.js / offline.js — contract files that app.js and api.js depend on
+     2. api.js — calls backend routes, falls back to offline.js when offline
+     3. app.js — screen state + wiring, reads offline.js's connectivity state to drive onlineDot -->
 <script src="js/voice_flow.js"></script>   <!-- TEMP STUB — Person C's real file drops in here -->
+<script src="js/offline.js"></script>      <!-- offline-first queueing + connectivity check -->
 <script src="js/api.js"></script>          <!-- calls backend routes / offline.js -->
 <script src="js/app.js"></script>          <!-- YOU: screen state + wiring -->
 </body>
