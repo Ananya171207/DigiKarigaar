@@ -27,7 +27,7 @@ GRABCUT_PROXY_DIM = 320
 # no code changes needed. Paths are relative to the project root.
 # ---------------------------------------------------------------------------
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-BACKGROUNDS_DIR = os.path.join(BASE_DIR, "backgrounds")
+BACKGROUNDS_DIR = os.path.join(BASE_DIR, "background")
 CLEAN_BG_PATH = os.path.join(BACKGROUNDS_DIR, "clean_bg.png")
 TABLE_BG_PATH = os.path.join(BACKGROUNDS_DIR, "table_bg.png")
 WALL_FLOOR_BG_PATH = os.path.join(BACKGROUNDS_DIR, "wall_floor_bg.png")

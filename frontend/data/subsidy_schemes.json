@@ -1,0 +1,47 @@
+[
+  {
+    "scheme_id": "pm_vishwakarma",
+    "scheme_name": "PM Vishwakarma",
+    "scheme_name_hi": "पीएम विश्वकर्मा",
+    "description": "A central government scheme providing training, toolkit incentives, credit and marketing support to traditional artisans.",
+    "description_hi": "पारंपरिक कारीगरों को प्रशिक्षण, टूलकिट प्रोत्साहन, ऋण और विपणन सहायता प्रदान करने वाली केंद्र सरकार की योजना।",
+    "official_url": "https://pmvishwakarma.gov.in/",
+    "application_mode": "csc_assisted",
+    "minimum_age": 18,
+    "eligible_trades": [
+      "Potter",
+      "Carpenter",
+      "Tailor",
+      "Weaver",
+      "Sculptor"
+    ],
+    "eligibility_questions": [
+      {
+        "field_id": "government_employee_in_family",
+        "question": "Is there any government employee within your family?",
+        "question_hi": "क्या आपके परिवार में कोई सरकारी कर्मचारी है?",
+        "eligible_answer": false
+      },
+      {
+        "field_id": "similar_scheme_loan_availed",
+        "question": "Have you availed credit under a similar government scheme or have an outstanding PM SVANidhi or MUDRA loan?",
+        "question_hi": "क्या आपने समान सरकारी योजना के तहत ऋण लिया है या PM SVANidhi अथवा MUDRA का कोई बकाया ऋण है?",
+        "eligible_answer": false
+      }
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Aadhaar-linked mobile number",
+      "Bank account details",
+      "Ration card, if available"
+    ],
+    "benefits": [
+      "Skill training",
+      "Toolkit incentive",
+      "Credit support up to ₹1,00,000 in the first stage",
+      "Digital transaction incentive",
+      "Marketing support"
+    ],
+    "prototype_notice": "This prototype does not submit an application to the official government portal."
+  }
+]

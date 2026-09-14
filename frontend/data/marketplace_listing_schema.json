@@ -1,0 +1,355 @@
+{
+  "form_id": "marketplace_product_listing",
+  "form_name": "Marketplace Product Listing",
+  "form_name_hi": "मार्केटप्लेस उत्पाद लिस्टिंग",
+  "prototype_only": true,
+  "sections": [
+    {
+      "section_id": "listing_channel",
+      "section_name": "Marketplace",
+      "section_name_hi": "मार्केटप्लेस",
+      "fields": [
+        {
+          "field_id": "marketplace_channel",
+          "label": "Selected marketplace",
+          "label_hi": "चुना गया मार्केटप्लेस",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "internal_b2b",
+              "label": "Artisan B2B Marketplace",
+              "label_hi": "कारीगर B2B मार्केटप्लेस"
+            },
+            {
+              "value": "amazon_karigar",
+              "label": "Amazon Karigar",
+              "label_hi": "अमेज़न कारीगर"
+            },
+            {
+              "value": "flipkart_samarth",
+              "label": "Flipkart Samarth",
+              "label_hi": "फ्लिपकार्ट समर्थ"
+            },
+            {
+              "value": "ondc",
+              "label": "ONDC Seller Network",
+              "label_hi": "ONDC विक्रेता नेटवर्क"
+            }
+          ]
+        },
+        {
+          "field_id": "seller_id",
+          "label": "Seller ID",
+          "label_hi": "विक्रेता ID",
+          "type": "text",
+          "required": true,
+          "source": "seller_profile",
+          "user_editable": false
+        }
+      ]
+    },
+    {
+      "section_id": "basic_product_information",
+      "section_name": "Basic Product Information",
+      "section_name_hi": "उत्पाद की मूल जानकारी",
+      "fields": [
+        {
+          "field_id": "product_id",
+          "label": "Product ID",
+          "label_hi": "उत्पाद ID",
+          "type": "text",
+          "required": true,
+          "source": "product",
+          "user_editable": false
+        },
+        {
+          "field_id": "artisan_id",
+          "label": "Artisan ID",
+          "label_hi": "कारीगर ID",
+          "type": "text",
+          "required": true,
+          "source": "product",
+          "user_editable": false
+        },
+        {
+          "field_id": "title",
+          "label": "Product title",
+          "label_hi": "उत्पाद का नाम",
+          "question": "What is the name of your product?",
+          "question_hi": "आपके उत्पाद का नाम क्या है?",
+          "type": "text",
+          "required": true,
+          "source": "product"
+        },
+        {
+          "field_id": "description",
+          "label": "Product description",
+          "label_hi": "उत्पाद का विवरण",
+          "question": "Please describe your product.",
+          "question_hi": "कृपया अपने उत्पाद का विवरण बताइए।",
+          "type": "textarea",
+          "required": true,
+          "source": "product"
+        },
+        {
+          "field_id": "material",
+          "label": "Material",
+          "label_hi": "सामग्री",
+          "question": "Which material is used to make this product?",
+          "question_hi": "इस उत्पाद को बनाने में किस सामग्री का उपयोग हुआ है?",
+          "type": "text",
+          "required": true,
+          "source": "product"
+        },
+        {
+          "field_id": "category",
+          "label": "Category",
+          "label_hi": "श्रेणी",
+          "question": "Which category does this product belong to?",
+          "question_hi": "यह उत्पाद किस श्रेणी से संबंधित है?",
+          "type": "text",
+          "required": true,
+          "source": "product"
+        },
+        {
+          "field_id": "language",
+          "label": "Listing language",
+          "label_hi": "लिस्टिंग की भाषा",
+          "type": "text",
+          "required": true,
+          "source": "product",
+          "user_editable": false
+        }
+      ]
+    },
+    {
+      "section_id": "product_images",
+      "section_name": "Product Images",
+      "section_name_hi": "उत्पाद की तस्वीरें",
+      "fields": [
+        {
+          "field_id": "raw_image_url",
+          "label": "Original product image",
+          "label_hi": "मूल उत्पाद तस्वीर",
+          "type": "image",
+          "required": true,
+          "source": "product",
+          "user_editable": false
+        },
+        {
+          "field_id": "enhanced_image_url",
+          "label": "Enhanced product image",
+          "label_hi": "बेहतर बनाई गई उत्पाद तस्वीर",
+          "type": "image",
+          "required": true,
+          "source": "product",
+          "user_editable": false
+        }
+      ]
+    },
+    {
+      "section_id": "price_inventory",
+      "section_name": "Price and Inventory",
+      "section_name_hi": "मूल्य और स्टॉक",
+      "fields": [
+        {
+          "field_id": "predicted_price",
+          "label": "Suggested selling price",
+          "label_hi": "सुझाया गया विक्रय मूल्य",
+          "question": "The suggested price is shown. Do you want to use this price?",
+          "question_hi": "सुझाया गया मूल्य दिखाया गया है। क्या आप इसी मूल्य का उपयोग करना चाहते हैं?",
+          "type": "number",
+          "required": true,
+          "source": "product",
+          "minimum": 1
+        },
+        {
+          "field_id": "stock_quantity",
+          "label": "Available quantity",
+          "label_hi": "उपलब्ध मात्रा",
+          "question": "How many pieces are currently available?",
+          "question_hi": "अभी कितने उत्पाद उपलब्ध हैं?",
+          "type": "number",
+          "required": true,
+          "minimum": 1
+        },
+        {
+          "field_id": "sku",
+          "label": "SKU or product code",
+          "label_hi": "SKU या उत्पाद कोड",
+          "type": "text",
+          "required": true,
+          "generated_from": "product_id",
+          "user_editable": false
+        }
+      ]
+    },
+    {
+      "section_id": "size_weight",
+      "section_name": "Size and Weight",
+      "section_name_hi": "आकार और वजन",
+      "fields": [
+        {
+          "field_id": "size",
+          "label": "Product size",
+          "label_hi": "उत्पाद का आकार",
+          "question": "Is the product small, medium or large?",
+          "question_hi": "उत्पाद छोटा, मध्यम या बड़ा है?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "Small",
+              "label": "Small",
+              "label_hi": "छोटा"
+            },
+            {
+              "value": "Medium",
+              "label": "Medium",
+              "label_hi": "मध्यम"
+            },
+            {
+              "value": "Large",
+              "label": "Large",
+              "label_hi": "बड़ा"
+            }
+          ]
+        },
+        {
+          "field_id": "length_cm",
+          "label": "Length in centimetres",
+          "label_hi": "लंबाई सेंटीमीटर में",
+          "question": "What is the product length in centimetres?",
+          "question_hi": "उत्पाद की लंबाई सेंटीमीटर में कितनी है?",
+          "type": "number",
+          "required": true,
+          "minimum": 0.1
+        },
+        {
+          "field_id": "width_cm",
+          "label": "Width in centimetres",
+          "label_hi": "चौड़ाई सेंटीमीटर में",
+          "question": "What is the product width in centimetres?",
+          "question_hi": "उत्पाद की चौड़ाई सेंटीमीटर में कितनी है?",
+          "type": "number",
+          "required": true,
+          "minimum": 0.1
+        },
+        {
+          "field_id": "height_cm",
+          "label": "Height in centimetres",
+          "label_hi": "ऊँचाई सेंटीमीटर में",
+          "question": "What is the product height in centimetres?",
+          "question_hi": "उत्पाद की ऊँचाई सेंटीमीटर में कितनी है?",
+          "type": "number",
+          "required": true,
+          "minimum": 0.1
+        },
+        {
+          "field_id": "weight_grams",
+          "label": "Weight in grams",
+          "label_hi": "वजन ग्राम में",
+          "question": "What is the product weight in grams?",
+          "question_hi": "उत्पाद का वजन ग्राम में कितना है?",
+          "type": "number",
+          "required": true,
+          "minimum": 1
+        }
+      ]
+    },
+    {
+      "section_id": "fulfilment",
+      "section_name": "Order Fulfilment",
+      "section_name_hi": "ऑर्डर पूर्ति",
+      "fields": [
+        {
+          "field_id": "making_time_days",
+          "label": "Making time in days",
+          "label_hi": "उत्पाद बनाने का समय",
+          "question": "How many days are required to prepare this product?",
+          "question_hi": "इस उत्पाद को तैयार करने में कितने दिन लगते हैं?",
+          "type": "number",
+          "required": true,
+          "minimum": 0
+        },
+        {
+          "field_id": "made_to_order",
+          "label": "Made to order",
+          "label_hi": "ऑर्डर पर बनाया जाता है",
+          "question": "Can this product be made after receiving an order?",
+          "question_hi": "क्या यह उत्पाद ऑर्डर मिलने के बाद बनाया जा सकता है?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            {
+              "value": true,
+              "label": "Yes",
+              "label_hi": "हाँ"
+            },
+            {
+              "value": false,
+              "label": "No",
+              "label_hi": "नहीं"
+            }
+          ]
+        },
+        {
+          "field_id": "shipping_available",
+          "label": "Shipping available",
+          "label_hi": "शिपिंग उपलब्ध",
+          "question": "Can this product be shipped to buyers?",
+          "question_hi": "क्या यह उत्पाद खरीदारों तक भेजा जा सकता है?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            {
+              "value": true,
+              "label": "Yes",
+              "label_hi": "हाँ"
+            },
+            {
+              "value": false,
+              "label": "No",
+              "label_hi": "नहीं"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "listing_declaration",
+      "section_name": "Review and Confirmation",
+      "section_name_hi": "समीक्षा और पुष्टि",
+      "fields": [
+        {
+          "field_id": "listing_information_confirmed",
+          "label": "Listing information is correct",
+          "label_hi": "लिस्टिंग की जानकारी सही है",
+          "question": "Do you confirm that the product information is correct?",
+          "question_hi": "क्या आप पुष्टि करते हैं कि उत्पाद की जानकारी सही है?",
+          "type": "checkbox",
+          "required": true
+        },
+        {
+          "field_id": "channel_terms_accepted",
+          "label": "Marketplace terms accepted",
+          "label_hi": "मार्केटप्लेस के नियम स्वीकार किए",
+          "question": "Do you accept the marketplace listing terms?",
+          "question_hi": "क्या आप मार्केटप्लेस लिस्टिंग के नियम स्वीकार करते हैं?",
+          "type": "checkbox",
+          "required": true
+        },
+        {
+          "field_id": "listing_submission_status",
+          "label": "Listing submission status",
+          "label_hi": "लिस्टिंग जमा करने की स्थिति",
+          "type": "hidden",
+          "required": true,
+          "default_value": "prototype_not_submitted",
+          "user_editable": false
+        }
+      ]
+    }
+  ]
+}

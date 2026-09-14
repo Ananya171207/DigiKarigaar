@@ -1,0 +1,44 @@
+[
+  {
+    "channel_id": "internal_b2b",
+    "channel_name": "Artisan B2B Marketplace",
+    "channel_name_hi": "कारीगर B2B मार्केटप्लेस",
+    "listing_mode": "internal",
+    "enabled": true,
+    "requires_registration": false,
+    "prototype_status": "available"
+  },
+  {
+    "channel_id": "amazon_karigar",
+    "channel_name": "Amazon Karigar",
+    "channel_name_hi": "अमेज़न कारीगर",
+    "listing_mode": "external",
+    "enabled": true,
+    "requires_registration": true,
+    "registration_schema": "marketplace_registration_schema.json",
+    "listing_schema": "marketplace_listing_schema.json",
+    "prototype_status": "prepared_only"
+  },
+  {
+    "channel_id": "flipkart_samarth",
+    "channel_name": "Flipkart Samarth",
+    "channel_name_hi": "फ्लिपकार्ट समर्थ",
+    "listing_mode": "external",
+    "enabled": true,
+    "requires_registration": true,
+    "registration_schema": "marketplace_registration_schema.json",
+    "listing_schema": "marketplace_listing_schema.json",
+    "prototype_status": "prepared_only"
+  },
+  {
+    "channel_id": "ondc",
+    "channel_name": "ONDC Seller Network",
+    "channel_name_hi": "ONDC विक्रेता नेटवर्क",
+    "listing_mode": "external",
+    "enabled": true,
+    "requires_registration": true,
+    "registration_schema": "marketplace_registration_schema.json",
+    "listing_schema": "marketplace_listing_schema.json",
+    "prototype_status": "prepared_only"
+  }
+]

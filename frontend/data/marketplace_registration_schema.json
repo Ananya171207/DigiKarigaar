@@ -1,0 +1,752 @@
+{
+  "form_id": "marketplace_registration",
+  "form_name": "Marketplace Seller Registration",
+  "form_name_hi": "मार्केटप्लेस विक्रेता पंजीकरण",
+  "prototype_only": true,
+  "sections": [
+    {
+      "section_id": "marketplace_selection",
+      "section_name": "Marketplace Selection",
+      "section_name_hi": "मार्केटप्लेस चयन",
+      "fields": [
+        {
+          "field_id": "marketplace_channel",
+          "label": "Selected marketplace",
+          "label_hi": "चुना गया मार्केटप्लेस",
+          "question": "Which marketplace do you want to register on?",
+          "question_hi": "आप किस मार्केटप्लेस पर पंजीकरण करना चाहते हैं?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "amazon_karigar",
+              "label": "Amazon Karigar",
+              "label_hi": "अमेज़न कारीगर"
+            },
+            {
+              "value": "flipkart_samarth",
+              "label": "Flipkart Samarth",
+              "label_hi": "फ्लिपकार्ट समर्थ"
+            },
+            {
+              "value": "ondc",
+              "label": "ONDC Seller Network",
+              "label_hi": "ONDC विक्रेता नेटवर्क"
+            }
+          ]
+        },
+        {
+          "field_id": "already_registered",
+          "label": "Existing seller account",
+          "label_hi": "पहले से मौजूद विक्रेता खाता",
+          "question": "Do you already have a seller account on this marketplace?",
+          "question_hi": "क्या इस मार्केटप्लेस पर आपका विक्रेता खाता पहले से मौजूद है?",
+          "type": "radio",
+          "required": true,
+          "options": [
+            {
+              "value": true,
+              "label": "Yes",
+              "label_hi": "हाँ"
+            },
+            {
+              "value": false,
+              "label": "No",
+              "label_hi": "नहीं"
+            }
+          ]
+        },
+        {
+          "field_id": "existing_seller_id",
+          "label": "Existing seller ID",
+          "label_hi": "मौजूदा विक्रेता ID",
+          "question": "Please provide your existing seller ID.",
+          "question_hi": "कृपया अपनी मौजूदा विक्रेता ID बताइए।",
+          "type": "text",
+          "required": true,
+          "show_when": {
+            "field_id": "already_registered",
+            "equals": true
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "seller_identity",
+      "section_name": "Seller Identity",
+      "section_name_hi": "विक्रेता की पहचान",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "artisan_name",
+          "label": "Artisan's full name",
+          "label_hi": "कारीगर का पूरा नाम",
+          "question": "Please tell me your full name.",
+          "question_hi": "कृपया अपना पूरा नाम बताइए।",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "business_name",
+          "label": "Business or shop name",
+          "label_hi": "व्यवसाय या दुकान का नाम",
+          "question": "What is the name of your business or shop?",
+          "question_hi": "आपके व्यवसाय या दुकान का नाम क्या है?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "mobile_number",
+          "label": "Mobile number",
+          "label_hi": "मोबाइल नंबर",
+          "question": "Please provide your ten-digit mobile number.",
+          "question_hi": "कृपया अपना दस अंकों का मोबाइल नंबर बताइए।",
+          "type": "tel",
+          "required": true,
+          "validation": {
+            "pattern": "^[6-9][0-9]{9}$",
+            "message": "Enter a valid ten-digit mobile number."
+          }
+        },
+        {
+          "field_id": "email",
+          "label": "Email address",
+          "label_hi": "ईमेल पता",
+          "question": "Please provide your email address.",
+          "question_hi": "कृपया अपना ईमेल पता बताइए।",
+          "type": "email",
+          "required": true,
+          "validation": {
+            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "message": "Enter a valid email address."
+          }
+        },
+        {
+          "field_id": "preferred_language",
+          "label": "Preferred language",
+          "label_hi": "पसंदीदा भाषा",
+          "question": "Which language would you prefer?",
+          "question_hi": "आप कौन सी भाषा पसंद करेंगे?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "hi",
+              "label": "Hindi",
+              "label_hi": "हिन्दी"
+            },
+            {
+              "value": "en",
+              "label": "English",
+              "label_hi": "अंग्रेज़ी"
+            },
+            {
+              "value": "bn",
+              "label": "Bengali",
+              "label_hi": "बंगाली"
+            },
+            {
+              "value": "ta",
+              "label": "Tamil",
+              "label_hi": "तमिल"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "artisan_business",
+      "section_name": "Artisan Business Details",
+      "section_name_hi": "कारीगर व्यवसाय विवरण",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "artisan_id",
+          "label": "Artisan ID",
+          "label_hi": "कारीगर ID",
+          "type": "text",
+          "required": true,
+          "source": "artisan_profile",
+          "user_editable": false
+        },
+        {
+          "field_id": "trade_name",
+          "label": "Traditional trade",
+          "label_hi": "पारंपरिक व्यवसाय",
+          "question": "What type of traditional craft do you practise?",
+          "question_hi": "आप किस प्रकार का पारंपरिक शिल्प कार्य करते हैं?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "years_of_experience",
+          "label": "Years of experience",
+          "label_hi": "अनुभव के वर्ष",
+          "question": "For how many years have you practised this craft?",
+          "question_hi": "आप कितने वर्षों से यह शिल्प कार्य कर रहे हैं?",
+          "type": "number",
+          "required": true,
+          "minimum": 0
+        },
+        {
+          "field_id": "product_categories",
+          "label": "Product categories",
+          "label_hi": "उत्पाद श्रेणियाँ",
+          "question": "Which types of products do you sell?",
+          "question_hi": "आप किस प्रकार के उत्पाद बेचते हैं?",
+          "type": "multiselect",
+          "required": true,
+          "options": [
+            {
+              "value": "pottery",
+              "label": "Pottery",
+              "label_hi": "मिट्टी के उत्पाद"
+            },
+            {
+              "value": "textiles",
+              "label": "Textiles",
+              "label_hi": "वस्त्र"
+            },
+            {
+              "value": "jewellery",
+              "label": "Jewellery",
+              "label_hi": "आभूषण"
+            },
+            {
+              "value": "home_decor",
+              "label": "Home Decor",
+              "label_hi": "घर की सजावट"
+            },
+            {
+              "value": "handicrafts",
+              "label": "Handicrafts",
+              "label_hi": "हस्तशिल्प"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "pickup_address",
+      "section_name": "Pickup Address",
+      "section_name_hi": "पिकअप पता",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "address_line_1",
+          "label": "House number and street",
+          "label_hi": "मकान नंबर और सड़क",
+          "question": "Please provide your house number and street.",
+          "question_hi": "कृपया अपना मकान नंबर और सड़क का नाम बताइए।",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "address_line_2",
+          "label": "Area or locality",
+          "label_hi": "क्षेत्र या मोहल्ला",
+          "question": "Please provide your area or locality.",
+          "question_hi": "कृपया अपना क्षेत्र या मोहल्ला बताइए।",
+          "type": "text",
+          "required": false
+        },
+        {
+          "field_id": "city",
+          "label": "City",
+          "label_hi": "शहर",
+          "question": "Which city do you live in?",
+          "question_hi": "आप किस शहर में रहते हैं?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "district",
+          "label": "District",
+          "label_hi": "जिला",
+          "question": "Which district do you live in?",
+          "question_hi": "आप किस जिले में रहते हैं?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "state",
+          "label": "State",
+          "label_hi": "राज्य",
+          "question": "Which state do you live in?",
+          "question_hi": "आप किस राज्य में रहते हैं?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "pin_code",
+          "label": "PIN code",
+          "label_hi": "पिन कोड",
+          "question": "Please provide your six-digit PIN code.",
+          "question_hi": "कृपया अपना छह अंकों का पिन कोड बताइए।",
+          "type": "text",
+          "required": true,
+          "validation": {
+            "pattern": "^[1-9][0-9]{5}$",
+            "message": "Enter a valid six-digit PIN code."
+          }
+        }
+      ]
+    },
+    {
+      "section_id": "tax_business_information",
+      "section_name": "Tax and Business Information",
+      "section_name_hi": "कर और व्यवसाय की जानकारी",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "pan_number",
+          "label": "PAN number",
+          "label_hi": "पैन नंबर",
+          "question": "Please provide your PAN number.",
+          "question_hi": "कृपया अपना पैन नंबर बताइए।",
+          "type": "text",
+          "required": true,
+          "sensitive": true,
+          "validation": {
+            "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$",
+            "message": "Enter a valid PAN number."
+          }
+        },
+        {
+          "field_id": "gst_registration_status",
+          "label": "GST registration status",
+          "label_hi": "GST पंजीकरण की स्थिति",
+          "question": "Are you registered under GST?",
+          "question_hi": "क्या आप GST के अंतर्गत पंजीकृत हैं?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "registered",
+              "label": "GST registered",
+              "label_hi": "GST पंजीकृत"
+            },
+            {
+              "value": "not_registered",
+              "label": "Not registered",
+              "label_hi": "पंजीकृत नहीं"
+            },
+            {
+              "value": "exempt",
+              "label": "Exempt or not applicable",
+              "label_hi": "छूट प्राप्त या लागू नहीं"
+            }
+          ]
+        },
+        {
+          "field_id": "gstin",
+          "label": "GSTIN",
+          "label_hi": "GSTIN",
+          "question": "Please provide your GSTIN.",
+          "question_hi": "कृपया अपना GSTIN बताइए।",
+          "type": "text",
+          "required": true,
+          "sensitive": true,
+          "show_when": {
+            "field_id": "gst_registration_status",
+            "equals": "registered"
+          },
+          "validation": {
+            "pattern": "^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$",
+            "message": "Enter a valid GSTIN."
+          }
+        },
+        {
+          "field_id": "udyam_registration_number",
+          "label": "Udyam registration number",
+          "label_hi": "उद्यम पंजीकरण नंबर",
+          "question": "Please provide your Udyam registration number, if available.",
+          "question_hi": "यदि उपलब्ध हो तो कृपया अपना उद्यम पंजीकरण नंबर बताइए।",
+          "type": "text",
+          "required": false
+        }
+      ]
+    },
+    {
+      "section_id": "seller_bank_details",
+      "section_name": "Bank Details",
+      "section_name_hi": "बैंक विवरण",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "account_holder_name",
+          "label": "Account-holder name",
+          "label_hi": "खाताधारक का नाम",
+          "question": "What is the name registered with your bank account?",
+          "question_hi": "आपके बैंक खाते में दर्ज नाम क्या है?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "bank_account_number",
+          "label": "Bank account number",
+          "label_hi": "बैंक खाता नंबर",
+          "question": "Please enter your bank account number.",
+          "question_hi": "कृपया अपना बैंक खाता नंबर दर्ज करें।",
+          "type": "password",
+          "required": true,
+          "sensitive": true
+        },
+        {
+          "field_id": "confirm_bank_account_number",
+          "label": "Confirm bank account number",
+          "label_hi": "बैंक खाता नंबर की पुष्टि",
+          "question": "Please enter your bank account number again.",
+          "question_hi": "कृपया अपना बैंक खाता नंबर दोबारा दर्ज करें।",
+          "type": "password",
+          "required": true,
+          "sensitive": true,
+          "matches_field": "bank_account_number"
+        },
+        {
+          "field_id": "ifsc_code",
+          "label": "IFSC code",
+          "label_hi": "IFSC कोड",
+          "question": "Please provide your bank IFSC code.",
+          "question_hi": "कृपया अपने बैंक का IFSC कोड बताइए।",
+          "type": "text",
+          "required": true,
+          "validation": {
+            "pattern": "^[A-Z]{4}0[A-Z0-9]{6}$",
+            "message": "Enter a valid IFSC code."
+          }
+        },
+        {
+          "field_id": "bank_name",
+          "label": "Bank name",
+          "label_hi": "बैंक का नाम",
+          "question": "Please provide your bank name.",
+          "question_hi": "कृपया अपने बैंक का नाम बताइए।",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "bank_branch",
+          "label": "Bank branch",
+          "label_hi": "बैंक शाखा",
+          "question": "Please provide your bank branch.",
+          "question_hi": "कृपया अपनी बैंक शाखा बताइए।",
+          "type": "text",
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_id": "seller_documents",
+      "section_name": "Documents",
+      "section_name_hi": "दस्तावेज़",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "pan_document",
+          "label": "PAN document",
+          "label_hi": "पैन दस्तावेज़",
+          "type": "file",
+          "required": true,
+          "accepted_formats": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ],
+          "voice_fillable": false,
+          "sensitive": true
+        },
+        {
+          "field_id": "address_proof_document",
+          "label": "Address proof",
+          "label_hi": "पते का प्रमाण",
+          "type": "file",
+          "required": true,
+          "accepted_formats": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ],
+          "voice_fillable": false,
+          "sensitive": true
+        },
+        {
+          "field_id": "bank_proof_document",
+          "label": "Cancelled cheque or bank proof",
+          "label_hi": "रद्द चेक या बैंक प्रमाण",
+          "type": "file",
+          "required": true,
+          "accepted_formats": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ],
+          "voice_fillable": false,
+          "sensitive": true
+        },
+        {
+          "field_id": "artisan_proof_document",
+          "label": "Artisan or craft proof",
+          "label_hi": "कारीगर या शिल्प प्रमाण",
+          "type": "file",
+          "required": false,
+          "accepted_formats": [
+            "image/jpeg",
+            "image/png",
+            "application/pdf"
+          ],
+          "voice_fillable": false
+        }
+      ]
+    },
+    {
+      "section_id": "amazon_karigar_details",
+      "section_name": "Amazon Karigar Details",
+      "section_name_hi": "अमेज़न कारीगर विवरण",
+      "show_when": {
+        "field_id": "marketplace_channel",
+        "equals": "amazon_karigar"
+      },
+      "fields": [
+        {
+          "field_id": "amazon_craft_category",
+          "label": "Primary craft category",
+          "label_hi": "मुख्य शिल्प श्रेणी",
+          "question": "What is your primary craft category?",
+          "question_hi": "आपकी मुख्य शिल्प श्रेणी क्या है?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "amazon_brand_name",
+          "label": "Brand name",
+          "label_hi": "ब्रांड का नाम",
+          "question": "Do you use a brand name for your products?",
+          "question_hi": "क्या आप अपने उत्पादों के लिए किसी ब्रांड नाम का उपयोग करते हैं?",
+          "type": "text",
+          "required": false
+        },
+        {
+          "field_id": "amazon_handmade_declaration",
+          "label": "Handmade-product declaration",
+          "label_hi": "हस्तनिर्मित उत्पाद घोषणा",
+          "question": "Do you confirm that the products are handmade or handcrafted?",
+          "question_hi": "क्या आप पुष्टि करते हैं कि उत्पाद हस्तनिर्मित हैं?",
+          "type": "checkbox",
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_id": "flipkart_samarth_details",
+      "section_name": "Flipkart Samarth Details",
+      "section_name_hi": "फ्लिपकार्ट समर्थ विवरण",
+      "show_when": {
+        "field_id": "marketplace_channel",
+        "equals": "flipkart_samarth"
+      },
+      "fields": [
+        {
+          "field_id": "flipkart_seller_type",
+          "label": "Seller type",
+          "label_hi": "विक्रेता का प्रकार",
+          "question": "What type of seller are you?",
+          "question_hi": "आप किस प्रकार के विक्रेता हैं?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "individual_artisan",
+              "label": "Individual artisan",
+              "label_hi": "व्यक्तिगत कारीगर"
+            },
+            {
+              "value": "self_help_group",
+              "label": "Self-help group",
+              "label_hi": "स्वयं सहायता समूह"
+            },
+            {
+              "value": "cooperative",
+              "label": "Cooperative",
+              "label_hi": "सहकारी संस्था"
+            },
+            {
+              "value": "small_business",
+              "label": "Small business",
+              "label_hi": "लघु व्यवसाय"
+            }
+          ]
+        },
+        {
+          "field_id": "flipkart_product_category",
+          "label": "Primary product category",
+          "label_hi": "मुख्य उत्पाद श्रेणी",
+          "question": "What is your primary product category?",
+          "question_hi": "आपकी मुख्य उत्पाद श्रेणी क्या है?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "flipkart_samarth_declaration",
+          "label": "Samarth-program declaration",
+          "label_hi": "समर्थ कार्यक्रम घोषणा",
+          "question": "Do you confirm that you are an artisan or eligible small producer?",
+          "question_hi": "क्या आप पुष्टि करते हैं कि आप कारीगर या पात्र लघु उत्पादक हैं?",
+          "type": "checkbox",
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_id": "ondc_seller_details",
+      "section_name": "ONDC Seller Network Details",
+      "section_name_hi": "ONDC विक्रेता नेटवर्क विवरण",
+      "show_when": {
+        "field_id": "marketplace_channel",
+        "equals": "ondc"
+      },
+      "fields": [
+        {
+          "field_id": "ondc_seller_network_participant",
+          "label": "Seller network participant",
+          "label_hi": "विक्रेता नेटवर्क प्रतिभागी",
+          "question": "Please select an ONDC seller-network participant.",
+          "question_hi": "कृपया ONDC विक्रेता नेटवर्क प्रतिभागी चुनें।",
+          "type": "select",
+          "required": true,
+          "options_source": "integration_configuration"
+        },
+        {
+          "field_id": "ondc_store_name",
+          "label": "Store name",
+          "label_hi": "स्टोर का नाम",
+          "question": "What name would you like to use for your ONDC store?",
+          "question_hi": "आप अपने ONDC स्टोर के लिए कौन सा नाम उपयोग करना चाहते हैं?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "field_id": "ondc_fulfilment_type",
+          "label": "Order fulfilment method",
+          "label_hi": "ऑर्डर पूर्ति का तरीका",
+          "question": "How would you like orders to be delivered?",
+          "question_hi": "आप ऑर्डर की डिलीवरी किस प्रकार करवाना चाहते हैं?",
+          "type": "select",
+          "required": true,
+          "options": [
+            {
+              "value": "seller_delivery",
+              "label": "Seller-arranged delivery",
+              "label_hi": "विक्रेता द्वारा डिलीवरी"
+            },
+            {
+              "value": "network_delivery",
+              "label": "Network logistics",
+              "label_hi": "नेटवर्क लॉजिस्टिक्स"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_id": "seller_verification",
+      "section_name": "Mobile Verification",
+      "section_name_hi": "मोबाइल सत्यापन",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "seller_otp",
+          "label": "Mobile OTP",
+          "label_hi": "मोबाइल OTP",
+          "question": "Please enter the OTP received on your mobile number.",
+          "question_hi": "कृपया अपने मोबाइल नंबर पर प्राप्त OTP दर्ज करें।",
+          "type": "password",
+          "required": true,
+          "sensitive": true,
+          "prototype_mode": "simulated",
+          "validation": {
+            "pattern": "^[0-9]{6}$",
+            "message": "Enter a valid six-digit OTP."
+          }
+        },
+        {
+          "field_id": "mobile_verified",
+          "label": "Mobile verification status",
+          "label_hi": "मोबाइल सत्यापन स्थिति",
+          "type": "verification",
+          "required": true,
+          "prototype_mode": "simulated",
+          "user_editable": false
+        }
+      ]
+    },
+    {
+      "section_id": "seller_declaration",
+      "section_name": "Review and Declaration",
+      "section_name_hi": "समीक्षा और घोषणा",
+      "show_when": {
+        "field_id": "already_registered",
+        "equals": false
+      },
+      "fields": [
+        {
+          "field_id": "seller_information_confirmed",
+          "label": "Seller information is correct",
+          "label_hi": "विक्रेता की जानकारी सही है",
+          "question": "Do you confirm that the seller information is correct?",
+          "question_hi": "क्या आप पुष्टि करते हैं कि विक्रेता की जानकारी सही है?",
+          "type": "checkbox",
+          "required": true
+        },
+        {
+          "field_id": "seller_terms_accepted",
+          "label": "Marketplace terms accepted",
+          "label_hi": "मार्केटप्लेस के नियम स्वीकार किए",
+          "question": "Do you accept the marketplace terms and conditions?",
+          "question_hi": "क्या आप मार्केटप्लेस के नियम और शर्तें स्वीकार करते हैं?",
+          "type": "checkbox",
+          "required": true
+        },
+        {
+          "field_id": "registration_status",
+          "label": "Registration status",
+          "label_hi": "पंजीकरण स्थिति",
+          "type": "hidden",
+          "required": true,
+          "default_value": "prototype_not_submitted",
+          "user_editable": false
+        },
+        {
+          "field_id": "generated_seller_id",
+          "label": "Demo seller ID",
+          "label_hi": "डेमो विक्रेता ID",
+          "type": "text",
+          "required": false,
+          "prototype_generated": true,
+          "user_editable": false
+        }
+      ]
+    }
+  ]
+}

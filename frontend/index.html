@@ -1,168 +1,781 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Digi-Karigar</title>
-<link rel="stylesheet" href="css/style.css" />
-<link rel="manifest" href="manifest.json" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Digi-Karigar</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="manifest" href="manifest.json" />
 </head>
+
 <body>
 
 <div id="app">
 
-  <!-- Persistent top bar: AI manager avatar + online/offline dot. app.js fills in text/state.
-       onlineDot doubles as the connection-status indicator from the offline-first branch -->
+  <!-- =====================================================
+       PERSISTENT TOP BAR
+       ===================================================== -->
   <header id="topbar" class="topbar" hidden>
+
     <div class="avatar">K</div>
+
     <div class="topbar-text">
       <div id="topbarTitle" class="topbar-title"></div>
       <div id="topbarSub" class="topbar-sub"></div>
     </div>
+
     <span id="onlineDot" class="online-dot"></span>
-    <button id="backBtn" class="backbtn" hidden>&#10005;</button>
+
+    <button id="backBtn" class="backbtn" hidden>
+      &#10005;
+    </button>
+
   </header>
 
-  <!-- ===================== SCREEN: language ===================== -->
-  <section data-screen="lang" class="screen">
+
+  <!-- =====================================================
+       SCREEN: LANGUAGE
+       ===================================================== -->
+  <section
+    data-screen="lang"
+    class="screen"
+  >
+
     <div class="ks-body">
+
       <p class="ks-prompt center-text">
-        सुनने के लिए टैप करें<br />
-        <span class="hint">Tap to hear it, tap again to choose</span>
+        सुनने के लिए टैप करें
+        <br />
+
+        <span class="hint">
+          Tap to hear it, tap again to choose
+        </span>
       </p>
-      <div id="langGrid" class="lang-grid"><!-- app.js renders language buttons here --></div>
-    </div>
-  </section>
 
-  <!-- ===================== SCREEN: home ===================== -->
-  <section data-screen="home" class="screen" hidden>
-    <div class="ks-body">
-      <div class="spacer"></div>
-      <p id="homeGreeting" class="ks-prompt center-text"></p>
-      <div class="mic-wrap">
-        <button id="addProductBtn" class="mic-btn">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>
-          </svg>
-        </button>
+      <div
+        id="langGrid"
+        class="lang-grid"
+      >
+        <!-- app.js renders language buttons here -->
       </div>
-      <div class="spacer"></div>
+
     </div>
-    <nav class="navrow">
-      <button data-nav="home" class="navicon active">&#8962;</button>
-      <button data-nav="inventory" class="navicon">&#128230;</button>
-    </nav>
+
   </section>
 
-  <!-- ===================== SCREEN: photo ===================== -->
-  <section data-screen="photo" class="screen" hidden>
+
+  <!-- =====================================================
+       SCREEN: HOME
+       ===================================================== -->
+  <section
+    data-screen="home"
+    class="screen"
+    hidden
+  >
+
     <div class="ks-body">
-      <label for="photoInput" class="upload-box">
-        <img id="photoPreview" src="" alt="" hidden />
-        <span id="photoPlaceholder">Tap to take or choose a photo</span>
+
+      <div class="spacer"></div>
+
+      <p
+        id="homeGreeting"
+        class="ks-prompt center-text"
+      ></p>
+
+
+      <!-- Main Add Product mic button -->
+
+      <div class="mic-wrap">
+
+        <button
+          id="addProductBtn"
+          class="mic-btn"
+          aria-label="Add product"
+        >
+
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path
+              d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"
+            />
+
+            <path
+              d="M19 10v1a7 7 0 0 1-14 0v-1"
+            />
+
+            <line
+              x1="12"
+              y1="18"
+              x2="12"
+              y2="22"
+            />
+
+            <line
+              x1="8"
+              y1="22"
+              x2="16"
+              y2="22"
+            />
+
+          </svg>
+
+        </button>
+
+      </div>
+
+
+      <!-- =================================================
+           NEW: SUBSIDY + B2B ACTIONS
+           ================================================= -->
+
+      <div class="home-actions">
+
+        <button
+          id="subsidyBtn"
+          class="btn btn-secondary"
+        >
+          Government Subsidy
+        </button>
+
+
+        <button
+          id="b2bBtn"
+          class="btn btn-secondary"
+        >
+          Sell on Marketplace
+        </button>
+
+      </div>
+
+
+      <div class="spacer"></div>
+
+    </div>
+
+
+    <nav class="navrow">
+
+      <button
+        data-nav="home"
+        class="navicon active"
+      >
+        &#8962;
+      </button>
+
+      <button
+        data-nav="inventory"
+        class="navicon"
+      >
+        &#128230;
+      </button>
+
+    </nav>
+
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: PHOTO
+       ===================================================== -->
+  <section
+    data-screen="photo"
+    class="screen"
+    hidden
+  >
+
+    <div class="ks-body">
+
+      <label
+        for="photoInput"
+        class="upload-box"
+      >
+
+        <img
+          id="photoPreview"
+          src=""
+          alt=""
+          hidden
+        />
+
+        <span id="photoPlaceholder">
+          Tap to take or choose a photo
+        </span>
+
       </label>
-      <input type="file" id="photoInput" accept="image/*" capture="environment" hidden />
+
+
+      <input
+        type="file"
+        id="photoInput"
+        accept="image/*"
+        capture="environment"
+        hidden
+      />
+
+
       <div class="spacer"></div>
-      <button id="enhanceBtn" class="btn btn-primary" disabled>Enhance &amp; continue</button>
-      <button id="skipPhotoBtn" class="btn btn-secondary">Skip for this demo</button>
+
+
+      <button
+        id="enhanceBtn"
+        class="btn btn-primary"
+        disabled
+      >
+        Enhance &amp; continue
+      </button>
+
+
+      <button
+        id="skipPhotoBtn"
+        class="btn btn-secondary"
+      >
+        Skip for this demo
+      </button>
+
     </div>
+
   </section>
 
-  <!-- ===================== SCREEN: enhance (before/after) ===================== -->
-  <section data-screen="enhance" class="screen" hidden>
+
+  <!-- =====================================================
+       SCREEN: ENHANCE
+       ===================================================== -->
+  <section
+    data-screen="enhance"
+    class="screen"
+    hidden
+  >
+
     <div class="ks-body">
+
       <div class="compare-row">
-        <div class="compare-col"><img id="originalImg" src="" alt="Original" /><div class="compare-label">Original</div></div>
-        <div class="compare-col"><img id="enhancedImg" src="" alt="Enhanced" /><div class="compare-label">Enhanced</div></div>
+
+        <div class="compare-col">
+
+          <img
+            id="originalImg"
+            src=""
+            alt="Original"
+          />
+
+          <div class="compare-label">
+            Original
+          </div>
+
+        </div>
+
+
+        <div class="compare-col">
+
+          <img
+            id="enhancedImg"
+            src=""
+            alt="Enhanced"
+          />
+
+          <div class="compare-label">
+            Enhanced
+          </div>
+
+        </div>
+
       </div>
+
+
       <div class="spacer"></div>
-      <button id="continueToQABtn" class="btn btn-primary">Continue</button>
+
+
+      <button
+        id="continueToQABtn"
+        class="btn btn-primary"
+      >
+        Continue
+      </button>
+
     </div>
+
   </section>
 
-  <!-- ===================== SCREEN: qa (Person C's voice_flow.js runs the whole conversation) ===================== -->
-  <section data-screen="qa" class="screen" hidden>
+
+  <!-- =====================================================
+       SCREEN: QA
+       ===================================================== -->
+  <section
+    data-screen="qa"
+    class="screen"
+    hidden
+  >
+
     <div class="ks-body">
-      <div id="qaDots" class="dots"><!-- optional progress dots, only shown if voice_flow.js reports progress --></div>
-      <p id="qaStatus" class="ks-prompt center-text">Tap to start talking to your AI manager</p>
+
+      <div
+        id="qaDots"
+        class="dots"
+      ></div>
+
+
+      <p
+        id="qaStatus"
+        class="ks-prompt center-text"
+      >
+        Tap to start talking to your AI manager
+      </p>
+
+
       <div class="mic-wrap">
-        <button id="qaStartBtn" class="mic-btn">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>
+
+        <button
+          id="qaStartBtn"
+          class="mic-btn"
+        >
+
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+
+            <path
+              d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"
+            />
+
+            <path
+              d="M19 10v1a7 7 0 0 1-14 0v-1"
+            />
+
+            <line
+              x1="12"
+              y1="18"
+              x2="12"
+              y2="22"
+            />
+
+            <line
+              x1="8"
+              y1="22"
+              x2="16"
+              y2="22"
+            />
+
           </svg>
+
         </button>
-        <div id="qaLiveTranscript" class="live-transcript"></div>
+
+
+        <div
+          id="qaLiveTranscript"
+          class="live-transcript"
+        ></div>
+
       </div>
-      <!-- Manual fallback in case voice fails entirely for a given device/browser -->
-      <details id="qaManualFallback" class="field" hidden>
-        <summary class="hint">Type answers instead</summary>
-        <textarea id="qaManualInput" placeholder="material: cotton, size: large, ..."></textarea>
-        <button id="qaManualSubmitBtn" class="btn btn-secondary">Use typed answers</button>
+
+
+      <!-- Manual fallback -->
+
+      <details
+        id="qaManualFallback"
+        class="field"
+        hidden
+      >
+
+        <summary class="hint">
+          Type answers instead
+        </summary>
+
+
+        <textarea
+          id="qaManualInput"
+          placeholder="material: cotton, size: large, ..."
+        ></textarea>
+
+
+        <button
+          id="qaManualSubmitBtn"
+          class="btn btn-secondary"
+        >
+          Use typed answers
+        </button>
+
       </details>
+
+
       <div class="spacer"></div>
+
     </div>
+
   </section>
 
-  <!-- ===================== SCREEN: listing (review) ===================== -->
-  <section data-screen="listing" class="screen" hidden>
+
+  <!-- =====================================================
+       SCREEN: LISTING REVIEW
+       ===================================================== -->
+  <section
+    data-screen="listing"
+    class="screen"
+    hidden
+  >
+
     <div class="ks-body">
-      <div id="listingError" class="error-box" hidden></div>
-      <img id="listingImg" src="" alt="" class="listing-photo" hidden />
+
+      <div
+        id="listingError"
+        class="error-box"
+        hidden
+      ></div>
+
+
+      <img
+        id="listingImg"
+        src=""
+        alt=""
+        class="listing-photo"
+        hidden
+      />
+
+
       <div class="card">
-        <div class="card-title">Title</div>
-        <div id="listingTitle" class="card-body"></div>
+
+        <div class="card-title">
+          Title
+        </div>
+
+        <div
+          id="listingTitle"
+          class="card-body"
+        ></div>
+
       </div>
+
+
       <div class="card">
-        <button id="descSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
-        <div id="listingDescription" class="card-body"></div>
+
+        <button
+          id="descSpeakBtn"
+          class="speak-btn"
+          aria-label="Listen"
+        >
+          &#128266;
+        </button>
+
+
+        <div
+          id="listingDescription"
+          class="card-body"
+        ></div>
+
       </div>
+
+
       <div class="price-box">
-        <button id="priceSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
-        <div id="listingPrice" class="price-value"></div>
+
+        <button
+          id="priceSpeakBtn"
+          class="speak-btn"
+          aria-label="Listen"
+        >
+          &#128266;
+        </button>
+
+
+        <div
+          id="listingPrice"
+          class="price-value"
+        ></div>
+
       </div>
-      <button id="confirmListingBtn" class="btn btn-primary">Yes, list it</button>
-      <button id="editAnswersBtn" class="btn btn-secondary">Change my answers</button>
+
+
+      <button
+        id="confirmListingBtn"
+        class="btn btn-primary"
+      >
+        Yes, list it
+      </button>
+
+
+      <button
+        id="editAnswersBtn"
+        class="btn btn-secondary"
+      >
+        Change my answers
+      </button>
+
+
+      <!-- NEW: optional next actions -->
+
+      <button
+        id="applySubsidyBtn"
+        class="btn btn-secondary"
+      >
+        Check Government Subsidy
+      </button>
+
+
+      <button
+        id="listOnMarketplaceBtn"
+        class="btn btn-secondary"
+      >
+        List on Marketplace
+      </button>
+
     </div>
+
   </section>
 
-  <!-- ===================== SCREEN: done (publish confirmation) ===================== -->
-  <section data-screen="done" class="screen" hidden>
-    <div class="ks-body center-text">
-      <div class="spacer"></div>
-      <div id="doneIcon"></div>
-      <p id="doneMessage" class="ks-prompt"></p>
-      <div class="spacer"></div>
-      <button id="createAnotherBtn" class="btn btn-secondary">Create another listing</button>
-    </div>
-    <nav class="navrow">
-      <button data-nav="home" class="navicon">&#8962;</button>
-      <button data-nav="inventory" class="navicon">&#128230;</button>
-    </nav>
-  </section>
 
-  <!-- ===================== SCREEN: inventory ===================== -->
-  <section data-screen="inventory" class="screen" hidden>
+  <!-- =====================================================
+       NEW SCREEN: SUBSIDY
+       ===================================================== -->
+  <section
+    data-screen="subsidy"
+    class="screen"
+    hidden
+  >
+
     <div class="ks-body">
-      <div id="inventoryGrid" class="grid2"><!-- app.js renders product tiles here --></div>
+
+      <h2>
+        Government Schemes
+      </h2>
+
+
+      <p class="hint">
+        Available schemes for artisans
+      </p>
+
+
+      <div
+        id="subsidySchemeList"
+        class="scheme-list"
+      >
+        <!-- app.js will render schemes here -->
+      </div>
+
+
       <div class="spacer"></div>
+
+
+      <button
+        id="startSubsidyFormBtn"
+        class="btn btn-primary"
+      >
+        Start Application
+      </button>
+
     </div>
-    <nav class="navrow">
-      <button data-nav="home" class="navicon">&#8962;</button>
-      <button data-nav="inventory" class="navicon active">&#128230;</button>
-    </nav>
+
   </section>
+
+   <!-- ===================== SCREEN: SUBSIDY FORM ===================== -->
+<section data-screen="subsidyForm" class="screen" hidden>
+
+  <div class="ks-body">
+
+    <div class="form-progress">
+      <span id="subsidySectionName"></span>
+      <span id="subsidyProgress"></span>
+    </div>
+
+    <div id="subsidyFormContainer">
+      <!-- app.js dynamically renders schema fields here -->
+    </div>
+
+    <div class="voice-assistant-box">
+
+      <p id="subsidyVoicePrompt" class="ks-prompt center-text">
+        Tap the microphone and answer
+      </p>
+
+      <button
+        id="subsidyVoiceBtn"
+        class="mic-btn"
+        type="button"
+      >
+        🎤
+      </button>
+
+      <div
+        id="subsidyTranscript"
+        class="live-transcript"
+      ></div>
+
+    </div>
+
+    <button
+      id="subsidyNextBtn"
+      class="btn btn-primary"
+      type="button"
+    >
+      Next
+    </button>
+
+  </div>
+
+</section>
+
+  <!-- =====================================================
+       NEW SCREEN: B2B / MARKETPLACE
+       ===================================================== -->
+  <section
+    data-screen="b2b"
+    class="screen"
+    hidden
+  >
+
+    <div class="ks-body">
+
+      <h2>
+        Sell Online
+      </h2>
+
+
+      <p class="hint">
+        Choose where you want to sell your product
+      </p>
+
+
+      <div
+        id="b2bChannelList"
+        class="channel-list"
+      >
+        <!-- app.js will render marketplace buttons -->
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: DONE
+       ===================================================== -->
+  <section
+    data-screen="done"
+    class="screen"
+    hidden
+  >
+
+    <div class="ks-body center-text">
+
+      <div class="spacer"></div>
+
+
+      <div id="doneIcon"></div>
+
+
+      <p
+        id="doneMessage"
+        class="ks-prompt"
+      ></p>
+
+
+      <div class="spacer"></div>
+
+
+      <button
+        id="createAnotherBtn"
+        class="btn btn-secondary"
+      >
+        Create another listing
+      </button>
+
+    </div>
+
+
+    <nav class="navrow">
+
+      <button
+        data-nav="home"
+        class="navicon"
+      >
+        &#8962;
+      </button>
+
+
+      <button
+        data-nav="inventory"
+        class="navicon"
+      >
+        &#128230;
+      </button>
+
+    </nav>
+
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: INVENTORY
+       ===================================================== -->
+  <section
+    data-screen="inventory"
+    class="screen"
+    hidden
+  >
+
+    <div class="ks-body">
+
+      <div
+        id="inventoryGrid"
+        class="grid2"
+      >
+        <!-- app.js renders product tiles here -->
+      </div>
+
+
+      <div class="spacer"></div>
+
+    </div>
+
+
+    <nav class="navrow">
+
+      <button
+        data-nav="home"
+        class="navicon"
+      >
+        &#8962;
+      </button>
+
+
+      <button
+        data-nav="inventory"
+        class="navicon active"
+      >
+        &#128230;
+      </button>
+
+    </nav>
+
+  </section>
+
 
 </div>
 
-<!-- Load order matters:
-     1. voice_flow.js / offline.js — contract files that app.js and api.js depend on
-     2. api.js — calls backend routes, falls back to offline.js when offline
-     3. app.js — screen state + wiring, reads offline.js's connectivity state to drive onlineDot -->
-<script src="js/voice_flow.js"></script>   <!-- TEMP STUB — Person C's real file drops in here -->
-<script src="js/offline.js"></script>      <!-- offline-first queueing + connectivity check -->
-<script src="js/api.js"></script>          <!-- calls backend routes / offline.js -->
-<script src="js/app.js"></script>          <!-- YOU: screen state + wiring -->
+
+<!-- =========================================================
+     SCRIPT LOAD ORDER
+     ========================================================= -->
+
+<script src="js/voice_flow.js"></script>
+
+<script src="js/offline.js"></script>
+
+<script src="js/api.js"></script>
+
+<script src="js/app.js"></script>
+
+
 </body>
 </html>

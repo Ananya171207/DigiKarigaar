@@ -9,7 +9,9 @@
  * of actually calling the network, so you can build/test the whole
  * frontend without anyone else's code being ready.
  */
-const FAKE_MODE = true;
+const FAKE_MODE = false;
+
+const API_BASE = "http://127.0.0.1:5000";
 
 // Your partner is building offline.js with smartFetch()/isOnline().
 // Until that file exists in the repo, fall back to plain fetch/navigator
@@ -34,15 +36,39 @@ function fakeDelay(ms) {
 
 /** Person D's contract: POST /api/enhance-image → { enhanced_image_url } */
 async function enhanceImage(imageFile) {
-  if (FAKE_MODE) {
-    await fakeDelay(900);
-    // In fake mode we just reuse the original photo as a stand-in "enhanced" version.
-    return { enhanced_image_url: URL.createObjectURL(imageFile) };
-  }
   const formData = new FormData();
+
   formData.append("image", imageFile);
-  const res = await smartFetch("/api/enhance-image", { method: "POST", body: formData });
-  return res.json();
+
+  const res = await smartFetch(
+    `${API_BASE}/api/enhance-image`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    const text = await res.text();
+
+    throw new Error(
+      `Image enhancement failed: ${res.status} ${text}`
+    );
+  }
+
+  const data = await res.json();
+
+  // Flask returns /uploads/filename.jpg
+  // Convert it to the backend URL
+  if (
+    data.enhanced_image_url &&
+    data.enhanced_image_url.startsWith("/")
+  ) {
+    data.enhanced_image_url =
+      `${API_BASE}${data.enhanced_image_url}`;
+  }
+
+  return data;
 }
 
 /** Person E's contract: POST /api/predict-price → { predicted_price, price_range } */
@@ -83,5 +109,114 @@ async function getProducts() {
     ];
   }
   const res = await smartFetch("/api/products", { method: "GET" });
+  return res.json();
+}
+
+async function getSubsidySchemes() {
+  const res = await smartFetch(`${API_BASE}/api/subsidy-schemes`);
+
+  if (!res.ok) {
+    throw new Error(`Failed to load subsidy schemes: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+async function getKarigarFormSchema() {
+  const res = await smartFetch(
+    `${API_BASE}/api/karigar-form-schema`
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to load form schema: ${res.status}`
+    );
+  }
+
+  return res.json();
+}
+async function submitSubsidyApplication(data) {
+  const res = await smartFetch(`${API_BASE}/api/subsidy-application`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to submit subsidy application: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+async function submitSubsidyApplication(applicationData) {
+  const res = await smartFetch("/api/subsidy-application", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(applicationData),
+  });
+
+  return res.json();
+}
+
+
+async function getB2BChannels() {
+  const res = await smartFetch(
+    `${API_BASE}/api/b2b-channels`
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to load B2B channels: ${res.status}`
+    );
+  }
+
+  return res.json();
+}
+
+async function getMarketplaceListingSchema() {
+  const res = await smartFetch("/api/marketplace-listing-schema", {
+    method: "GET",
+  });
+
+  return res.json();
+}
+
+
+async function getMarketplaceRegistrationSchema() {
+  const res = await smartFetch("/api/marketplace-registration-schema", {
+    method: "GET",
+  });
+
+  return res.json();
+}
+
+
+async function submitB2BListing(listingData) {
+  const res = await smartFetch("/api/b2b-listing", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(listingData),
+  });
+
+  return res.json();
+}
+
+
+async function submitMarketplaceRegistration(registrationData) {
+  const res = await smartFetch("/api/marketplace-registration", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(registrationData),
+  });
+
   return res.json();
 }
