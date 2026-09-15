@@ -216,6 +216,18 @@ function showScreen(name, options) {
   }
 
   state.screen = name;
+  if (
+  typeof announceScreen ===
+  "function"
+) {
+  announceScreen(
+    name,
+
+    state.language
+      ? state.language.code
+      : "hi-IN"
+  );
+}
   announceScreen(name, state.language ? state.language.code : "hi-IN");
 }
 
