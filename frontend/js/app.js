@@ -195,25 +195,25 @@ function showScreen(name, options) {
     name === "lang" ||
     name === "home";
 
-    const globalNav =
-  document.getElementById("globalNav");
+  const globalNav =
+    document.getElementById("globalNav");
 
-if (globalNav) {
-  globalNav.hidden = name === "lang";
+  if (globalNav) {
+    globalNav.hidden = name === "lang";
 
-  globalNav
-    .querySelectorAll("[data-nav]")
-    .forEach((navButton) => {
-      navButton.classList.toggle(
-        "active",
-        navButton.dataset.nav === name
-      );
-    });
-}
+    globalNav
+      .querySelectorAll("[data-nav]")
+      .forEach((navButton) => {
+        navButton.classList.toggle(
+          "active",
+          navButton.dataset.nav === name
+        );
+      });
+  }
 
-if (name === "profile") {
-  syncProfileLanguageDropdown();
-}
+  if (name === "profile") {
+    syncProfileLanguageDropdown();
+  }
 
   state.screen = name;
 }
@@ -623,63 +623,63 @@ function applyAppLanguage() {
   );
 
   const homeCardTranslations = {
-  home_subsidy: {
-    en: "Government Subsidy",
-    hi: "सरकारी सब्सिडी",
-    bn: "সরকারি ভর্তুকি",
-    ta: "அரசு மானியம்"
-  },
+    home_subsidy: {
+      en: "Government Subsidy",
+      hi: "सरकारी सब्सिडी",
+      bn: "সরকারি ভর্তুকি",
+      ta: "அரசு மானியம்"
+    },
 
-  home_marketplace: {
-    en: "Sell on Marketplace",
-    hi: "मार्केटप्लेस पर बेचें",
-    bn: "মার্কেটপ্লেসে বিক্রি করুন",
-    ta: "சந்தையில் விற்கவும்"
-  },
+    home_marketplace: {
+      en: "Sell on Marketplace",
+      hi: "मार्केटप्लेस पर बेचें",
+      bn: "মার্কেটপ্লেসে বিক্রি করুন",
+      ta: "சந்தையில் விற்கவும்"
+    },
 
-  home_inventory: {
-    en: "Manage Inventory",
-    hi: "इन्वेंटरी प्रबंधित करें",
-    bn: "ইনভেন্টরি পরিচালনা করুন",
-    ta: "சரக்குகளை நிர்வகிக்கவும்"
-  }
-};
+    home_inventory: {
+      en: "Manage Inventory",
+      hi: "इन्वेंटरी प्रबंधित करें",
+      bn: "ইনভেন্টরি পরিচালনা করুন",
+      ta: "சரக்குகளை நிர்வகிக்கவும்"
+    }
+  };
 
-document
-  .querySelectorAll("[data-i18n]")
-  .forEach((element) => {
-    const translations =
-      homeCardTranslations[
+  document
+    .querySelectorAll("[data-i18n]")
+    .forEach((element) => {
+      const translations =
+        homeCardTranslations[
         element.dataset.i18n
-      ];
+        ];
 
-    if (translations) {
-      element.textContent =
-        translations[currentLanguage()] ||
-        translations.en;
-    }
-  });
+      if (translations) {
+        element.textContent =
+          translations[currentLanguage()] ||
+          translations.en;
+      }
+    });
 
-document
-  .querySelectorAll(
-    "[data-i18n-secondary]"
-  )
-  .forEach((element) => {
-    const translations =
-      homeCardTranslations[
+  document
+    .querySelectorAll(
+      "[data-i18n-secondary]"
+    )
+    .forEach((element) => {
+      const translations =
+        homeCardTranslations[
         element.dataset.i18nSecondary
-      ];
+        ];
 
-    if (translations) {
-      const secondaryLanguage =
-        currentLanguage() === "en"
-          ? "hi"
-          : "en";
+      if (translations) {
+        const secondaryLanguage =
+          currentLanguage() === "en"
+            ? "hi"
+            : "en";
 
-      element.textContent =
-        translations[secondaryLanguage];
-    }
-  });
+        element.textContent =
+          translations[secondaryLanguage];
+      }
+    });
   syncProfileLanguageDropdown();
 }
 // ==========================================================
@@ -1216,17 +1216,17 @@ function onQAProgress(
   );
 
 
-const translatedQuestions =
-  localizedProductQuestions();
+  const translatedQuestions =
+    localizedProductQuestions();
 
-document
-  .getElementById(
-    "qaStatus"
-  )
-  .textContent =
-  translatedQuestions[index]
-    ? translatedQuestions[index].prompt
-    : "";
+  document
+    .getElementById(
+      "qaStatus"
+    )
+    .textContent =
+    translatedQuestions[index]
+      ? translatedQuestions[index].prompt
+      : "";
 
   document
     .getElementById(
@@ -1916,9 +1916,7 @@ function renderSubsidySchemes() {
       "subsidySchemeList"
     );
 
-
   container.innerHTML = "";
-
 
   state.subsidySchemes
     .forEach((scheme) => {
@@ -1926,84 +1924,131 @@ function renderSubsidySchemes() {
       const card =
         document.createElement("div");
 
-
-      card.className =
-        "card";
-
+      card.className = "card";
 
       const title =
         localText(scheme, "scheme_name", "scheme_name_hi");
 
-
       const description =
         localText(scheme, "description", "description_hi");
 
+      const benefitDetails =
+        Array.isArray(scheme.benefit_details)
+          ? scheme.benefit_details
+          : [];
+
+      const benefitsMarkup = benefitDetails.length
+        ? benefitDetails.map((benefit) => {
+          const benefitTitle =
+            localText(benefit, "title", "title_hi");
+          const benefitDescription =
+            localText(benefit, "details", "details_hi");
+          const benefitHighlight =
+            localText(benefit, "highlight", "highlight_hi");
+
+          return `
+              <div class="scheme-benefit-item">
+                <strong>${benefitTitle}</strong>
+                <div class="hint">${benefitHighlight}</div>
+                <p>${benefitDescription}</p>
+              </div>
+            `;
+        }).join("")
+        : localizedList(scheme, "benefits")
+          .map((benefit) => `<li>${benefit}</li>`)
+          .join("");
+
+      const documents =
+        localizedList(scheme, "required_documents");
+
+      const documentsMarkup = documents
+        .map((documentName) =>
+          `<li>${documentName}</li>`
+        )
+        .join("");
+
+      const prototypeNotice =
+        localText(
+          scheme,
+          "prototype_notice",
+          "prototype_notice_hi"
+        );
 
       card.innerHTML = `
-
         <div class="card-title">
           ${title}
         </div>
 
         <div class="card-body">
-
-          <p>
-            ${description}
-          </p>
+          <p>${description}</p>
 
           <p class="hint">
-            ${isHindi()
-
-          ? "न्यूनतम आयु"
-
-          : "Minimum age"
-        }:
-            ${scheme.minimum_age}
+            ${uiText(
+        "Minimum age",
+        "न्यूनतम आयु",
+        "ন্যূনতম বয়স",
+        "குறைந்தபட்ச வயது"
+      )}: ${scheme.minimum_age}
           </p>
 
-        </div>
+          <details class="scheme-details" open>
+            <summary>
+              <strong>${uiText(
+        "Benefits you can receive",
+        "आपको मिलने वाले लाभ",
+        "আপনি যে সুবিধাগুলি পেতে পারেন",
+        "நீங்கள் பெறக்கூடிய பயன்கள்"
+      )}</strong>
+            </summary>
 
+            <div class="scheme-benefits">
+              ${benefitDetails.length
+          ? benefitsMarkup
+          : `<ul>${benefitsMarkup}</ul>`}
+            </div>
+
+            <div class="scheme-documents">
+              <strong>${uiText(
+            "Documents to keep ready",
+            "तैयार रखने वाले दस्तावेज़",
+            "যে নথিগুলি প্রস্তুত রাখবেন",
+            "தயாராக வைத்திருக்க வேண்டிய ஆவணங்கள்"
+          )}</strong>
+              <ul>${documentsMarkup}</ul>
+            </div>
+
+            ${prototypeNotice
+          ? `<p class="hint scheme-notice">${prototypeNotice}</p>`
+          : ""}
+          </details>
+        </div>
       `;
 
-
       card.onclick = () => {
-
-        state.selectedSubsidyScheme =
-          scheme;
-
+        state.selectedSubsidyScheme = scheme;
 
         document
-          .querySelectorAll(
-            "#subsidySchemeList .card"
-          )
-          .forEach(
-            (el) =>
-              el.classList.remove(
-                "selected"
-              )
+          .querySelectorAll("#subsidySchemeList .card")
+          .forEach((element) =>
+            element.classList.remove("selected")
           );
 
-
-        card.classList.add(
-          "selected"
-        );
-
+        card.classList.add("selected");
       };
 
-
       container.appendChild(card);
-
     });
 
-
-  // Auto-select first scheme
-  if (
-    state.subsidySchemes.length
-  ) {
-
+  if (state.subsidySchemes.length) {
     state.selectedSubsidyScheme =
       state.subsidySchemes[0];
 
+    const firstCard =
+      container.querySelector(".card");
+
+    if (firstCard) {
+      firstCard.classList.add("selected");
+    }
   }
 
 }
@@ -3718,30 +3763,38 @@ function renderMarketplaceChannels() {
     document.getElementById("b2bChannelList");
 
   if (!container) return;
-
   container.innerHTML = "";
 
   const channels =
     (marketplaceState.channels || []).filter(
-      (channel) =>
-        channel.enabled !== false
+      channel => channel.enabled !== false
     );
 
   if (!channels.length) {
     container.innerHTML =
       "<p>No marketplace is currently available.</p>";
-
     return;
   }
 
   channels.forEach((channel) => {
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className =
+      "marketplace-channel-wrapper";
+
     const button =
       document.createElement("button");
 
     button.type = "button";
-
     button.className =
       "action-card b2b marketplace-channel-btn";
+
+    const description =
+      getMarketplaceSchemaText(
+        channel,
+        "description"
+      ) || getMarketplaceSubtitle(channel);
 
     button.innerHTML = `
       <span class="action-icon">
@@ -3751,14 +3804,12 @@ function renderMarketplaceChannels() {
       <span>
         <strong>
           ${escapeMarketplaceHTML(
-            getMarketplaceChannelName(channel)
-          )}
+      getMarketplaceChannelName(channel)
+    )}
         </strong>
 
         <small>
-          ${escapeMarketplaceHTML(
-            getMarketplaceSubtitle(channel)
-          )}
+          ${escapeMarketplaceHTML(description)}
         </small>
       </span>
     `;
@@ -3768,7 +3819,104 @@ function renderMarketplaceChannels() {
       () => selectMarketplaceChannel(channel)
     );
 
-    container.appendChild(button);
+    wrapper.appendChild(button);
+
+    const benefits =
+      localizedList(channel, "benefits");
+    const requiredDetails =
+      localizedList(channel, "required_details");
+    const processSteps =
+      localizedList(channel, "process_steps");
+    const notice =
+      getMarketplaceSchemaText(
+        channel,
+        "prototype_notice"
+      );
+
+    if (
+      benefits.length ||
+      requiredDetails.length ||
+      processSteps.length ||
+      notice
+    ) {
+      const details =
+        document.createElement("details");
+
+      details.className =
+        "marketplace-channel-details";
+
+      const listMarkup = (items) =>
+        items
+          .map(item =>
+            `<li>${escapeMarketplaceHTML(item)}</li>`
+          )
+          .join("");
+
+      details.innerHTML = `
+        <summary>
+          ${escapeMarketplaceHTML(
+        getMarketplaceTranslation({
+          en: "View details",
+          hi: "विवरण देखें",
+          bn: "বিস্তারিত দেখুন",
+          ta: "விவரங்களைக் காண்க"
+        })
+      )}
+        </summary>
+
+        ${benefits.length ? `
+          <div class="marketplace-detail-group">
+            <strong>${escapeMarketplaceHTML(
+        getMarketplaceTranslation({
+          en: "Benefits",
+          hi: "लाभ",
+          bn: "সুবিধা",
+          ta: "பயன்கள்"
+        })
+      )}</strong>
+            <ul>${listMarkup(benefits)}</ul>
+          </div>
+        ` : ""}
+
+        ${requiredDetails.length ? `
+          <div class="marketplace-detail-group">
+            <strong>${escapeMarketplaceHTML(
+        getMarketplaceTranslation({
+          en: "Details to keep ready",
+          hi: "तैयार रखने वाली जानकारी",
+          bn: "যে তথ্য প্রস্তুত রাখবেন",
+          ta: "தயாராக வைத்திருக்க வேண்டிய விவரங்கள்"
+        })
+      )}</strong>
+            <ul>${listMarkup(requiredDetails)}</ul>
+          </div>
+        ` : ""}
+
+        ${processSteps.length ? `
+          <div class="marketplace-detail-group">
+            <strong>${escapeMarketplaceHTML(
+        getMarketplaceTranslation({
+          en: "How it works",
+          hi: "यह कैसे काम करता है",
+          bn: "এটি কীভাবে কাজ করে",
+          ta: "இது எவ்வாறு செயல்படுகிறது"
+        })
+      )}</strong>
+            <ol>${listMarkup(processSteps)}</ol>
+          </div>
+        ` : ""}
+
+        ${notice ? `
+          <p class="hint marketplace-prototype-notice">
+            ${escapeMarketplaceHTML(notice)}
+          </p>
+        ` : ""}
+      `;
+
+      wrapper.appendChild(details);
+    }
+
+    container.appendChild(wrapper);
   });
 }
 
@@ -3899,17 +4047,17 @@ function renderMarketplaceForm(formType) {
   heading.innerHTML = `
     <h3>
       ${escapeMarketplaceHTML(
-        getMarketplaceSchemaText(
-          schema,
-          "form_name"
-        )
-      )}
+    getMarketplaceSchemaText(
+      schema,
+      "form_name"
+    )
+  )}
     </h3>
 
     <p class="hint">
       ${escapeMarketplaceHTML(
-        getMarketplaceChannelName(channel)
-      )}
+    getMarketplaceChannelName(channel)
+  )}
     </p>
   `;
 
@@ -4305,7 +4453,7 @@ function configureMarketplaceInput(
 
   const value =
     marketplaceState.answers[
-      field.field_id
+    field.field_id
     ];
 
   if (input.type === "checkbox") {
@@ -4355,7 +4503,7 @@ function handleMarketplaceInput(event) {
   } else if (input.type === "file") {
     value =
       input.files &&
-      input.files.length
+        input.files.length
         ? input.files[0].name
         : "";
   } else if (input.multiple) {
@@ -4404,7 +4552,7 @@ function marketplaceFieldChangesVisibility(
       if (
         section.show_when &&
         section.show_when.field_id ===
-          fieldId
+        fieldId
       ) {
         return true;
       }
@@ -4413,7 +4561,7 @@ function marketplaceFieldChangesVisibility(
         (field) =>
           field.show_when &&
           field.show_when.field_id ===
-            fieldId
+          fieldId
       );
     }
   );
@@ -4427,7 +4575,7 @@ function marketplaceConditionMatches(
 
   return (
     marketplaceState.answers[
-      condition.field_id
+    condition.field_id
     ] === condition.equals
   );
 }
@@ -4484,8 +4632,8 @@ async function submitMarketplaceForm(
         .existing_seller_id ||
       `DK-${channel.channel_id
         .toUpperCase()}-${Date.now()
-        .toString()
-        .slice(-6)}`;
+          .toString()
+          .slice(-6)}`;
 
     saveMarketplaceSellerId(
       channel.channel_id,
@@ -4581,9 +4729,9 @@ async function createFinalMarketplaceListing() {
 
     product: state.product
       ? {
-          ...state.product,
-          status: "listed"
-        }
+        ...state.product,
+        status: "listed"
+      }
       : null,
 
     listing_details: {
@@ -4639,23 +4787,23 @@ function renderMarketplaceSuccess() {
 
       <h3>
         ${escapeMarketplaceHTML(
-          channelName
-        )}
+    channelName
+  )}
       </h3>
 
       <p>
         ${escapeMarketplaceHTML(
-          getMarketplaceTranslation({
-            en:
-              "Your marketplace listing is prepared. OTP, CAPTCHA and final submission will still be completed on the official marketplace.",
-            hi:
-              "आपकी मार्केटप्लेस लिस्टिंग तैयार है। OTP, CAPTCHA और अंतिम सबमिशन आधिकारिक मार्केटप्लेस पर ही पूरा होगा।",
-            bn:
-              "আপনার মার্কেটপ্লেস লিস্টিং প্রস্তুত। OTP, CAPTCHA এবং চূড়ান্ত সাবমিশন অফিসিয়াল মার্কেটপ্লেসেই সম্পন্ন হবে।",
-            ta:
-              "உங்கள் சந்தைப் பட்டியல் தயாராக உள்ளது. OTP, CAPTCHA மற்றும் இறுதி சமர்ப்பிப்பு அதிகாரப்பூர்வ சந்தையிலேயே நிறைவு செய்யப்படும்."
-          })
-        )}
+    getMarketplaceTranslation({
+      en:
+        "Your marketplace listing is prepared. OTP, CAPTCHA and final submission will still be completed on the official marketplace.",
+      hi:
+        "आपकी मार्केटप्लेस लिस्टिंग तैयार है। OTP, CAPTCHA और अंतिम सबमिशन आधिकारिक मार्केटप्लेस पर ही पूरा होगा।",
+      bn:
+        "আপনার মার্কেটপ্লেস লিস্টিং প্রস্তুত। OTP, CAPTCHA এবং চূড়ান্ত সাবমিশন অফিসিয়াল মার্কেটপ্লেসেই সম্পন্ন হবে।",
+      ta:
+        "உங்கள் சந்தைப் பட்டியல் தயாராக உள்ளது. OTP, CAPTCHA மற்றும் இறுதி சமர்ப்பிப்பு அதிகாரப்பூர்வ சந்தையிலேயே நிறைவு செய்யப்படும்."
+    })
+  )}
       </p>
 
       <button
@@ -4664,13 +4812,13 @@ function renderMarketplaceSuccess() {
         type="button"
       >
         ${escapeMarketplaceHTML(
-          getMarketplaceTranslation({
-            en: "Sell on another marketplace",
-            hi: "दूसरे मार्केटप्लेस पर बेचें",
-            bn: "অন্য মার্কেটপ্লেসে বিক্রি করুন",
-            ta: "வேறு சந்தையில் விற்கவும்"
-          })
-        )}
+    getMarketplaceTranslation({
+      en: "Sell on another marketplace",
+      hi: "दूसरे मार्केटप्लेस पर बेचें",
+      bn: "অন্য মার্কেটপ্লেসে বিক্রি করুন",
+      ta: "வேறு சந்தையில் விற்கவும்"
+    })
+  )}
       </button>
 
     </div>
@@ -4773,9 +4921,9 @@ function buildMarketplaceDefaultAnswers(
         (field) => {
           if (
             answers[field.field_id] ===
-              undefined &&
+            undefined &&
             field.default_value !==
-              undefined
+            undefined
           ) {
             answers[field.field_id] =
               field.default_value;
@@ -5015,7 +5163,7 @@ function getMarketplaceIcon(
 function escapeMarketplaceHTML(value) {
   return String(
     value === null ||
-    value === undefined
+      value === undefined
       ? ""
       : value
   )
