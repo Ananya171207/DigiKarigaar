@@ -255,7 +255,7 @@
 
       <details id="qaManualFallback" class="field" hidden>
         <summary class="hint">Type answers instead</summary>
-        <textarea id="qaManualInput" placeholder="material: cotton, size: large, ..."></textarea>
+        <textarea id="qaManualInput" placeholder="material: cotton, category: bag, size: large, extra_details: hand-stitched..."></textarea>
         <button id="qaManualSubmitBtn" class="btn btn-secondary">Use typed answers</button>
       </details>
 
@@ -276,11 +276,19 @@
       <div class="card">
         <div class="card-title">Title</div>
         <div id="listingTitle" class="card-body"></div>
+        <div id="listingTitleHi" class="card-body lang-hi" hidden></div>
       </div>
 
       <div class="card">
         <button id="descSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
         <div id="listingDescription" class="card-body"></div>
+        <div id="listingDescriptionHi" class="card-body lang-hi" hidden></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Highlights</div>
+        <ul id="listingHighlights" class="highlights-list"></ul>
+        <ul id="listingHighlightsHi" class="highlights-list lang-hi"></ul>
       </div>
 
       <div class="price-box">

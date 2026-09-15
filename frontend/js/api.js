@@ -96,6 +96,36 @@ async function predictPrice({ material, category, size }) {
   return parseJsonOrThrow(res, "Price prediction");
 }
 
+/** Calls the Gemini-backed listing generator: POST /generate-listing.
+ * routes/listing.py always responds { status: "success", listing } — it
+ * falls back to a template internally if Gemini isn't configured or the
+ * call fails, so this only throws on network/HTTP errors.
+ *
+ * listing: { title, title_hi, category, description, description_hi,
+ *            highlights, highlights_hi, tags, price, source } */
+async function generateListingFromBackend({
+  category,
+  material,
+  size,
+  estimated_price,
+  productNameInput,
+  transcriptionInput,
+}) {
+  const res = await smartFetch(`${API_BASE}/generate-listing`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      category,
+      material,
+      size,
+      estimated_price,
+      productNameInput,
+      transcriptionInput,
+    }),
+  });
+  return parseJsonOrThrow(res, "Generate listing");
+}
+
 /** Saves a product listing (draft, or final). Matches the Product object contract. */
 async function saveProduct(product) {
   if (FAKE_MODE) {

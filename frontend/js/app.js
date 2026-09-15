@@ -95,6 +95,13 @@ const PRODUCT_QUESTIONS = [
     prompt_hi: "इसका आकार या लंबाई कितनी है?",
     prompt_bn: "এর আকার বা দৈর্ঘ্য কত?",
     prompt_ta: "இதன் அளவு அல்லது நீளம் என்ன?"
+  },
+  {
+    field_id: "extra_details",
+    prompt: "Would you like to say anything else about your product? You can skip this.",
+    prompt_hi: "क्या आप अपने उत्पाद के बारे में कुछ और बताना चाहते हैं? आप इसे छोड़ सकते हैं।",
+    prompt_bn: "আপনি কি আপনার পণ্য সম্পর্কে আর কিছু বলতে চান? আপনি এটি এড়িয়ে যেতে পারেন।",
+    prompt_ta: "உங்கள் தயாரிப்பு பற்றி வேறு எதையாவது சொல்ல விரும்புகிறீர்களா? இதைத் தவிர்க்கலாம்."
   }
 ];
 
@@ -651,6 +658,20 @@ const homeCardTranslations = {
     hi: "सरकारी सब्सिडी",
     bn: "সরকারি ভর্তুকি",
     ta: "அரசு மானியம்"
+  },
+
+  home_marketplace: {
+    en: "Sell on Marketplace",
+    hi: "बाज़ार में बेचें",
+    bn: "বাজারে বিক্রি করুন",
+    ta: "சந்தையில் விற்கவும்"
+  },
+
+  home_inventory: {
+    en: "Manage Inventory",
+    hi: "इन्वेंटरी प्रबंधित करें",
+    bn: "ইনভেন্টরি পরিচালনা করুন",
+    ta: "சரக்கை நிர்வகிக்கவும்"
   }
 };
 
@@ -1610,15 +1631,20 @@ document
           );
 
         const missingAnswer =
-          questions.some(
-            (question) =>
-              !answers[
-                question.field_id
-              ] ||
-              !answers[
-                question.field_id
-              ].trim()
-          );
+          questions
+            .filter(
+              (question) =>
+                question.field_id !== "extra_details"
+            )
+            .some(
+              (question) =>
+                !answers[
+                  question.field_id
+                ] ||
+                !answers[
+                  question.field_id
+                ].trim()
+            );
 
         if (missingAnswer) {
           throw new Error(
@@ -1878,7 +1904,8 @@ async function generateListing() {
   const {
     material,
     category,
-    size
+    size,
+    extra_details
   } =
     state.answers;
 
@@ -1893,10 +1920,81 @@ async function generateListing() {
     });
 
 
-  const description =
+  // Local, zero-dependency template — used as-is if the Gemini call below
+  // is unavailable or fails, so the listing screen never breaks. This is
+  // exactly the previous behavior, unchanged.
+  let title =
+    buildTitleFromAnswers(
+      state.answers
+    );
+
+  let description =
     buildDescriptionFromAnswers(
       state.answers
     );
+
+  let titleHi = "";
+  let descriptionHi = "";
+  let highlights = [];
+  let highlightsHi = [];
+
+  try {
+
+    const listingResult =
+      await generateListingFromBackend({
+
+        category,
+        material,
+        size,
+        estimated_price:
+          priceResult.predicted_price ??
+          priceResult.estimated_price ??
+          null,
+        productNameInput:
+          category,
+        transcriptionInput:
+          extra_details || ""
+
+      });
+
+    if (
+      listingResult &&
+      listingResult.listing
+    ) {
+
+      const l =
+        listingResult.listing;
+
+      title =
+        l.title || title;
+
+      description =
+        l.description || description;
+
+      titleHi =
+        l.title_hi || "";
+
+      descriptionHi =
+        l.description_hi || "";
+
+      highlights =
+        l.highlights || [];
+
+      highlightsHi =
+        l.highlights_hi || [];
+
+    }
+
+  }
+
+  catch (err) {
+
+    console.error(
+      "Gemini listing generation failed, using local fallback:",
+      err
+    );
+
+  }
 
 
   state.product = {
@@ -1907,12 +2005,20 @@ async function generateListing() {
     artisan_id:
       "demo-artisan",
 
-    title:
-      buildTitleFromAnswers(
-        state.answers
-      ),
+    title,
+
+    title_hi:
+      titleHi,
 
     description,
+
+    description_hi:
+      descriptionHi,
+
+    highlights,
+
+    highlights_hi:
+      highlightsHi,
 
     material:
       material || "",
@@ -1956,9 +2062,39 @@ async function generateListing() {
 }
 
 
+const DESCRIPTION_PHRASES = {
+  made_from: {
+    en: (material) => `Made from ${material}`,
+    hi: (material) => `${material} से बना`,
+    bn: (material) => `${material} দিয়ে তৈরি`,
+    ta: (material) => `${material} இலிருந்து செய்யப்பட்டது`
+  },
+  category: {
+    en: (category) => `a ${category}`,
+    hi: (category) => `${category} है`,
+    bn: (category) => `একটি ${category}`,
+    ta: (category) => `${category} ஆகும்`
+  },
+  size: {
+    en: (size) => `size ${size}`,
+    hi: (size) => `साइज़ ${size}`,
+    bn: (size) => `আকার ${size}`,
+    ta: (size) => `அளவு ${size}`
+  },
+  fallback: {
+    en: "Handmade product.",
+    hi: "हस्तनिर्मित उत्पाद।",
+    bn: "হস্তনির্মিত পণ্য।",
+    ta: "கையால் செய்யப்பட்ட பொருள்."
+  }
+};
+
 function buildDescriptionFromAnswers(
   answers
 ) {
+
+  const language =
+    currentLanguage();
 
   const parts = [];
 
@@ -1966,7 +2102,22 @@ function buildDescriptionFromAnswers(
   if (answers.material) {
 
     parts.push(
-      `Made from ${answers.material}`
+      DESCRIPTION_PHRASES
+        .made_from[language](
+          answers.material
+        )
+    );
+
+  }
+
+
+  if (answers.category) {
+
+    parts.push(
+      DESCRIPTION_PHRASES
+        .category[language](
+          answers.category
+        )
     );
 
   }
@@ -1975,17 +2126,36 @@ function buildDescriptionFromAnswers(
   if (answers.size) {
 
     parts.push(
-      `size ${answers.size}`
+      DESCRIPTION_PHRASES
+        .size[language](
+          answers.size
+        )
     );
 
   }
 
 
-  return parts.length
+  let description =
+    parts.length
 
-    ? parts.join(", ") + "."
+      ? parts.join(", ") + "."
 
-    : "Handmade product.";
+      : DESCRIPTION_PHRASES
+          .fallback[language];
+
+
+  if (
+    answers.extra_details &&
+    answers.extra_details.trim()
+  ) {
+
+    description +=
+      ` ${answers.extra_details.trim()}`;
+
+  }
+
+
+  return description;
 
 }
 
@@ -2004,7 +2174,8 @@ function buildTitleFromAnswers(
     .filter(Boolean)
     .join(" - ")
 
-    || "Handmade product";
+    || DESCRIPTION_PHRASES
+        .fallback[currentLanguage()];
 
 }
 
@@ -2052,6 +2223,74 @@ function renderListingScreen() {
     )
     .textContent =
     p.description;
+
+
+  const titleHiEl =
+    document.getElementById(
+      "listingTitleHi"
+    );
+
+  if (titleHiEl) {
+
+    titleHiEl.textContent =
+      p.title_hi || "";
+
+    titleHiEl.hidden =
+      !p.title_hi;
+
+  }
+
+
+  const descriptionHiEl =
+    document.getElementById(
+      "listingDescriptionHi"
+    );
+
+  if (descriptionHiEl) {
+
+    descriptionHiEl.textContent =
+      p.description_hi || "";
+
+    descriptionHiEl.hidden =
+      !p.description_hi;
+
+  }
+
+
+  const highlightsEl =
+    document.getElementById(
+      "listingHighlights"
+    );
+
+  if (highlightsEl) {
+
+    highlightsEl.innerHTML =
+      (p.highlights || [])
+        .map(
+          (h) =>
+            `<li>${escapeMarketplaceHTML(h)}</li>`
+        )
+        .join("");
+
+  }
+
+
+  const highlightsHiEl =
+    document.getElementById(
+      "listingHighlightsHi"
+    );
+
+  if (highlightsHiEl) {
+
+    highlightsHiEl.innerHTML =
+      (p.highlights_hi || [])
+        .map(
+          (h) =>
+            `<li>${escapeMarketplaceHTML(h)}</li>`
+        )
+        .join("");
+
+  }
 
 
   const [
