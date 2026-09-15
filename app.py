@@ -6,18 +6,31 @@ from flask_cors import CORS
 from routes.enhance_image import enhance_bp
 from routes.subsidy import subsidy_bp
 from routes.b2b import b2b_bp
+from routes.listing import listing_bp
 
 
 # Absolute path to the uploads directory
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 
+# frontend/ is a sibling of backend/ (backend/app.py lives one level below
+# the repo root, frontend/ lives at the repo root next to backend/).
+# voice_flow.js, index.html, css, etc. all live under here.
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "frontend")
+
 # Ensure uploads/ exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def create_app():
-    app = Flask(__name__)
+    # template_folder + static_folder both point at frontend/ so:
+    #   render_template("index.html")            -> frontend/index.html
+    #   url_for('static', filename='js/x.js')     -> frontend/js/x.js, served at /static/js/x.js
+    app = Flask(
+        __name__,
+        template_folder=FRONTEND_DIR,
+        static_folder=FRONTEND_DIR
+    )
 
     # Allow frontend to communicate with Flask backend
     CORS(app)
@@ -32,6 +45,10 @@ def create_app():
 
     # Register B2B / marketplace routes
     app.register_blueprint(b2b_bp)
+
+    # Register voice-enabled product entry page + its price/listing routes
+    # (GET /product-entry, POST /generate-listing, POST /api/predict-price)
+    app.register_blueprint(listing_bp)
 
     @app.route("/uploads/<filename>", methods=["GET"])
     def serve_upload(filename):
