@@ -621,14 +621,36 @@ function applyAppLanguage() {
     "আরেকটি লিস্টিং তৈরি করুন",
     "மற்றொரு பட்டியலை உருவாக்கவும்"
   );
+  
+const homeCardTranslations = {
+  home_add_product: {
+    en: "Add a Product",
+    hi: "उत्पाद जोड़ें",
+    bn: "পণ্য যোগ করুন",
+    ta: "தயாரிப்பைச் சேர்க்கவும்"
+  },
 
-  const homeCardTranslations = {
-    home_subsidy: {
-      en: "Government Subsidy",
-      hi: "सरकारी सब्सिडी",
-      bn: "সরকারি ভর্তুকি",
-      ta: "அரசு மானியம்"
-    },
+  home_subsidy: {
+    en: "Government Subsidy",
+    hi: "सरकारी सब्सिडी",
+    bn: "সরকারি ভর্তুকি",
+    ta: "அரசு மானியம்"
+  },
+
+  home_marketplace: {
+    en: "Sell on Marketplace",
+    hi: "मार्केटप्लेस पर बेचें",
+    bn: "মার্কেটপ্লেসে বিক্রি করুন",
+    ta: "சந்தையில் விற்கவும்"
+  },
+
+  home_inventory: {
+    en: "Manage Inventory",
+    hi: "इन्वेंटरी प्रबंधित करें",
+    bn: "ইনভেন্টরি পরিচালনা করুন",
+    ta: "சரக்குகளை நிர்வகிக்கவும்"
+  }
+};
 
     home_marketplace: {
       en: "Sell on Marketplace",
