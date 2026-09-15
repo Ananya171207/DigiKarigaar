@@ -34,6 +34,17 @@ function fakeDelay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/** Small helper so every real call fails loudly and predictably instead of
+ * crashing on res.json() when the server returns a non-JSON error page
+ * (which is exactly what produced your "Unexpected end of JSON input"). */
+async function parseJsonOrThrow(res, label) {
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`${label} failed: ${res.status} ${text}`);
+  }
+  return res.json();
+}
+
 /** Person D's contract: POST /api/enhance-image → { enhanced_image_url } */
 async function enhanceImage(imageFile) {
   const formData = new FormData();
@@ -77,12 +88,12 @@ async function predictPrice({ material, category, size }) {
     await fakeDelay(700);
     return { predicted_price: 650, price_range: [550, 750] };
   }
-  const res = await smartFetch("/api/predict-price", {
+  const res = await smartFetch(`${API_BASE}/api/predict-price`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ material, category, size }),
   });
-  return res.json();
+  return parseJsonOrThrow(res, "Price prediction");
 }
 
 /** Saves a product listing (draft, or final). Matches the Product object contract. */
@@ -91,12 +102,12 @@ async function saveProduct(product) {
     await fakeDelay(500);
     return { ...product, status: isOnline() ? "listed" : "draft" };
   }
-  const res = await smartFetch("/api/products", {
+  const res = await smartFetch(`${API_BASE}/api/products`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(product),
   });
-  return res.json();
+  return parseJsonOrThrow(res, "Save product");
 }
 
 /** Fetches saved products for the inventory screen. */
@@ -108,115 +119,70 @@ async function getProducts() {
       { product_id: "demo-2", title: "Clay diya set", predicted_price: 420, enhanced_image_url: "" },
     ];
   }
-  const res = await smartFetch("/api/products", { method: "GET" });
-  return res.json();
+  const res = await smartFetch(`${API_BASE}/api/products`, { method: "GET" });
+  return parseJsonOrThrow(res, "Load products");
 }
 
 async function getSubsidySchemes() {
   const res = await smartFetch(`${API_BASE}/api/subsidy-schemes`);
-
-  if (!res.ok) {
-    throw new Error(`Failed to load subsidy schemes: ${res.status}`);
-  }
-
-  return res.json();
+  return parseJsonOrThrow(res, "Load subsidy schemes");
 }
 
 async function getKarigarFormSchema() {
-  const res = await smartFetch(
-    `${API_BASE}/api/karigar-form-schema`
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      `Failed to load form schema: ${res.status}`
-    );
-  }
-
-  return res.json();
-}
-async function submitSubsidyApplication(data) {
-  const res = await smartFetch(`${API_BASE}/api/subsidy-application`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
-
-  if (!res.ok) {
-    throw new Error(`Failed to submit subsidy application: ${res.status}`);
-  }
-
-  return res.json();
+  const res = await smartFetch(`${API_BASE}/api/karigar-form-schema`);
+  return parseJsonOrThrow(res, "Load form schema");
 }
 
+/** Single definition — the file previously defined this twice; the second
+ * copy silently won and dropped both API_BASE and error handling. */
 async function submitSubsidyApplication(applicationData) {
-  const res = await smartFetch("/api/subsidy-application", {
+  const res = await smartFetch(`${API_BASE}/api/subsidy-application`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(applicationData),
   });
-
-  return res.json();
+  return parseJsonOrThrow(res, "Submit subsidy application");
 }
 
-
 async function getB2BChannels() {
-  const res = await smartFetch(
-    `${API_BASE}/api/b2b-channels`
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      `Failed to load B2B channels: ${res.status}`
-    );
-  }
-
-  return res.json();
+  const res = await smartFetch(`${API_BASE}/api/b2b-channels`);
+  return parseJsonOrThrow(res, "Load B2B channels");
 }
 
 async function getMarketplaceListingSchema() {
-  const res = await smartFetch("/api/marketplace-listing-schema", {
+  const res = await smartFetch(`${API_BASE}/api/marketplace-listing-schema`, {
     method: "GET",
   });
-
-  return res.json();
+  return parseJsonOrThrow(res, "Load marketplace listing schema");
 }
-
 
 async function getMarketplaceRegistrationSchema() {
-  const res = await smartFetch("/api/marketplace-registration-schema", {
+  const res = await smartFetch(`${API_BASE}/api/marketplace-registration-schema`, {
     method: "GET",
   });
-
-  return res.json();
+  return parseJsonOrThrow(res, "Load marketplace registration schema");
 }
 
-
 async function submitB2BListing(listingData) {
-  const res = await smartFetch("/api/b2b-listing", {
+  const res = await smartFetch(`${API_BASE}/api/b2b-listing`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(listingData),
   });
-
-  return res.json();
+  return parseJsonOrThrow(res, "Submit B2B listing");
 }
 
-
 async function submitMarketplaceRegistration(registrationData) {
-  const res = await smartFetch("/api/marketplace-registration", {
+  const res = await smartFetch(`${API_BASE}/api/marketplace-registration`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(registrationData),
   });
-
-  return res.json();
+  return parseJsonOrThrow(res, "Submit marketplace registration");
 }

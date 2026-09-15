@@ -15,6 +15,8 @@
  * - visible PM Vishwakarma form
  * - regional-language labels
  * - voice-assisted field filling
+ * - retake photo (enhance screen)
+ * - profile screen
  */
 
 
@@ -223,6 +225,11 @@ const TOPBAR_DEFAULTS = {
   subsidyForm: [
     "PM Vishwakarma",
     "Guided application"
+  ],
+
+  profile: [
+    "Aapki profile",
+    "Account & settings"
   ],
 };
 
@@ -518,7 +525,7 @@ document
 
 
 // ==========================================================
-// NORMAL NAVIGATION BUTTONS
+// NORMAL NAVIGATION BUTTONS (Inventory / Home / Profile)
 // ==========================================================
 
 document
@@ -540,25 +547,37 @@ document
 
           renderInventory();
 
+        }
+
+
+        const defaults =
+          TOPBAR_DEFAULTS[target];
+
+        if (defaults) {
+
           setTopbar(
-            "Mera saaman",
-            "Your products & orders"
+            defaults[0],
+            defaults[1]
           );
 
         }
 
 
-        if (
-          target ===
-          "home"
-        ) {
+        // Keep the active nav icon in sync across whichever
+        // nav row is currently visible (home/inventory/done/profile
+        // each render their own <nav>).
+        document
+          .querySelectorAll(
+            `[data-nav]`
+          )
+          .forEach((navBtn) => {
 
-          setTopbar(
-            "Digi-Karigar",
-            "Aapka AI manager"
-          );
+            navBtn.classList.toggle(
+              "active",
+              navBtn.dataset.nav === target
+            );
 
-        }
+          });
 
 
         showScreen(target);
@@ -702,6 +721,52 @@ document
   );
 
 
+// Retake photo: go back to the photo screen with the current
+// selection cleared, instead of continuing with a bad enhance.
+document
+  .getElementById(
+    "retakePhotoBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById(
+          "photoPreview"
+        )
+        .hidden = true;
+
+
+      document
+        .getElementById(
+          "photoPlaceholder"
+        )
+        .hidden = false;
+
+
+      document
+        .getElementById(
+          "enhanceBtn"
+        )
+        .disabled = true;
+
+
+      setTopbar(
+        "Product ki photo",
+        "Ek saaf photo lijiye"
+      );
+
+
+      showScreen(
+        "photo",
+        { isBack: true }
+      );
+
+    }
+  );
+
+
 // ==========================================================
 // PRODUCT QA
 // ==========================================================
@@ -743,6 +808,7 @@ function startQAFlow() {
 
 
   showScreen("qa");
+
 
 }
 
@@ -1340,6 +1406,36 @@ document
 
     }
   );
+
+
+// ==========================================================
+// PROFILE SCREEN (placeholder — wire to real account data)
+// ==========================================================
+
+const logoutBtn =
+  document.getElementById(
+    "logoutBtn"
+  );
+
+
+if (logoutBtn) {
+
+  logoutBtn.addEventListener(
+    "click",
+    () => {
+
+      // No real auth/session yet — this just resets local state
+      // and sends the artisan back to the language picker.
+      state.language = null;
+
+      state.previewLangCode = null;
+
+      showScreen("lang");
+
+    }
+  );
+
+}
 
 
 // ==========================================================
@@ -3084,3 +3180,1461 @@ window.addEventListener(
 
   }
 );
+
+
+
+// ==========================================================
+// B2B / MARKETPLACE INTEGRATION
+// Paste this entire section at the bottom of app.js
+// ==========================================================
+
+const B2B_CHANNEL_FALLBACK = [
+  {
+    channel_id: "internal_b2b",
+    channel_name: "Artisan B2B Marketplace",
+    channel_name_hi: "कारीगर B2B मार्केटप्लेस",
+    channel_name_bn: "কারিগর বি২বি মার্কেটপ্লেস",
+    channel_name_ta: "கைவினைஞர் B2B சந்தை",
+    listing_mode: "internal",
+    enabled: true,
+    requires_registration: false,
+    prototype_status: "available"
+  },
+  {
+    channel_id: "amazon_karigar",
+    channel_name: "Amazon Karigar",
+    channel_name_hi: "अमेज़न कारीगर",
+    channel_name_bn: "অ্যামাজন কারিগর",
+    channel_name_ta: "Amazon Karigar",
+    listing_mode: "external",
+    enabled: true,
+    requires_registration: true,
+    registration_schema: "marketplace_registration_schema.json",
+    listing_schema: "marketplace_listing_schema.json",
+    prototype_status: "prepared_only"
+  },
+  {
+    channel_id: "flipkart_samarth",
+    channel_name: "Flipkart Samarth",
+    channel_name_hi: "फ्लिपकार्ट समर्थ",
+    channel_name_bn: "ফ্লিপকার্ট সমর্থ",
+    channel_name_ta: "Flipkart Samarth",
+    listing_mode: "external",
+    enabled: true,
+    requires_registration: true,
+    registration_schema: "marketplace_registration_schema.json",
+    listing_schema: "marketplace_listing_schema.json",
+    prototype_status: "prepared_only"
+  },
+  {
+    channel_id: "ondc",
+    channel_name: "ONDC Seller Network",
+    channel_name_hi: "ONDC विक्रेता नेटवर्क",
+    channel_name_bn: "ONDC বিক্রেতা নেটওয়ার্ক",
+    channel_name_ta: "ONDC விற்பனையாளர் வலைப்பின்னல்",
+    listing_mode: "external",
+    enabled: true,
+    requires_registration: true,
+    registration_schema: "marketplace_registration_schema.json",
+    listing_schema: "marketplace_listing_schema.json",
+    prototype_status: "prepared_only"
+  }
+];
+
+const marketplaceState = {
+  channels: [],
+  selectedChannel: null,
+  schema: null,
+  answers: {},
+  formType: "channels"
+};
+
+const marketplaceButton =
+  document.getElementById("b2bBtn");
+
+if (marketplaceButton) {
+  marketplaceButton.addEventListener(
+    "click",
+    openMarketplaceScreen
+  );
+}
+
+
+// ==========================================================
+// OPEN MARKETPLACE SCREEN
+// ==========================================================
+
+async function openMarketplaceScreen() {
+  marketplaceState.selectedChannel = null;
+  marketplaceState.schema = null;
+  marketplaceState.answers = {};
+  marketplaceState.formType = "channels";
+
+  setTopbar(
+    getMarketplaceTranslation({
+      en: "Sell Online",
+      hi: "ऑनलाइन बेचें",
+      bn: "অনলাইনে বিক্রি করুন",
+      ta: "ஆன்லைனில் விற்கவும்"
+    }),
+    getMarketplaceTranslation({
+      en: "Choose a marketplace",
+      hi: "मार्केटप्लेस चुनें",
+      bn: "মার্কেটপ্লেস বেছে নিন",
+      ta: "சந்தையைத் தேர்ந்தெடுக்கவும்"
+    })
+  );
+
+  showScreen("b2b");
+
+  const container =
+    document.getElementById("b2bChannelList");
+
+  if (!container) {
+    console.error(
+      "b2bChannelList was not found in index.html"
+    );
+    return;
+  }
+
+  container.innerHTML =
+    "<p>Loading marketplaces...</p>";
+
+  try {
+    marketplaceState.channels =
+      await fetchMarketplaceJSON([
+        "data/b2b_channels.json",
+        "b2b_channels.json"
+      ]);
+  } catch (error) {
+    console.warn(
+      "Using built-in marketplace channels:",
+      error.message
+    );
+
+    marketplaceState.channels =
+      B2B_CHANNEL_FALLBACK;
+  }
+
+  renderMarketplaceChannels();
+}
+
+
+// ==========================================================
+// SHOW MARKETPLACE OPTIONS
+// ==========================================================
+
+function renderMarketplaceChannels() {
+  marketplaceState.formType = "channels";
+
+  const container =
+    document.getElementById("b2bChannelList");
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const channels =
+    (marketplaceState.channels || []).filter(
+      (channel) =>
+        channel.enabled !== false
+    );
+
+  if (!channels.length) {
+    container.innerHTML =
+      "<p>No marketplace is currently available.</p>";
+
+    return;
+  }
+
+  channels.forEach((channel) => {
+    const button =
+      document.createElement("button");
+
+    button.type = "button";
+
+    button.className =
+      "action-card b2b marketplace-channel-btn";
+
+    button.innerHTML = `
+      <span class="action-icon">
+        ${getMarketplaceIcon(channel.channel_id)}
+      </span>
+
+      <span>
+        <strong>
+          ${escapeMarketplaceHTML(
+            getMarketplaceChannelName(channel)
+          )}
+        </strong>
+
+        <small>
+          ${escapeMarketplaceHTML(
+            getMarketplaceSubtitle(channel)
+          )}
+        </small>
+      </span>
+    `;
+
+    button.addEventListener(
+      "click",
+      () => selectMarketplaceChannel(channel)
+    );
+
+    container.appendChild(button);
+  });
+}
+
+
+// ==========================================================
+// SELECT MARKETPLACE
+// ==========================================================
+
+async function selectMarketplaceChannel(channel) {
+  marketplaceState.selectedChannel = channel;
+
+  const savedSellerId =
+    getMarketplaceSellerId(channel.channel_id);
+
+  if (
+    channel.requires_registration &&
+    !savedSellerId
+  ) {
+    await openMarketplaceForm("registration");
+    return;
+  }
+
+  await openMarketplaceForm("listing");
+}
+
+
+// ==========================================================
+// LOAD REGISTRATION OR LISTING FORM
+// ==========================================================
+
+async function openMarketplaceForm(formType) {
+  const channel =
+    marketplaceState.selectedChannel;
+
+  const container =
+    document.getElementById("b2bChannelList");
+
+  if (!channel || !container) return;
+
+  marketplaceState.formType = formType;
+
+  container.innerHTML =
+    "<p>Loading form...</p>";
+
+  let schemaFile;
+
+  if (formType === "registration") {
+    schemaFile =
+      channel.registration_schema ||
+      "marketplace_registration_schema.json";
+  } else {
+    schemaFile =
+      channel.listing_schema ||
+      "marketplace_listing_schema.json";
+  }
+
+  try {
+    marketplaceState.schema =
+      await fetchMarketplaceJSON([
+        `data/${schemaFile}`,
+        schemaFile
+      ]);
+
+    marketplaceState.answers =
+      buildMarketplaceDefaultAnswers(
+        formType,
+        channel
+      );
+
+    renderMarketplaceForm(formType);
+  } catch (error) {
+    console.error(error);
+
+    container.innerHTML = `
+      <p class="error">
+        Could not load
+        ${escapeMarketplaceHTML(schemaFile)}.
+        Make sure this JSON file is inside
+        your data folder.
+      </p>
+
+      <button
+        id="marketplaceRetryBtn"
+        class="btn btn-secondary"
+        type="button"
+      >
+        Go back
+      </button>
+    `;
+
+    document
+      .getElementById("marketplaceRetryBtn")
+      .addEventListener(
+        "click",
+        renderMarketplaceChannels
+      );
+  }
+}
+
+
+// ==========================================================
+// RENDER DYNAMIC FORM
+// ==========================================================
+
+function renderMarketplaceForm(formType) {
+  const container =
+    document.getElementById("b2bChannelList");
+
+  const schema =
+    marketplaceState.schema;
+
+  const channel =
+    marketplaceState.selectedChannel;
+
+  if (!container || !schema || !channel) {
+    return;
+  }
+
+  const form =
+    document.createElement("form");
+
+  form.id = "marketplaceDynamicForm";
+  form.noValidate = true;
+
+  const heading =
+    document.createElement("div");
+
+  heading.innerHTML = `
+    <h3>
+      ${escapeMarketplaceHTML(
+        getMarketplaceSchemaText(
+          schema,
+          "form_name"
+        )
+      )}
+    </h3>
+
+    <p class="hint">
+      ${escapeMarketplaceHTML(
+        getMarketplaceChannelName(channel)
+      )}
+    </p>
+  `;
+
+  form.appendChild(heading);
+
+  (schema.sections || []).forEach(
+    (section) => {
+      if (
+        !marketplaceConditionMatches(
+          section.show_when
+        )
+      ) {
+        return;
+      }
+
+      const sectionElement =
+        document.createElement("div");
+
+      sectionElement.className =
+        "marketplace-form-section";
+
+      const sectionHeading =
+        document.createElement("h4");
+
+      sectionHeading.textContent =
+        getMarketplaceSchemaText(
+          section,
+          "section_name"
+        );
+
+      sectionElement.appendChild(
+        sectionHeading
+      );
+
+      (section.fields || []).forEach(
+        (field) => {
+          if (
+            marketplaceConditionMatches(
+              field.show_when
+            )
+          ) {
+            sectionElement.appendChild(
+              createMarketplaceInput(field)
+            );
+          }
+        }
+      );
+
+      if (
+        sectionElement.querySelector(".field")
+      ) {
+        form.appendChild(sectionElement);
+      }
+    }
+  );
+
+  const errorElement =
+    document.createElement("p");
+
+  errorElement.id =
+    "marketplaceFormError";
+
+  errorElement.className = "error";
+  errorElement.hidden = true;
+
+  form.appendChild(errorElement);
+
+  const submitButton =
+    document.createElement("button");
+
+  submitButton.type = "submit";
+  submitButton.className =
+    "btn btn-primary";
+
+  if (formType === "registration") {
+    submitButton.textContent =
+      getMarketplaceTranslation({
+        en: "Prepare registration",
+        hi: "पंजीकरण तैयार करें",
+        bn: "নিবন্ধন প্রস্তুত করুন",
+        ta: "பதிவைத் தயாரிக்கவும்"
+      });
+  } else {
+    submitButton.textContent =
+      getMarketplaceTranslation({
+        en: "Prepare listing",
+        hi: "लिस्टिंग तैयार करें",
+        bn: "লিস্টিং প্রস্তুত করুন",
+        ta: "பட்டியலைத் தயாரிக்கவும்"
+      });
+  }
+
+  form.appendChild(submitButton);
+
+  const changeButton =
+    document.createElement("button");
+
+  changeButton.type = "button";
+  changeButton.className =
+    "btn btn-secondary";
+
+  changeButton.textContent =
+    getMarketplaceTranslation({
+      en: "Choose another marketplace",
+      hi: "दूसरा मार्केटप्लेस चुनें",
+      bn: "অন্য মার্কেটপ্লেস বেছে নিন",
+      ta: "வேறு சந்தையைத் தேர்ந்தெடுக்கவும்"
+    });
+
+  changeButton.addEventListener(
+    "click",
+    renderMarketplaceChannels
+  );
+
+  form.appendChild(changeButton);
+
+  form.addEventListener(
+    "input",
+    handleMarketplaceInput
+  );
+
+  form.addEventListener(
+    "change",
+    handleMarketplaceInput
+  );
+
+  form.addEventListener(
+    "submit",
+    (event) =>
+      submitMarketplaceForm(
+        event,
+        formType
+      )
+  );
+
+  container.innerHTML = "";
+  container.appendChild(form);
+}
+
+
+// ==========================================================
+// CREATE ONE FORM FIELD
+// ==========================================================
+
+function createMarketplaceInput(field) {
+  const wrapper =
+    document.createElement("div");
+
+  wrapper.className = "field";
+
+  wrapper.dataset.marketplaceField =
+    field.field_id;
+
+  if (field.type === "hidden") {
+    const hiddenInput =
+      document.createElement("input");
+
+    hiddenInput.type = "hidden";
+
+    configureMarketplaceInput(
+      hiddenInput,
+      field
+    );
+
+    wrapper.appendChild(hiddenInput);
+
+    return wrapper;
+  }
+
+  const label =
+    document.createElement("label");
+
+  label.htmlFor =
+    `marketplace_${field.field_id}`;
+
+  label.textContent =
+    getMarketplaceSchemaText(
+      field,
+      "label"
+    ) +
+    (field.required ? " *" : "");
+
+  wrapper.appendChild(label);
+
+  if (
+    field.question ||
+    field.question_hi ||
+    field.question_bn ||
+    field.question_ta
+  ) {
+    const question =
+      document.createElement("p");
+
+    question.className = "hint";
+
+    question.textContent =
+      getMarketplaceSchemaText(
+        field,
+        "question"
+      );
+
+    wrapper.appendChild(question);
+  }
+
+  let input;
+
+  if (field.type === "textarea") {
+    input =
+      document.createElement("textarea");
+  } else if (
+    field.type === "select" ||
+    field.type === "multiselect"
+  ) {
+    input =
+      document.createElement("select");
+
+    input.multiple =
+      field.type === "multiselect";
+
+    if (!input.multiple) {
+      const blankOption =
+        document.createElement("option");
+
+      blankOption.value = "";
+
+      blankOption.textContent =
+        getMarketplaceTranslation({
+          en: "Select",
+          hi: "चुनें",
+          bn: "নির্বাচন করুন",
+          ta: "தேர்வு செய்க"
+        });
+
+      input.appendChild(blankOption);
+    }
+
+    (field.options || []).forEach(
+      (option) => {
+        const optionElement =
+          document.createElement("option");
+
+        optionElement.value =
+          String(option.value);
+
+        optionElement.textContent =
+          getMarketplaceSchemaText(
+            option,
+            "label"
+          );
+
+        input.appendChild(optionElement);
+      }
+    );
+
+    if (
+      !field.options &&
+      field.options_source
+    ) {
+      const option =
+        document.createElement("option");
+
+      option.value =
+        "seller_network_participant";
+
+      option.textContent =
+        "Seller App / Network Participant";
+
+      input.appendChild(option);
+    }
+  } else if (field.type === "radio") {
+    input =
+      document.createElement("select");
+
+    const blankOption =
+      document.createElement("option");
+
+    blankOption.value = "";
+
+    blankOption.textContent =
+      getMarketplaceTranslation({
+        en: "Select",
+        hi: "चुनें",
+        bn: "নির্বাচন করুন",
+        ta: "தேர்வு செய்க"
+      });
+
+    input.appendChild(blankOption);
+
+    const radioOptions =
+      field.options || [
+        {
+          value: true,
+          label: "Yes",
+          label_hi: "हाँ",
+          label_bn: "হ্যাঁ",
+          label_ta: "ஆம்"
+        },
+        {
+          value: false,
+          label: "No",
+          label_hi: "नहीं",
+          label_bn: "না",
+          label_ta: "இல்லை"
+        }
+      ];
+
+    radioOptions.forEach((option) => {
+      const optionElement =
+        document.createElement("option");
+
+      optionElement.value =
+        String(option.value);
+
+      optionElement.textContent =
+        getMarketplaceSchemaText(
+          option,
+          "label"
+        );
+
+      input.appendChild(optionElement);
+    });
+  } else {
+    input =
+      document.createElement("input");
+
+    if (field.type === "checkbox") {
+      input.type = "checkbox";
+    } else if (field.type === "image") {
+      input.type = "url";
+    } else if (
+      field.type === "verification"
+    ) {
+      input.type = "text";
+    } else {
+      input.type =
+        field.type || "text";
+    }
+  }
+
+  configureMarketplaceInput(
+    input,
+    field
+  );
+
+  wrapper.appendChild(input);
+
+  return wrapper;
+}
+
+
+// ==========================================================
+// CONFIGURE FORM FIELD
+// ==========================================================
+
+function configureMarketplaceInput(
+  input,
+  field
+) {
+  input.id =
+    `marketplace_${field.field_id}`;
+
+  input.name =
+    field.field_id;
+
+  input.dataset.fieldId =
+    field.field_id;
+
+  input.required =
+    Boolean(field.required);
+
+  if (
+    field.user_editable === false &&
+    field.type !== "hidden"
+  ) {
+    input.disabled = true;
+  }
+
+  if (field.minimum !== undefined) {
+    input.min = field.minimum;
+  }
+
+  if (field.maximum !== undefined) {
+    input.max = field.maximum;
+  }
+
+  if (
+    field.validation &&
+    field.validation.pattern
+  ) {
+    input.pattern =
+      field.validation.pattern;
+  }
+
+  const value =
+    marketplaceState.answers[
+      field.field_id
+    ];
+
+  if (input.type === "checkbox") {
+    input.checked =
+      value === true ||
+      value === "true";
+  } else if (
+    input.multiple &&
+    Array.isArray(value)
+  ) {
+    Array
+      .from(input.options)
+      .forEach((option) => {
+        option.selected =
+          value.includes(
+            option.value
+          );
+      });
+  } else if (
+    value !== undefined &&
+    value !== null &&
+    input.type !== "file"
+  ) {
+    input.value = value;
+  }
+}
+
+
+// ==========================================================
+// HANDLE FIELD VALUE
+// ==========================================================
+
+function handleMarketplaceInput(event) {
+  const input = event.target;
+
+  if (
+    !input.dataset ||
+    !input.dataset.fieldId
+  ) {
+    return;
+  }
+
+  let value;
+
+  if (input.type === "checkbox") {
+    value = input.checked;
+  } else if (input.type === "file") {
+    value =
+      input.files &&
+      input.files.length
+        ? input.files[0].name
+        : "";
+  } else if (input.multiple) {
+    value =
+      Array
+        .from(input.selectedOptions)
+        .map((option) => option.value);
+  } else if (input.value === "true") {
+    value = true;
+  } else if (input.value === "false") {
+    value = false;
+  } else {
+    value = input.value;
+  }
+
+  marketplaceState.answers[
+    input.dataset.fieldId
+  ] = value;
+
+  if (
+    marketplaceFieldChangesVisibility(
+      input.dataset.fieldId
+    )
+  ) {
+    renderMarketplaceForm(
+      marketplaceState.formType
+    );
+  }
+}
+
+
+// ==========================================================
+// CONDITIONAL FIELDS
+// ==========================================================
+
+function marketplaceFieldChangesVisibility(
+  fieldId
+) {
+  const schema =
+    marketplaceState.schema;
+
+  if (!schema) return false;
+
+  return (schema.sections || []).some(
+    (section) => {
+      if (
+        section.show_when &&
+        section.show_when.field_id ===
+          fieldId
+      ) {
+        return true;
+      }
+
+      return (section.fields || []).some(
+        (field) =>
+          field.show_when &&
+          field.show_when.field_id ===
+            fieldId
+      );
+    }
+  );
+}
+
+
+function marketplaceConditionMatches(
+  condition
+) {
+  if (!condition) return true;
+
+  return (
+    marketplaceState.answers[
+      condition.field_id
+    ] === condition.equals
+  );
+}
+
+
+// ==========================================================
+// SUBMIT REGISTRATION OR LISTING
+// ==========================================================
+
+async function submitMarketplaceForm(
+  event,
+  formType
+) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+
+  const errorElement =
+    document.getElementById(
+      "marketplaceFormError"
+    );
+
+  if (!form.reportValidity()) {
+    return;
+  }
+
+  const bankAccount =
+    marketplaceState.answers
+      .bank_account_number;
+
+  const confirmBankAccount =
+    marketplaceState.answers
+      .confirm_bank_account_number;
+
+  if (
+    bankAccount &&
+    confirmBankAccount &&
+    bankAccount !== confirmBankAccount
+  ) {
+    errorElement.textContent =
+      "Bank account numbers do not match.";
+
+    errorElement.hidden = false;
+
+    return;
+  }
+
+  if (formType === "registration") {
+    const channel =
+      marketplaceState.selectedChannel;
+
+    const sellerId =
+      marketplaceState.answers
+        .existing_seller_id ||
+      `DK-${channel.channel_id
+        .toUpperCase()}-${Date.now()
+        .toString()
+        .slice(-6)}`;
+
+    saveMarketplaceSellerId(
+      channel.channel_id,
+      sellerId
+    );
+
+    marketplaceState.answers
+      .generated_seller_id =
+      sellerId;
+
+    saveMarketplaceDraft(
+      "registration",
+      marketplaceState.answers
+    );
+
+    await openMarketplaceForm("listing");
+
+    return;
+  }
+
+  const listingResult =
+    await createFinalMarketplaceListing();
+
+  if (!listingResult.success) {
+    errorElement.textContent =
+      (
+        listingResult.errors || [
+          "Please complete all required fields."
+        ]
+      ).join(" ");
+
+    errorElement.hidden = false;
+
+    return;
+  }
+
+  saveMarketplaceDraft(
+    "listing",
+    listingResult.listing
+  );
+
+  if (state.product) {
+    state.product.status = "listed";
+  }
+
+  renderMarketplaceSuccess();
+}
+
+
+// ==========================================================
+// CREATE FINAL LISTING
+// ==========================================================
+
+async function createFinalMarketplaceListing() {
+  /*
+   * Try to use b2b_listing.js first.
+   * It must be inside the same js folder as app.js.
+   */
+  try {
+    const b2bModule =
+      await import("./b2b_listing.js");
+
+    if (
+      b2bModule.createMarketplaceListing &&
+      state.product
+    ) {
+      return (
+        b2bModule.createMarketplaceListing(
+          state.product,
+          marketplaceState.answers
+        )
+      );
+    }
+  } catch (error) {
+    console.warn(
+      "Using local marketplace listing builder:",
+      error.message
+    );
+  }
+
+  /*
+   * Fallback keeps the prototype working even
+   * when the backend or module is unavailable.
+   */
+  const listing = {
+    listing_id:
+      crypto.randomUUID(),
+
+    marketplace_channel:
+      marketplaceState
+        .selectedChannel
+        .channel_id,
+
+    product: state.product
+      ? {
+          ...state.product,
+          status: "listed"
+        }
+      : null,
+
+    listing_details: {
+      ...marketplaceState.answers
+    },
+
+    listing_submission_status:
+      "prototype_not_submitted",
+
+    created_at:
+      new Date().toISOString()
+  };
+
+  return {
+    success: true,
+    listing,
+    errors: []
+  };
+}
+
+
+// ==========================================================
+// SUCCESS MESSAGE
+// ==========================================================
+
+function renderMarketplaceSuccess() {
+  const container =
+    document.getElementById(
+      "b2bChannelList"
+    );
+
+  const channelName =
+    getMarketplaceChannelName(
+      marketplaceState.selectedChannel
+    );
+
+  setTopbar(
+    getMarketplaceTranslation({
+      en: "Listing prepared",
+      hi: "लिस्टिंग तैयार है",
+      bn: "লিস্টিং প্রস্তুত",
+      ta: "பட்டியல் தயாராக உள்ளது"
+    }),
+    channelName
+  );
+
+  container.innerHTML = `
+    <div class="center-text">
+
+      <div class="success-icon">
+        &#10003;
+      </div>
+
+      <h3>
+        ${escapeMarketplaceHTML(
+          channelName
+        )}
+      </h3>
+
+      <p>
+        ${escapeMarketplaceHTML(
+          getMarketplaceTranslation({
+            en:
+              "Your marketplace listing is prepared. OTP, CAPTCHA and final submission will still be completed on the official marketplace.",
+            hi:
+              "आपकी मार्केटप्लेस लिस्टिंग तैयार है। OTP, CAPTCHA और अंतिम सबमिशन आधिकारिक मार्केटप्लेस पर ही पूरा होगा।",
+            bn:
+              "আপনার মার্কেটপ্লেস লিস্টিং প্রস্তুত। OTP, CAPTCHA এবং চূড়ান্ত সাবমিশন অফিসিয়াল মার্কেটপ্লেসেই সম্পন্ন হবে।",
+            ta:
+              "உங்கள் சந்தைப் பட்டியல் தயாராக உள்ளது. OTP, CAPTCHA மற்றும் இறுதி சமர்ப்பிப்பு அதிகாரப்பூர்வ சந்தையிலேயே நிறைவு செய்யப்படும்."
+          })
+        )}
+      </p>
+
+      <button
+        id="marketplaceAgainBtn"
+        class="btn btn-primary"
+        type="button"
+      >
+        ${escapeMarketplaceHTML(
+          getMarketplaceTranslation({
+            en: "Sell on another marketplace",
+            hi: "दूसरे मार्केटप्लेस पर बेचें",
+            bn: "অন্য মার্কেটপ্লেসে বিক্রি করুন",
+            ta: "வேறு சந்தையில் விற்கவும்"
+          })
+        )}
+      </button>
+
+    </div>
+  `;
+
+  document
+    .getElementById("marketplaceAgainBtn")
+    .addEventListener(
+      "click",
+      openMarketplaceScreen
+    );
+}
+
+
+// ==========================================================
+// AUTOMATIC PRODUCT PREFILLING
+// ==========================================================
+
+function buildMarketplaceDefaultAnswers(
+  formType,
+  channel
+) {
+  const product =
+    state.product || {};
+
+  const sellerId =
+    getMarketplaceSellerId(
+      channel.channel_id
+    );
+
+  const answers = {
+    marketplace_channel:
+      channel.channel_id,
+
+    seller_id:
+      sellerId || "",
+
+    existing_seller_id:
+      sellerId || "",
+
+    already_registered:
+      Boolean(sellerId),
+
+    artisan_id:
+      product.artisan_id ||
+      "demo-artisan",
+
+    product_id:
+      product.product_id || "",
+
+    title:
+      product.title || "",
+
+    description:
+      product.description || "",
+
+    material:
+      product.material || "",
+
+    category:
+      product.category || "",
+
+    size:
+      state.answers.size ||
+      product.size ||
+      "",
+
+    language:
+      product.language ||
+      (
+        state.language
+          ? state.language.short
+          : "hi"
+      ),
+
+    raw_image_url:
+      product.raw_image_url || "",
+
+    enhanced_image_url:
+      product.enhanced_image_url ||
+      product.raw_image_url ||
+      "",
+
+    predicted_price:
+      product.predicted_price || "",
+
+    listing_submission_status:
+      "prototype_not_submitted",
+
+    registration_status:
+      "prototype_not_submitted"
+  };
+
+  const schema =
+    marketplaceState.schema;
+
+  (schema.sections || []).forEach(
+    (section) => {
+      (section.fields || []).forEach(
+        (field) => {
+          if (
+            answers[field.field_id] ===
+              undefined &&
+            field.default_value !==
+              undefined
+          ) {
+            answers[field.field_id] =
+              field.default_value;
+          }
+        }
+      );
+    }
+  );
+
+  return answers;
+}
+
+
+// ==========================================================
+// LOCAL STORAGE
+// ==========================================================
+
+function getMarketplaceSellerId(
+  channelId
+) {
+  try {
+    return (
+      localStorage.getItem(
+        `digikarigar_seller_${channelId}`
+      ) || ""
+    );
+  } catch (error) {
+    return "";
+  }
+}
+
+
+function saveMarketplaceSellerId(
+  channelId,
+  sellerId
+) {
+  try {
+    localStorage.setItem(
+      `digikarigar_seller_${channelId}`,
+      sellerId
+    );
+  } catch (error) {
+    console.warn(
+      "Seller ID could not be saved."
+    );
+  }
+}
+
+
+function saveMarketplaceDraft(
+  type,
+  data
+) {
+  const record = {
+    type,
+
+    channel_id:
+      marketplaceState
+        .selectedChannel
+        .channel_id,
+
+    data,
+
+    saved_at:
+      new Date().toISOString()
+  };
+
+  try {
+    const drafts =
+      JSON.parse(
+        localStorage.getItem(
+          "digikarigar_marketplace_drafts"
+        ) || "[]"
+      );
+
+    drafts.push(record);
+
+    localStorage.setItem(
+      "digikarigar_marketplace_drafts",
+      JSON.stringify(drafts)
+    );
+  } catch (error) {
+    console.warn(
+      "Marketplace draft could not be saved."
+    );
+  }
+}
+
+
+// ==========================================================
+// JSON LOADING
+// ==========================================================
+
+async function fetchMarketplaceJSON(
+  paths
+) {
+  let lastError;
+
+  for (const path of paths) {
+    try {
+      const response =
+        await fetch(path);
+
+      if (!response.ok) {
+        throw new Error(
+          `${path}: ${response.status}`
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  throw (
+    lastError ||
+    new Error("JSON file not found.")
+  );
+}
+
+
+// ==========================================================
+// LANGUAGE HELPERS
+// ==========================================================
+
+function getMarketplaceLanguage() {
+  if (
+    state.language &&
+    state.language.short
+  ) {
+    return state.language.short;
+  }
+
+  return "en";
+}
+
+
+function getMarketplaceTranslation(
+  values
+) {
+  const language =
+    getMarketplaceLanguage();
+
+  return (
+    values[language] ||
+    values.en ||
+    ""
+  );
+}
+
+
+function getMarketplaceSchemaText(
+  item,
+  key
+) {
+  if (!item) return "";
+
+  const language =
+    getMarketplaceLanguage();
+
+  return (
+    item[`${key}_${language}`] ||
+    item[key] ||
+    ""
+  );
+}
+
+
+function getMarketplaceChannelName(
+  channel
+) {
+  return getMarketplaceSchemaText(
+    channel,
+    "channel_name"
+  );
+}
+
+
+function getMarketplaceSubtitle(
+  channel
+) {
+  if (
+    channel.listing_mode ===
+    "internal"
+  ) {
+    return getMarketplaceTranslation({
+      en:
+        "List directly in Digi-Karigar",
+      hi:
+        "Digi-Karigar पर सीधे लिस्ट करें",
+      bn:
+        "Digi-Karigar-এ সরাসরি তালিকাভুক্ত করুন",
+      ta:
+        "Digi-Karigar-ல் நேரடியாகப் பட்டியலிடுங்கள்"
+    });
+  }
+
+  return getMarketplaceTranslation({
+    en:
+      "Voice-guided form preparation",
+    hi:
+      "आवाज़ से फॉर्म तैयार करें",
+    bn:
+      "ভয়েসের সাহায্যে ফর্ম প্রস্তুত করুন",
+    ta:
+      "குரல் வழிகாட்டுதலுடன் படிவம் தயாரிக்கவும்"
+  });
+}
+
+
+// ==========================================================
+// DISPLAY HELPERS
+// ==========================================================
+
+function getMarketplaceIcon(
+  channelId
+) {
+  if (channelId === "internal_b2b") {
+    return "&#129309;";
+  }
+
+  if (channelId === "amazon_karigar") {
+    return "A";
+  }
+
+  if (
+    channelId === "flipkart_samarth"
+  ) {
+    return "F";
+  }
+
+  return "&#127760;";
+}
+
+
+function escapeMarketplaceHTML(value) {
+  return String(
+    value === null ||
+    value === undefined
+      ? ""
+      : value
+  )
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}

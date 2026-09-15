@@ -3,6 +3,7 @@
   --sage: #50808E; --sage-tint: #E9F0EC;
   --warn: #B8863E; --warn-tint: #F6EEE0;
   --cream: #FBF8F3; --ink: #3A2E29; --muted: #8A7B72; --line: #E4D9D2;
+  --blue: #1a6fc9; --green: #1a8917;
 }
 * { box-sizing: border-box; }
 body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--cream); color: var(--ink); }
@@ -44,13 +45,40 @@ body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; ba
 .btn-secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
 .btn:disabled { opacity:.5; cursor:not-allowed; }
 
+/* ---- home screen action cards (subsidy / marketplace) ----
+   Styled like the inventory cards below, per request, instead of
+   plain outline buttons — same white card + soft shadow language. */
+.home-actions { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+.action-card { background:#fff; border-radius:14px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.08); display:flex; align-items:center; gap:12px; text-align:left; border:none; cursor:pointer; font-family:inherit; }
+.action-card .action-icon { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.action-card.subsidy .action-icon { background:var(--warn-tint); color:var(--warn); }
+.action-card.b2b .action-icon { background:var(--sage-tint); color:var(--sage); }
+.action-card .action-text { display:flex; flex-direction:column; }
+.action-card .action-en { font-size:14.5px; font-weight:700; color:var(--ink); }
+.action-card .action-hi { font-size:12.5px; color:var(--muted); }
+
 /* ---- photo ---- */
 .upload-box { border:2px dashed var(--line); border-radius:16px; min-height:170px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; cursor:pointer; color:var(--muted); font-size:13px; text-align:center; padding:12px; }
 .upload-box img { max-width:100%; max-height:190px; border-radius:10px; }
+
+/* ---- enhance screen: original vs enhanced ----
+   Fixed: both boxes are now equal fixed-height squares with
+   object-fit:contain, so a tall or wide photo is never cropped
+   or shrunk to a dot the way it was before. */
 .compare-row { display:flex; gap:10px; margin-bottom:14px; }
 .compare-col { flex:1; text-align:center; }
-.compare-col img { width:100%; height:110px; object-fit:cover; border-radius:10px; background:#eee; }
-.compare-label { font-size:11px; color:var(--muted); margin-top:4px; }
+.compare-col .compare-frame {
+  width:100%; aspect-ratio:1/1; border-radius:10px; background:#EFE8E1;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
+  border:1px solid var(--line);
+}
+.compare-col img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
+.compare-label { font-size:11.5px; color:var(--muted); margin-top:6px; font-weight:600; }
+
+/* Bottom actions on the enhance screen: Continue OR retake/go back */
+.enhance-actions { display:flex; gap:10px; margin-top:auto; }
+.enhance-actions .btn { margin-top:0; flex:1; }
+
 .listing-photo { width:100%; height:130px; object-fit:cover; border-radius:10px; margin-bottom:12px; }
 
 /* ---- qa dots ---- */
@@ -69,12 +97,61 @@ textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid v
 .price-value { font-family:Georgia,serif; font-size:24px; font-weight:700; color:var(--sage); }
 .error-box { background:#FBEAE8; color:#9A3B2E; border-radius:12px; padding:12px 14px; font-size:13px; margin-bottom:14px; }
 
+/* ---- subsidy list / form ---- */
+.scheme-list { display:flex; flex-direction:column; gap:10px; }
+.form-progress { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:10px; }
+.voice-assistant-box { display:flex; flex-direction:column; align-items:center; gap:8px; margin:14px 0; }
+
+/* ---- b2b channel list ---- */
+.channel-list { display:flex; flex-direction:column; gap:10px; }
+
 /* ---- done screen ---- */
 .success-icon, .offline-icon { width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:8px auto 14px; }
 .success-icon { background:var(--sage-tint); color:var(--sage); }
 .offline-icon { background:var(--warn-tint); color:var(--warn); }
 
-/* ---- inventory + nav ---- */
+/* ---- inventory dashboard cards (moved out of inline <style>) ---- */
+.inv-section { display:flex; flex-direction:column; gap:14px; }
+.inv-card { background:#fff; border-radius:14px; padding:16px; box-shadow:0 1px 4px rgba(0,0,0,.08); }
+.inv-card-heading { font-weight:700; font-size:15px; margin-bottom:10px; display:flex; flex-direction:column; line-height:1.3; }
+.inv-card-heading .hi { font-weight:600; font-size:13px; color:var(--muted); }
+
+.inv-stat-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); }
+.inv-stat-row:last-child { border-bottom:none; }
+.inv-stat-label { display:flex; flex-direction:column; }
+.inv-stat-label .en { font-size:13px; color:#555; }
+.inv-stat-label .hi { font-size:13px; color:var(--muted); }
+.inv-stat-value { font-size:18px; font-weight:700; }
+.inv-stat-value.positive { color:var(--green); }
+.inv-stat-value.pending { color:var(--warn); }
+.inv-pending-note { font-size:12px; color:var(--warn); margin-top:2px; text-align:right; }
+
+.inv-item-row { padding:12px 0; border-bottom:1px solid var(--line); }
+.inv-item-row:last-child { border-bottom:none; }
+.inv-item-name { font-size:14px; font-weight:600; margin-bottom:8px; }
+.inv-item-name .hi { font-weight:500; color:var(--muted); font-size:13px; }
+.inv-item-nums { display:flex; justify-content:space-between; gap:8px; }
+.inv-num-box { flex:1; text-align:center; border-radius:10px; padding:8px 4px; background:#F7F5F2; }
+.inv-num-box .num { font-size:16px; font-weight:700; display:block; }
+.inv-num-box .lbl-en { font-size:11px; color:#666; display:block; margin-top:2px; }
+.inv-num-box .lbl-hi { font-size:11px; color:var(--muted); display:block; }
+.inv-num-box.total .num { color:#333; }
+.inv-num-box.sold .num { color:var(--blue); }
+.inv-num-box.remaining .num { color:var(--green); }
+.inv-progress-track { height:6px; border-radius:4px; background:#eee; margin-top:10px; overflow:hidden; }
+.inv-progress-fill { height:100%; background:var(--blue); border-radius:4px; }
+
+/* ---- profile screen ---- */
+.profile-header { display:flex; flex-direction:column; align-items:center; gap:8px; padding:10px 0 20px; }
+.profile-avatar { width:64px; height:64px; border-radius:50%; background:var(--terracotta); color:#fff; display:flex; align-items:center; justify-content:center; font-family:Georgia,serif; font-weight:700; font-size:24px; }
+.profile-name { font-family:Georgia,serif; font-size:17px; font-weight:700; }
+.profile-sub { font-size:12.5px; color:var(--muted); }
+.profile-list { display:flex; flex-direction:column; gap:10px; }
+.profile-row { background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; display:flex; justify-content:space-between; align-items:center; font-size:14px; }
+.profile-row .en { font-weight:600; }
+.profile-row .hi { color:var(--muted); font-size:12.5px; display:block; }
+
+/* ---- inventory product grid + nav ---- */
 .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .thumb { background:#fff; border:1px solid var(--line); border-radius:10px; min-height:90px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:var(--muted); font-size:12px; position:relative; }
 .pending-badge { position:absolute; top:6px; right:6px; background:var(--warn-tint); color:var(--warn); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.02em; padding:2px 6px; border-radius:8px; }
