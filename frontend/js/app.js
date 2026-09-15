@@ -216,6 +216,7 @@ function showScreen(name, options) {
   }
 
   state.screen = name;
+  announceScreen(name, state.language ? state.language.code : "hi-IN");
 }
 
 
