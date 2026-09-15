@@ -20,7 +20,14 @@
        PERSISTENT TOP BAR
        ===================================================== -->
   <header id="topbar" class="topbar" hidden>
-    <div class="avatar">K</div>
+    <div class="brand-logo" aria-label="Digi-Karigar artisan logo">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path d="M17 8h14" />
+        <path d="M19 8c0 5 2 7 2 10-6 3-9 8-9 14 0 5 5 8 12 8s12-3 12-8c0-6-3-11-9-14 0-3 2-5 2-10" />
+        <path d="M15 29c5 3 13 3 18 0" />
+        <path d="M17 35c4 2 10 2 14 0" />
+      </svg>
+    </div>
     <div class="topbar-text">
       <div id="topbarTitle" class="topbar-title"></div>
       <div id="topbarSub" class="topbar-sub"></div>
@@ -75,16 +82,24 @@
         <button id="subsidyBtn" class="action-card subsidy">
           <span class="action-icon">&#127963;</span>
           <span class="action-text">
-            <span class="action-en">Government Subsidy</span>
-            <span class="action-hi">सरकारी सब्सिडी</span>
+            <span class="action-en" data-i18n="home_subsidy">Government Subsidy</span>
+            <span class="action-hi" data-i18n-secondary="home_subsidy">सरकारी सब्सिडी</span>
           </span>
         </button>
 
         <button id="b2bBtn" class="action-card b2b">
           <span class="action-icon">&#128722;</span>
           <span class="action-text">
-            <span class="action-en">Sell on Marketplace</span>
-            <span class="action-hi">बाज़ार में बेचें</span>
+            <span class="action-en" data-i18n="home_marketplace">Sell on Marketplace</span>
+            <span class="action-hi" data-i18n-secondary="home_marketplace">बाज़ार में बेचें</span>
+          </span>
+        </button>
+
+        <button class="action-card inventory" data-nav="inventory" type="button">
+          <span class="action-icon">&#128230;</span>
+          <span class="action-text">
+            <span class="action-en" data-i18n="home_inventory">Manage Inventory</span>
+            <span class="action-hi" data-i18n-secondary="home_inventory">इन्वेंटरी प्रबंधित करें</span>
           </span>
         </button>
       </div>
@@ -92,11 +107,6 @@
       <div class="spacer"></div>
     </div>
 
-    <nav class="navrow">
-      <button data-nav="inventory" class="navicon">&#128230;</button>
-      <button data-nav="home" class="navicon active">&#8962;</button>
-      <button data-nav="profile" class="navicon">&#128100;</button>
-    </nav>
   </section>
 
 
@@ -274,11 +284,6 @@
 
     <button id="createAnotherBtn" class="btn btn-secondary" style="max-width:calc(480px - 36px); margin:0 18px 12px;">Create another listing</button>
 
-    <nav class="navrow">
-      <button data-nav="inventory" class="navicon">&#128230;</button>
-      <button data-nav="home" class="navicon">&#8962;</button>
-      <button data-nav="profile" class="navicon">&#128100;</button>
-    </nav>
   </section>
 
 
@@ -330,11 +335,6 @@
       <div class="spacer"></div>
     </div>
 
-    <nav class="navrow">
-      <button data-nav="inventory" class="navicon active">&#128230;</button>
-      <button data-nav="home" class="navicon">&#8962;</button>
-      <button data-nav="profile" class="navicon">&#128100;</button>
-    </nav>
   </section>
 
 
@@ -347,22 +347,33 @@
     <div class="ks-body">
 
       <div class="profile-header">
-        <div id="profileAvatar" class="profile-avatar">K</div>
+        <div id="profileAvatar" class="profile-avatar" aria-label="Artisan profile">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M17 8h14" />
+            <path d="M19 8c0 5 2 7 2 10-6 3-9 8-9 14 0 5 5 8 12 8s12-3 12-8c0-6-3-11-9-14 0-3 2-5 2-10" />
+            <path d="M15 29c5 3 13 3 18 0" />
+          </svg>
+        </div>
         <div id="profileName" class="profile-name">Artisan Name</div>
         <div id="profileSub" class="profile-sub">Digi-Karigar member</div>
       </div>
 
       <div class="profile-list">
+        <label class="profile-row profile-language-row" for="profileLanguageSelect">
+          <span id="profileLanguageLabel" class="profile-setting-label">Language</span>
+          <select id="profileLanguageSelect" class="profile-language-select" aria-label="Choose app language">
+            <option value="hi-IN">हिंदी</option>
+            <option value="en-IN">English</option>
+            <option value="bn-IN">বাংলা</option>
+            <option value="ta-IN">தமிழ்</option>
+          </select>
+        </label>
         <div class="profile-row">
-          <span><span class="en">Language</span><span class="hi">भाषा</span></span>
-          <span id="profileLanguage">Hindi</span>
-        </div>
-        <div class="profile-row">
-          <span><span class="en">Phone number</span><span class="hi">फ़ोन नंबर</span></span>
+          <span id="profilePhoneLabel" class="profile-setting-label">Phone number</span>
           <span id="profilePhone">—</span>
         </div>
         <div class="profile-row">
-          <span><span class="en">Bank / payout details</span><span class="hi">भुगतान विवरण</span></span>
+          <span id="profilePayoutLabel" class="profile-setting-label">Bank / payout details</span>
           <span id="profilePayout">—</span>
         </div>
       </div>
@@ -371,12 +382,26 @@
       <button id="logoutBtn" class="btn btn-secondary">Log out</button>
     </div>
 
-    <nav class="navrow">
-      <button data-nav="inventory" class="navicon">&#128230;</button>
-      <button data-nav="home" class="navicon">&#8962;</button>
-      <button data-nav="profile" class="navicon active">&#128100;</button>
-    </nav>
   </section>
+
+  <!-- Persistent footer shown on every screen after language selection -->
+  <nav id="globalNav" class="navrow global-nav" aria-label="Main navigation" hidden>
+    <button data-nav="home" class="navicon" type="button" aria-label="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 11.5 12 4l9 7.5" />
+        <path d="M5.5 10v10h13V10" />
+        <path d="M9.5 20v-6h5v6" />
+      </svg>
+      <span id="homeNavLabel" class="nav-label">Home</span>
+    </button>
+    <button data-nav="profile" class="navicon" type="button" aria-label="Profile">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4.5 21c.8-4.2 3.3-6.5 7.5-6.5s6.7 2.3 7.5 6.5" />
+      </svg>
+      <span id="profileNavLabel" class="nav-label">Profile</span>
+    </button>
+  </nav>
 
 
 </div>
