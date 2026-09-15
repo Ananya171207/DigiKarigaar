@@ -289,12 +289,18 @@ function updateOnlineDot() {
 // LOCALIZATION HELPERS
 // ==========================================================
 
+function currentLanguage() {
+
+  return state.language
+    ? state.language.short
+    : "en";
+
+}
+
+
 function isHindi() {
 
-  return (
-    state.language &&
-    state.language.short === "hi"
-  );
+  return currentLanguage() === "hi";
 
 }
 
@@ -307,14 +313,52 @@ function localText(
 
   if (!object) return "";
 
-  if (
-    isHindi() &&
-    object[hindiKey]
-  ) {
-    return object[hindiKey];
-  }
+  const language = currentLanguage();
 
-  return object[normalKey] || "";
+  const languageKeys = {
+    en: normalKey,
+    hi: hindiKey || `${normalKey}_hi`,
+    bn: `${normalKey}_bn`,
+    ta: `${normalKey}_ta`
+  };
+
+  const selectedKey =
+    languageKeys[language] || normalKey;
+
+  return (
+    object[selectedKey] ||
+    object[normalKey] ||
+    ""
+  );
+
+}
+
+
+function localizedList(object, normalKey) {
+
+  if (!object) return [];
+
+  const language = currentLanguage();
+  const selectedKey =
+    language === "en"
+      ? normalKey
+      : `${normalKey}_${language}`;
+
+  return object[selectedKey] || object[normalKey] || [];
+
+}
+
+
+function uiText(english, hindi, bengali, tamil) {
+
+  const values = {
+    en: english,
+    hi: hindi,
+    bn: bengali,
+    ta: tamil
+  };
+
+  return values[currentLanguage()] || english;
 
 }
 
@@ -340,7 +384,7 @@ function renderLanguageGrid() {
       "lang-btn" +
       (
         state.previewLangCode ===
-        lang.code
+          lang.code
 
           ? " previewing"
           : ""
@@ -382,12 +426,12 @@ function onLanguageTap(lang) {
 
     document
       .getElementById("homeGreeting")
-      .textContent =
-        lang.short === "hi"
-
-          ? "नमस्ते! आज क्या करना है?"
-
-          : "Namaste! What would you like to do today?";
+      .textContent = uiText(
+        "Namaste! What would you like to do today?",
+        "नमस्ते! आज क्या करना है?",
+        "নমস্কার! আজ আপনি কী করতে চান?",
+        "வணக்கம்! இன்று நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?"
+      );
 
 
     showScreen("home");
@@ -610,7 +654,7 @@ document
           "originalImg"
         )
         .src =
-          state.photoPreviewUrl;
+        state.photoPreviewUrl;
 
 
       document
@@ -618,7 +662,7 @@ document
           "enhancedImg"
         )
         .src =
-          state.enhancedImageUrl;
+        state.enhancedImageUrl;
 
 
       setTopbar(
@@ -675,7 +719,7 @@ function startQAFlow() {
       "qaStatus"
     )
     .textContent =
-      "Tap to start talking to your AI manager";
+    "Tap to start talking to your AI manager";
 
 
   document
@@ -690,12 +734,12 @@ function startQAFlow() {
       "qaDots"
     )
     .innerHTML =
-      PRODUCT_QUESTIONS
-        .map(
-          () =>
-            '<div class="dot"></div>'
-        )
-        .join("");
+    PRODUCT_QUESTIONS
+      .map(
+        () =>
+          '<div class="dot"></div>'
+      )
+      .join("");
 
 
   showScreen("qa");
@@ -724,7 +768,7 @@ document
           "qaStatus"
         )
         .textContent =
-          "Sun raha hoon...";
+        "Sun raha hoon...";
 
 
       try {
@@ -804,9 +848,9 @@ function onQAProgress(
       "qaStatus"
     )
     .textContent =
-      PRODUCT_QUESTIONS[index]
-        ? PRODUCT_QUESTIONS[index].prompt
-        : "";
+    PRODUCT_QUESTIONS[index]
+      ? PRODUCT_QUESTIONS[index].prompt
+      : "";
 
 
   document
@@ -814,7 +858,7 @@ function onQAProgress(
       "qaLiveTranscript"
     )
     .textContent =
-      liveText || "";
+    liveText || "";
 
 }
 
@@ -900,7 +944,7 @@ async function generateListing() {
       "qaStatus"
     )
     .textContent =
-      "Ek minute...";
+    "Ek minute...";
 
 
   const {
@@ -1069,7 +1113,7 @@ function renderListingScreen() {
       "listingTitle"
     )
     .textContent =
-      p.title;
+    p.title;
 
 
   document
@@ -1077,7 +1121,7 @@ function renderListingScreen() {
       "listingDescription"
     )
     .textContent =
-      p.description;
+    p.description;
 
 
   const [
@@ -1096,7 +1140,7 @@ function renderListingScreen() {
       "listingPrice"
     )
     .textContent =
-      `₹${low} – ₹${high}`;
+    `₹${low} – ₹${high}`;
 
 
   document
@@ -1104,7 +1148,7 @@ function renderListingScreen() {
       "listingError"
     )
     .hidden =
-      true;
+    true;
 
 
   setTopbar(
@@ -1259,11 +1303,11 @@ function renderDoneScreen() {
       "doneIcon"
     )
     .innerHTML =
-      online
+    online
 
-        ? '<div class="success-icon">&#10003;</div>'
+      ? '<div class="success-icon">&#10003;</div>'
 
-        : '<div class="offline-icon">&#8987;</div>';
+      : '<div class="offline-icon">&#8987;</div>';
 
 
   document
@@ -1271,11 +1315,11 @@ function renderDoneScreen() {
       "doneMessage"
     )
     .textContent =
-      online
+    online
 
-        ? "Product listing taiyaar hai."
+      ? "Product listing taiyaar hai."
 
-        : "Saved on your phone — will publish automatically when you're back online.";
+      : "Saved on your phone — will publish automatically when you're back online.";
 
 }
 
@@ -1417,25 +1461,11 @@ function renderSubsidySchemes() {
 
 
       const title =
-        isHindi()
-
-          ? (
-              scheme.scheme_name_hi ||
-              scheme.scheme_name
-            )
-
-          : scheme.scheme_name;
+        localText(scheme, "scheme_name", "scheme_name_hi");
 
 
       const description =
-        isHindi()
-
-          ? (
-              scheme.description_hi ||
-              scheme.description
-            )
-
-          : scheme.description;
+        localText(scheme, "description", "description_hi");
 
 
       card.innerHTML = `
@@ -1451,13 +1481,12 @@ function renderSubsidySchemes() {
           </p>
 
           <p class="hint">
-            ${
-              isHindi()
+            ${isHindi()
 
-                ? "न्यूनतम आयु"
+          ? "न्यूनतम आयु"
 
-                : "Minimum age"
-            }:
+          : "Minimum age"
+        }:
             ${scheme.minimum_age}
           </p>
 
@@ -1597,8 +1626,8 @@ function getCurrentSubsidySection() {
     state
       .subsidyFormSchema
       .sections[
-        state.subsidySectionIndex
-      ]
+    state.subsidySectionIndex
+    ]
   );
 
 }
@@ -1627,7 +1656,7 @@ function shouldShowField(field) {
 
   return (
     state.subsidyAnswers[
-      dependency
+    dependency
     ] === expected
   );
 
@@ -1660,7 +1689,7 @@ function renderCurrentSubsidySection() {
       "subsidySectionName"
     )
     .textContent =
-      sectionName;
+    sectionName;
 
 
   document
@@ -1668,7 +1697,7 @@ function renderCurrentSubsidySection() {
       "subsidyProgress"
     )
     .textContent =
-      `${state.subsidySectionIndex + 1} / ${state.subsidyFormSchema.sections.length}`;
+    `${state.subsidySectionIndex + 1} / ${state.subsidyFormSchema.sections.length}`;
 
 
   const container =
@@ -1720,16 +1749,16 @@ function renderCurrentSubsidySection() {
     finalSection
 
       ? (
-          isHindi()
-            ? "आवेदन पूरा करें"
-            : "Finish Application"
-        )
+        isHindi()
+          ? "आवेदन पूरा करें"
+          : "Finish Application"
+      )
 
       : (
-          isHindi()
-            ? "अगला"
-            : "Next"
-        );
+        isHindi()
+          ? "अगला"
+          : "Next"
+      );
 
 }
 
@@ -1894,7 +1923,7 @@ function renderSubsidyField(
 
           if (
             state.subsidyAnswers[
-              field.field_id
+            field.field_id
             ] ===
             option.value
           ) {
@@ -1966,7 +1995,7 @@ function renderSubsidyField(
     input.checked =
       Boolean(
         state.subsidyAnswers[
-          field.field_id
+        field.field_id
         ]
       );
 
@@ -2061,14 +2090,14 @@ function renderSubsidyField(
 
     if (
       state.subsidyAnswers[
-        field.field_id
+      field.field_id
       ] !== undefined
     ) {
 
       select.value =
         String(
           state.subsidyAnswers[
-            field.field_id
+          field.field_id
           ]
         );
 
@@ -2120,7 +2149,7 @@ function renderSubsidyField(
 
     const selected =
       state.subsidyAnswers[
-        field.field_id
+      field.field_id
       ] || [];
 
 
@@ -2155,7 +2184,7 @@ function renderSubsidyField(
 
               let values =
                 state.subsidyAnswers[
-                  field.field_id
+                field.field_id
                 ] || [];
 
 
@@ -2418,7 +2447,7 @@ function configureBasicInput(
 
   input.value =
     state.subsidyAnswers[
-      field.field_id
+    field.field_id
     ] || "";
 
 
@@ -2512,13 +2541,13 @@ function getVoiceFillableFields() {
         !field.sensitive &&
 
         field.user_editable !==
-          false &&
+        false &&
 
         field.type !==
-          "verification" &&
+        "verification" &&
 
         field.type !==
-          "hidden"
+        "hidden"
 
     );
 
@@ -2548,7 +2577,7 @@ function updateSubsidyVoiceField() {
 
   const field =
     fields[
-      state.subsidyVoiceFieldIndex
+    state.subsidyVoiceFieldIndex
     ];
 
 
@@ -2622,7 +2651,7 @@ async function fillCurrentSubsidyFieldByVoice() {
 
   const field =
     fields[
-      state.subsidyVoiceFieldIndex
+    state.subsidyVoiceFieldIndex
     ];
 
 
@@ -2690,7 +2719,7 @@ async function fillCurrentSubsidyFieldByVoice() {
 
     const spoken =
       answers[
-        field.field_id
+      field.field_id
       ] || "";
 
 
@@ -2759,222 +2788,65 @@ function normalizeSubsidyVoiceAnswer(
   field
 ) {
 
-  const text =
-    String(spoken)
-      .trim()
-      .toLowerCase();
+  const text = String(spoken).trim().toLowerCase();
 
-
-  if (
-    field.type ===
-    "number"
-  ) {
-
-    const cleaned =
-      text.replace(
-        /[^0-9.-]/g,
-        ""
-      );
-
-
-    return cleaned === ""
-      ? ""
-      : Number(cleaned);
-
+  if (field.type === "number") {
+    const digitMap = {
+      "০": "0", "১": "1", "২": "2", "৩": "3", "৪": "4",
+      "৫": "5", "৬": "6", "৭": "7", "৮": "8", "৯": "9",
+      "௦": "0", "௧": "1", "௨": "2", "௩": "3", "௪": "4",
+      "௫": "5", "௬": "6", "௭": "7", "௮": "8", "௯": "9"
+    };
+    const converted = text.replace(/[০-৯௦-௯]/g, digit => digitMap[digit]);
+    const cleaned = converted.replace(/[^0-9.-]/g, "");
+    return cleaned === "" ? "" : Number(cleaned);
   }
 
+  if (field.type === "radio" || field.type === "select") {
+    const options = field.options || [];
+    for (const option of options) {
+      const labels = [
+        option.label,
+        option.label_hi,
+        option.label_bn,
+        option.label_ta,
+        option.value
+      ]
+        .filter(value => value !== undefined && value !== null)
+        .map(value => String(value).toLowerCase());
 
-  if (
-    field.type ===
-    "radio" ||
-    field.type ===
-    "select"
-  ) {
-
-    const options =
-      field.options || [];
-
-
-    for (
-      const option of options
-    ) {
-
-      const normalLabel =
-        String(
-          option.label || ""
-        )
-          .toLowerCase();
-
-
-      const hindiLabel =
-        String(
-          option.label_hi || ""
-        )
-          .toLowerCase();
-
-
-      const value =
-        String(
-          option.value
-        )
-          .toLowerCase();
-
-
-      if (
-        text.includes(
-          normalLabel
-        ) ||
-        (
-          hindiLabel &&
-          text.includes(
-            hindiLabel
-          )
-        ) ||
-        text === value
-      ) {
-
+      if (labels.some(label => label && (text === label || text.includes(label)))) {
         return option.value;
-
       }
-
     }
 
+    const yesWords = ["yes", "haan", "ha", "हाँ", "हां", "जी", "হ্যাঁ", "হ্যা", "ஆம்", "ஆமாம்"];
+    const noWords = ["no", "nahi", "nahin", "नहीं", "नही", "ना", "না", "இல்லை", "வேண்டாம்"];
 
-    // Extra yes/no handling
-
-    if (
-      [
-        "yes",
-        "haan",
-        "ha",
-        "हाँ",
-        "हां",
-        "जी"
-      ].some(
-        (word) =>
-          text.includes(word)
-      )
-    ) {
-
-      const yesOption =
-        options.find(
-          (option) =>
-            option.value === true ||
-            option.value === "yes"
-        );
-
-
-      if (yesOption) {
-
-        return yesOption.value;
-
-      }
-
+    if (yesWords.some(word => text.includes(word))) {
+      const yesOption = options.find(option => option.value === true || option.value === "yes");
+      if (yesOption) return yesOption.value;
     }
-
-
-    if (
-      [
-        "no",
-        "nahi",
-        "nahin",
-        "नहीं",
-        "नही",
-        "ना"
-      ].some(
-        (word) =>
-          text.includes(word)
-      )
-    ) {
-
-      const noOption =
-        options.find(
-          (option) =>
-            option.value === false ||
-            option.value === "no"
-        );
-
-
-      if (noOption) {
-
-        return noOption.value;
-
-      }
-
+    if (noWords.some(word => text.includes(word))) {
+      const noOption = options.find(option => option.value === false || option.value === "no");
+      if (noOption) return noOption.value;
     }
-
   }
 
-
-  if (
-    field.type ===
-    "checkbox"
-  ) {
-
-    return (
-      text.includes("yes") ||
-      text.includes("haan") ||
-      text.includes("हाँ") ||
-      text.includes("हां")
-    );
-
+  if (field.type === "checkbox") {
+    return ["yes", "haan", "हाँ", "हां", "হ্যাঁ", "ஆம்", "ஆமாம்"]
+      .some(word => text.includes(word));
   }
 
-
-  if (
-    field.type ===
-    "multiselect"
-  ) {
-
-    const selected = [];
-
-
-    (field.options || [])
-      .forEach(
-        (option) => {
-
-          const english =
-            String(
-              option.label || ""
-            )
-              .toLowerCase();
-
-
-          const hindi =
-            String(
-              option.label_hi || ""
-            )
-              .toLowerCase();
-
-
-          if (
-            text.includes(
-              english
-            ) ||
-            (
-              hindi &&
-              text.includes(
-                hindi
-              )
-            )
-          ) {
-
-            selected.push(
-              option.value
-            );
-
-          }
-
-        }
-      );
-
-
-    return selected;
-
+  if (field.type === "multiselect") {
+    return (field.options || [])
+      .filter(option => [option.label, option.label_hi, option.label_bn, option.label_ta]
+        .filter(Boolean)
+        .some(label => text.includes(String(label).toLowerCase())))
+      .map(option => option.value);
   }
 
-
-  return spoken.trim();
+  return String(spoken).trim();
 
 }
 
@@ -3073,7 +2945,7 @@ async function finishSubsidyApplication() {
         "doneIcon"
       )
       .innerHTML =
-        '<div class="success-icon">&#10003;</div>';
+      '<div class="success-icon">&#10003;</div>';
 
 
     document
@@ -3081,11 +2953,11 @@ async function finishSubsidyApplication() {
         "doneMessage"
       )
       .textContent =
-        isHindi()
+      isHindi()
 
-          ? `आवेदन डेमो में पूरा हुआ। पंजीकरण संख्या: ${result.registration_number}`
+        ? `आवेदन डेमो में पूरा हुआ। पंजीकरण संख्या: ${result.registration_number}`
 
-          : `Demo application completed. Registration number: ${result.registration_number}`;
+        : `Demo application completed. Registration number: ${result.registration_number}`;
 
 
   }
@@ -3132,7 +3004,7 @@ async function renderInventory() {
           const pendingBadge =
 
             p.status &&
-            p.status !==
+              p.status !==
               "synced"
 
               ? '<span class="pending-badge">Pending</span>'
@@ -3160,9 +3032,9 @@ async function renderInventory() {
       )
       .join("")
 
-      +
+    +
 
-      '<button class="thumb" onclick="document.getElementById(\'addProductBtn\').click()">+</button>';
+    '<button class="thumb" onclick="document.getElementById(\'addProductBtn\').click()">+</button>';
 
 }
 

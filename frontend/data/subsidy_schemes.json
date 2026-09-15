@@ -3,8 +3,12 @@
     "scheme_id": "pm_vishwakarma",
     "scheme_name": "PM Vishwakarma",
     "scheme_name_hi": "पीएम विश्वकर्मा",
+    "scheme_name_bn": "পিএম বিশ্বকর্মা",
+    "scheme_name_ta": "பிஎம் விஸ்வகர்மா",
     "description": "A central government scheme providing training, toolkit incentives, credit and marketing support to traditional artisans.",
     "description_hi": "पारंपरिक कारीगरों को प्रशिक्षण, टूलकिट प्रोत्साहन, ऋण और विपणन सहायता प्रदान करने वाली केंद्र सरकार की योजना।",
+    "description_bn": "ঐতিহ্যবাহী কারিগরদের প্রশিক্ষণ, টুলকিট প্রণোদনা, ঋণ ও বিপণন সহায়তা প্রদানকারী কেন্দ্রীয় সরকারের একটি প্রকল্প।",
+    "description_ta": "பாரம்பரியக் கைவினைஞர்களுக்குப் பயிற்சி, கருவித்தொகுப்பு ஊக்கத்தொகை, கடன் மற்றும் சந்தைப்படுத்தல் ஆதரவு வழங்கும் மத்திய அரசுத் திட்டம்.",
     "official_url": "https://pmvishwakarma.gov.in/",
     "application_mode": "csc_assisted",
     "minimum_age": 18,
@@ -15,17 +19,42 @@
       "Weaver",
       "Sculptor"
     ],
+    "eligible_trades_hi": [
+      "कुम्हार",
+      "बढ़ई",
+      "दर्जी",
+      "बुनकर",
+      "मूर्तिकार"
+    ],
+    "eligible_trades_bn": [
+      "কুমোর",
+      "ছুতার",
+      "দর্জি",
+      "তাঁতি",
+      "ভাস্কর"
+    ],
+    "eligible_trades_ta": [
+      "குயவர்",
+      "தச்சர்",
+      "தையல்காரர்",
+      "நெசவாளர்",
+      "சிற்பி"
+    ],
     "eligibility_questions": [
       {
         "field_id": "government_employee_in_family",
         "question": "Is there any government employee within your family?",
         "question_hi": "क्या आपके परिवार में कोई सरकारी कर्मचारी है?",
+        "question_bn": "আপনার পরিবারে কি কোনো সরকারি কর্মচারী আছেন?",
+        "question_ta": "உங்கள் குடும்பத்தில் அரசு ஊழியர் யாராவது உள்ளாரா?",
         "eligible_answer": false
       },
       {
         "field_id": "similar_scheme_loan_availed",
         "question": "Have you availed credit under a similar government scheme or have an outstanding PM SVANidhi or MUDRA loan?",
         "question_hi": "क्या आपने समान सरकारी योजना के तहत ऋण लिया है या PM SVANidhi अथवा MUDRA का कोई बकाया ऋण है?",
+        "question_bn": "আপনি কি অনুরূপ সরকারি প্রকল্পে ঋণ নিয়েছেন অথবা আপনার কোনো PM SVANidhi বা MUDRA ঋণ বকেয়া আছে?",
+        "question_ta": "இதேபோன்ற அரசுத் திட்டத்தில் கடன் பெற்றுள்ளீர்களா அல்லது PM SVANidhi அல்லது MUDRA கடன் நிலுவையில் உள்ளதா?",
         "eligible_answer": false
       }
     ],
@@ -35,6 +64,24 @@
       "Bank account details",
       "Ration card, if available"
     ],
+    "required_documents_hi": [
+      "आधार कार्ड",
+      "आधार से जुड़ा मोबाइल नंबर",
+      "बैंक खाते का विवरण",
+      "राशन कार्ड, यदि उपलब्ध हो"
+    ],
+    "required_documents_bn": [
+      "আধার কার্ড",
+      "আধার-সংযুক্ত মোবাইল নম্বর",
+      "ব্যাংক অ্যাকাউন্টের বিবরণ",
+      "রেশন কার্ড, যদি উপলভ্য থাকে"
+    ],
+    "required_documents_ta": [
+      "ஆதார் அட்டை",
+      "ஆதாருடன் இணைக்கப்பட்ட கைப்பேசி எண்",
+      "வங்கிக் கணக்கு விவரங்கள்",
+      "குடும்ப அட்டை, இருந்தால்"
+    ],
     "benefits": [
       "Skill training",
       "Toolkit incentive",
@@ -42,6 +89,30 @@
       "Digital transaction incentive",
       "Marketing support"
     ],
-    "prototype_notice": "This prototype does not submit an application to the official government portal."
+    "benefits_hi": [
+      "कौशल प्रशिक्षण",
+      "टूलकिट प्रोत्साहन",
+      "पहले चरण में ₹1,00,000 तक ऋण सहायता",
+      "डिजिटल लेनदेन प्रोत्साहन",
+      "विपणन सहायता"
+    ],
+    "benefits_bn": [
+      "দক্ষতা প্রশিক্ষণ",
+      "টুলকিট প্রণোদনা",
+      "প্রথম পর্যায়ে ₹১,০০,০০০ পর্যন্ত ঋণ সহায়তা",
+      "ডিজিটাল লেনদেন প্রণোদনা",
+      "বিপণন সহায়তা"
+    ],
+    "benefits_ta": [
+      "திறன் பயிற்சி",
+      "கருவித்தொகுப்பு ஊக்கத்தொகை",
+      "முதல் கட்டத்தில் ₹1,00,000 வரை கடன் உதவி",
+      "டிஜிட்டல் பரிவர்த்தனை ஊக்கத்தொகை",
+      "சந்தைப்படுத்தல் ஆதரவு"
+    ],
+    "prototype_notice": "This prototype does not submit an application to the official government portal.",
+    "prototype_notice_hi": "यह प्रोटोटाइप आधिकारिक सरकारी पोर्टल पर आवेदन जमा नहीं करता है।",
+    "prototype_notice_bn": "এই প্রোটোটাইপটি সরকারি পোর্টালে কোনো আবেদন জমা দেয় না।",
+    "prototype_notice_ta": "இந்த முன்மாதிரி அதிகாரப்பூர்வ அரசு இணையதளத்தில் விண்ணப்பத்தைச் சமர்ப்பிக்காது."
   }
 ]

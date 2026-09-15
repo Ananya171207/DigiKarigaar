@@ -22,15 +22,23 @@
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             },
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             }
           ],
-          "eligible_answer": false
+          "eligible_answer": false,
+          "label_bn": "পরিবারে সরকারি কর্মচারী",
+          "label_ta": "குடும்பத்தில் அரசு ஊழியர்",
+          "question_bn": "আপনার পরিবারে কি কোনো সরকারি কর্মচারী আছেন?",
+          "question_ta": "உங்கள் குடும்பத்தில் அரசு ஊழியர் யாராவது உள்ளாரா?"
         },
         {
           "field_id": "similar_scheme_loan_availed",
@@ -44,17 +52,27 @@
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             },
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             }
           ],
-          "eligible_answer": false
+          "eligible_answer": false,
+          "label_bn": "অনুরূপ প্রকল্পের ঋণ গ্রহণ",
+          "label_ta": "இதேபோன்ற திட்டக் கடன் பெறப்பட்டது",
+          "question_bn": "আপনি কি অনুরূপ সরকারি প্রকল্পে ঋণ নিয়েছেন অথবা আপনার কোনো PM SVANidhi বা MUDRA ঋণ বকেয়া আছে?",
+          "question_ta": "இதேபோன்ற அரசுத் திட்டத்தில் கடன் பெற்றுள்ளீர்களா அல்லது PM SVANidhi அல்லது MUDRA கடன் நிலுவையில் உள்ளதா?"
         }
-      ]
+      ],
+      "section_name_bn": "পাত্রতা যাচাই",
+      "section_name_ta": "தகுதி சரிபார்ப்பு"
     },
     {
       "section_id": "aadhaar_authentication",
@@ -73,7 +91,11 @@
           "validation": {
             "pattern": "^[6-9][0-9]{9}$",
             "message": "Enter a valid ten-digit mobile number."
-          }
+          },
+          "label_bn": "আধার-সংযুক্ত মোবাইল নম্বর",
+          "label_ta": "ஆதாருடன் இணைக்கப்பட்ட கைப்பேசி எண்",
+          "question_bn": "আপনার আধার-সংযুক্ত মোবাইল নম্বর লিখুন।",
+          "question_ta": "ஆதாருடன் இணைக்கப்பட்ட உங்கள் கைப்பேசி எண்ணை உள்ளிடவும்."
         },
         {
           "field_id": "aadhaar_number",
@@ -87,7 +109,11 @@
           "validation": {
             "pattern": "^[0-9]{12}$",
             "message": "Enter a valid twelve-digit Aadhaar number."
-          }
+          },
+          "label_bn": "আধার নম্বর",
+          "label_ta": "ஆதார் எண்",
+          "question_bn": "আপনার ১২ সংখ্যার আধার নম্বর লিখুন।",
+          "question_ta": "உங்கள் 12 இலக்க ஆதார் எண்ணை உள்ளிடவும்."
         },
         {
           "field_id": "otp",
@@ -102,7 +128,11 @@
           "validation": {
             "pattern": "^[0-9]{6}$",
             "message": "Enter a valid six-digit OTP."
-          }
+          },
+          "label_bn": "ওটিপি",
+          "label_ta": "OTP",
+          "question_bn": "আধার-সংযুক্ত মোবাইল নম্বরে পাওয়া ওটিপি লিখুন।",
+          "question_ta": "ஆதாருடன் இணைக்கப்பட்ட கைப்பேசி எண்ணில் பெறப்பட்ட OTP-ஐ உள்ளிடவும்."
         },
         {
           "field_id": "biometric_verified",
@@ -111,9 +141,13 @@
           "type": "verification",
           "required": true,
           "prototype_mode": "simulated",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "বায়োমেট্রিক যাচাইকরণ",
+          "label_ta": "உயிர்ம அளவியல் சரிபார்ப்பு"
         }
-      ]
+      ],
+      "section_name_bn": "আধার প্রমাণীকরণ",
+      "section_name_ta": "ஆதார் அங்கீகாரம்"
     },
     {
       "section_id": "personal_details",
@@ -127,7 +161,9 @@
           "type": "text",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "পুরো নাম",
+          "label_ta": "முழுப் பெயர்"
         },
         {
           "field_id": "father_spouse_name",
@@ -136,7 +172,9 @@
           "type": "text",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "পিতা বা স্বামী/স্ত্রীর নাম",
+          "label_ta": "தந்தை அல்லது துணையின் பெயர்"
         },
         {
           "field_id": "date_of_birth",
@@ -145,7 +183,9 @@
           "type": "date",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "জন্মতারিখ",
+          "label_ta": "பிறந்த தேதி"
         },
         {
           "field_id": "gender",
@@ -154,7 +194,9 @@
           "type": "text",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "লিঙ্গ",
+          "label_ta": "பாலினம்"
         },
         {
           "field_id": "marital_status",
@@ -168,24 +210,36 @@
             {
               "value": "single",
               "label": "Single",
-              "label_hi": "अविवाहित"
+              "label_hi": "अविवाहित",
+              "label_bn": "অবিবাহিত",
+              "label_ta": "திருமணமாகாதவர்"
             },
             {
               "value": "married",
               "label": "Married",
-              "label_hi": "विवाहित"
+              "label_hi": "विवाहित",
+              "label_bn": "বিবাহিত",
+              "label_ta": "திருமணமானவர்"
             },
             {
               "value": "widowed",
               "label": "Widowed",
-              "label_hi": "विधवा या विधुर"
+              "label_hi": "विधवा या विधुर",
+              "label_bn": "বিধবা বা বিপত্নীক",
+              "label_ta": "விதவை அல்லது விதவர்"
             },
             {
               "value": "divorced",
               "label": "Divorced",
-              "label_hi": "तलाकशुदा"
+              "label_hi": "तलाकशुदा",
+              "label_bn": "বিবাহবিচ্ছিন্ন",
+              "label_ta": "விவாகரத்து பெற்றவர்"
             }
-          ]
+          ],
+          "label_bn": "বৈবাহিক অবস্থা",
+          "label_ta": "திருமண நிலை",
+          "question_bn": "আপনার বৈবাহিক অবস্থা কী?",
+          "question_ta": "உங்கள் திருமண நிலை என்ன?"
         },
         {
           "field_id": "category",
@@ -199,24 +253,36 @@
             {
               "value": "general",
               "label": "General",
-              "label_hi": "सामान्य"
+              "label_hi": "सामान्य",
+              "label_bn": "সাধারণ",
+              "label_ta": "பொது"
             },
             {
               "value": "sc",
               "label": "Scheduled Caste",
-              "label_hi": "अनुसूचित जाति"
+              "label_hi": "अनुसूचित जाति",
+              "label_bn": "তফসিলি জাতি",
+              "label_ta": "பட்டியல் சாதி"
             },
             {
               "value": "st",
               "label": "Scheduled Tribe",
-              "label_hi": "अनुसूचित जनजाति"
+              "label_hi": "अनुसूचित जनजाति",
+              "label_bn": "তফসিলি উপজাতি",
+              "label_ta": "பட்டியல் பழங்குடியினர்"
             },
             {
               "value": "obc",
               "label": "Other Backward Class",
-              "label_hi": "अन्य पिछड़ा वर्ग"
+              "label_hi": "अन्य पिछड़ा वर्ग",
+              "label_bn": "অন্যান্য অনগ্রসর শ্রেণি",
+              "label_ta": "இதர பிற்படுத்தப்பட்ட வகுப்பு"
             }
-          ]
+          ],
+          "label_bn": "শ্রেণি",
+          "label_ta": "வகை",
+          "question_bn": "আপনার শ্রেণি নির্বাচন করুন।",
+          "question_ta": "உங்கள் வகையைத் தேர்ந்தெடுக்கவும்."
         },
         {
           "field_id": "is_divyangjan",
@@ -230,14 +296,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "দিব্যাঙ্গজন",
+          "label_ta": "மாற்றுத்திறனாளி",
+          "question_bn": "আপনি কি দিব্যাঙ্গজন?",
+          "question_ta": "நீங்கள் மாற்றுத்திறனாளியா?"
         },
         {
           "field_id": "divyangjan_type",
@@ -250,7 +324,11 @@
           "show_when": {
             "field_id": "is_divyangjan",
             "equals": true
-          }
+          },
+          "label_bn": "প্রতিবন্ধিতার ধরন",
+          "label_ta": "மாற்றுத்திறனின் வகை",
+          "question_bn": "প্রতিবন্ধিতার ধরন উল্লেখ করুন।",
+          "question_ta": "மாற்றுத்திறனின் வகையைக் குறிப்பிடவும்."
         },
         {
           "field_id": "business_in_same_state",
@@ -264,14 +342,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "একই রাজ্যে ব্যবসা",
+          "label_ta": "அதே மாநிலத்தில் தொழில்",
+          "question_bn": "আপনি কি একই রাজ্যে ব্যবসা করেন?",
+          "question_ta": "நீங்கள் அதே மாநிலத்தில் தொழில் செய்கிறீர்களா?"
         },
         {
           "field_id": "is_minority",
@@ -285,14 +371,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "সংখ্যালঘু শ্রেণি",
+          "label_ta": "சிறுபான்மை வகை",
+          "question_bn": "আপনি কি সংখ্যালঘু শ্রেণির অন্তর্ভুক্ত?",
+          "question_ta": "நீங்கள் சிறுபான்மை வகையைச் சேர்ந்தவரா?"
         },
         {
           "field_id": "minority_type",
@@ -305,9 +399,15 @@
           "show_when": {
             "field_id": "is_minority",
             "equals": true
-          }
+          },
+          "label_bn": "সংখ্যালঘু শ্রেণির ধরন",
+          "label_ta": "சிறுபான்மை வகை",
+          "question_bn": "আপনার সংখ্যালঘু শ্রেণি নির্বাচন করুন।",
+          "question_ta": "உங்கள் சிறுபான்மை வகையைத் தேர்ந்தெடுக்கவும்."
         }
-      ]
+      ],
+      "section_name_bn": "ব্যক্তিগত বিবরণ",
+      "section_name_ta": "தனிப்பட்ட விவரங்கள்"
     },
     {
       "section_id": "contact_details",
@@ -321,7 +421,9 @@
           "type": "tel",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "মোবাইল নম্বর",
+          "label_ta": "கைப்பேசி எண்"
         },
         {
           "field_id": "pan_number",
@@ -334,9 +436,15 @@
           "validation": {
             "pattern": "^[A-Z]{5}[0-9]{4}[A-Z]$",
             "message": "Enter a valid PAN number."
-          }
+          },
+          "label_bn": "প্যান কার্ড নম্বর",
+          "label_ta": "PAN அட்டை எண்",
+          "question_bn": "উপলভ্য থাকলে আপনার প্যান নম্বর লিখুন।",
+          "question_ta": "இருந்தால் உங்கள் PAN எண்ணை உள்ளிடவும்."
         }
-      ]
+      ],
+      "section_name_bn": "যোগাযোগের বিবরণ",
+      "section_name_ta": "தொடர்பு விவரங்கள்"
     },
     {
       "section_id": "family_details",
@@ -355,14 +463,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "রেশন কার্ড আছে কি না",
+          "label_ta": "குடும்ப அட்டை உள்ளதா",
+          "question_bn": "আপনার কি রেশন কার্ড আছে?",
+          "question_ta": "உங்களிடம் குடும்ப அட்டை உள்ளதா?"
         },
         {
           "field_id": "ration_card_number",
@@ -375,7 +491,11 @@
           "show_when": {
             "field_id": "has_ration_card",
             "equals": true
-          }
+          },
+          "label_bn": "রেশন কার্ড নম্বর",
+          "label_ta": "குடும்ப அட்டை எண்",
+          "question_bn": "আপনার রেশন কার্ড নম্বর লিখুন।",
+          "question_ta": "உங்கள் குடும்ப அட்டை எண்ணை உள்ளிடவும்."
         },
         {
           "field_id": "family_members",
@@ -383,9 +503,13 @@
           "label_hi": "परिवार के सदस्य",
           "type": "list",
           "required": true,
-          "source": "ration_card_or_manual"
+          "source": "ration_card_or_manual",
+          "label_bn": "পরিবারের সদস্যরা",
+          "label_ta": "குடும்ப உறுப்பினர்கள்"
         }
-      ]
+      ],
+      "section_name_bn": "পরিবারের বিবরণ",
+      "section_name_ta": "குடும்ப விவரங்கள்"
     },
     {
       "section_id": "address_details",
@@ -399,7 +523,9 @@
           "type": "textarea",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "আধারের ঠিকানা",
+          "label_ta": "ஆதார் முகவரி"
         },
         {
           "field_id": "state",
@@ -408,7 +534,9 @@
           "type": "text",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "রাজ্য",
+          "label_ta": "மாநிலம்"
         },
         {
           "field_id": "district",
@@ -417,7 +545,9 @@
           "type": "text",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "জেলা",
+          "label_ta": "மாவட்டம்"
         },
         {
           "field_id": "pin_code",
@@ -426,7 +556,9 @@
           "type": "text",
           "required": true,
           "source": "aadhaar",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "পিন কোড",
+          "label_ta": "அஞ்சல் குறியீடு"
         },
         {
           "field_id": "current_address_same_as_aadhaar",
@@ -440,14 +572,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "বর্তমান ঠিকানা আধারের ঠিকানার মতো",
+          "label_ta": "தற்போதைய முகவரி ஆதார் முகவரியே",
+          "question_bn": "আপনার বর্তমান ঠিকানা কি আধারের ঠিকানার মতো?",
+          "question_ta": "உங்கள் தற்போதைய முகவரி ஆதார் முகவரியேதானா?"
         },
         {
           "field_id": "current_address",
@@ -460,7 +600,11 @@
           "show_when": {
             "field_id": "current_address_same_as_aadhaar",
             "equals": false
-          }
+          },
+          "label_bn": "বর্তমান ঠিকানা",
+          "label_ta": "தற்போதைய முகவரி",
+          "question_bn": "আপনার বর্তমান ঠিকানা লিখুন।",
+          "question_ta": "உங்கள் தற்போதைய முகவரியை உள்ளிடவும்."
         },
         {
           "field_id": "comes_under_gram_panchayat",
@@ -474,14 +618,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "গ্রাম পঞ্চায়েতের অন্তর্ভুক্ত",
+          "label_ta": "கிராமப் பஞ்சாயத்தின் கீழ் வருகிறது",
+          "question_bn": "আপনার ঠিকানা কি গ্রাম পঞ্চায়েতের অন্তর্ভুক্ত?",
+          "question_ta": "உங்கள் முகவரி கிராமப் பஞ்சாயத்தின் கீழ் வருகிறதா?"
         },
         {
           "field_id": "block_name",
@@ -494,7 +646,11 @@
           "show_when": {
             "field_id": "comes_under_gram_panchayat",
             "equals": true
-          }
+          },
+          "label_bn": "ব্লক",
+          "label_ta": "வட்டாரம்",
+          "question_bn": "আপনার ব্লকের নাম লিখুন।",
+          "question_ta": "உங்கள் வட்டாரத்தின் பெயரை உள்ளிடவும்."
         },
         {
           "field_id": "gram_panchayat",
@@ -507,7 +663,11 @@
           "show_when": {
             "field_id": "comes_under_gram_panchayat",
             "equals": true
-          }
+          },
+          "label_bn": "গ্রাম পঞ্চায়েত",
+          "label_ta": "கிராமப் பஞ்சாயத்து",
+          "question_bn": "আপনার গ্রাম পঞ্চায়েতের নাম লিখুন।",
+          "question_ta": "உங்கள் கிராமப் பஞ்சாயத்தின் பெயரை உள்ளிடவும்."
         },
         {
           "field_id": "ulb_name",
@@ -520,9 +680,15 @@
           "show_when": {
             "field_id": "comes_under_gram_panchayat",
             "equals": false
-          }
+          },
+          "label_bn": "শহুরে স্থানীয় সংস্থা",
+          "label_ta": "நகர்ப்புற உள்ளாட்சி அமைப்பு",
+          "question_bn": "আপনার শহুরে স্থানীয় সংস্থা নির্বাচন করুন।",
+          "question_ta": "உங்கள் நகர்ப்புற உள்ளாட்சி அமைப்பைத் தேர்ந்தெடுக்கவும்."
         }
-      ]
+      ],
+      "section_name_bn": "ঠিকানার বিবরণ",
+      "section_name_ta": "முகவரி விவரங்கள்"
     },
     {
       "section_id": "profession_trade_details",
@@ -541,94 +707,134 @@
             {
               "value": "carpenter",
               "label": "Carpenter",
-              "label_hi": "बढ़ई"
+              "label_hi": "बढ़ई",
+              "label_bn": "ছুতার",
+              "label_ta": "தச்சர்"
             },
             {
               "value": "boat_maker",
               "label": "Boat Maker",
-              "label_hi": "नाव निर्माता"
+              "label_hi": "नाव निर्माता",
+              "label_bn": "নৌকা নির্মাতা",
+              "label_ta": "படகு தயாரிப்பாளர்"
             },
             {
               "value": "armourer",
               "label": "Armourer",
-              "label_hi": "अस्त्रकार"
+              "label_hi": "अस्त्रकार",
+              "label_bn": "অস্ত্র নির্মাতা",
+              "label_ta": "கவசம் தயாரிப்பவர்"
             },
             {
               "value": "blacksmith",
               "label": "Blacksmith",
-              "label_hi": "लोहार"
+              "label_hi": "लोहार",
+              "label_bn": "কামার",
+              "label_ta": "கொல்லர்"
             },
             {
               "value": "hammer_toolkit_maker",
               "label": "Hammer and Toolkit Maker",
-              "label_hi": "हथौड़ा और औजार निर्माता"
+              "label_hi": "हथौड़ा और औजार निर्माता",
+              "label_bn": "হাতুড়ি ও টুলকিট নির্মাতা",
+              "label_ta": "சுத்தியல் மற்றும் கருவித்தொகுப்பு தயாரிப்பாளர்"
             },
             {
               "value": "locksmith",
               "label": "Locksmith",
-              "label_hi": "ताला बनाने वाला"
+              "label_hi": "ताला बनाने वाला",
+              "label_bn": "তালা প্রস্তুতকারক",
+              "label_ta": "பூட்டு தயாரிப்பாளர்"
             },
             {
               "value": "goldsmith",
               "label": "Goldsmith",
-              "label_hi": "सुनार"
+              "label_hi": "सुनार",
+              "label_bn": "স্বর্ণকার",
+              "label_ta": "பொற்கொல்லர்"
             },
             {
               "value": "potter",
               "label": "Potter",
-              "label_hi": "कुम्हार"
+              "label_hi": "कुम्हार",
+              "label_bn": "কুমোর",
+              "label_ta": "குயவர்"
             },
             {
               "value": "sculptor",
               "label": "Sculptor",
-              "label_hi": "मूर्तिकार"
+              "label_hi": "मूर्तिकार",
+              "label_bn": "ভাস্কর",
+              "label_ta": "சிற்பி"
             },
             {
               "value": "cobbler",
               "label": "Cobbler",
-              "label_hi": "मोची"
+              "label_hi": "मोची",
+              "label_bn": "মুচি",
+              "label_ta": "காலணி தொழிலாளர்"
             },
             {
               "value": "mason",
               "label": "Mason",
-              "label_hi": "राजमिस्त्री"
+              "label_hi": "राजमिस्त्री",
+              "label_bn": "রাজমিস্ত্রি",
+              "label_ta": "கொத்தனார்"
             },
             {
               "value": "basket_mat_broom_maker",
               "label": "Basket, Mat or Broom Maker",
-              "label_hi": "टोकरी, चटाई या झाड़ू निर्माता"
+              "label_hi": "टोकरी, चटाई या झाड़ू निर्माता",
+              "label_bn": "ঝুড়ি, মাদুর বা ঝাড়ু নির্মাতা",
+              "label_ta": "கூடை, பாய் அல்லது துடைப்பம் தயாரிப்பாளர்"
             },
             {
               "value": "doll_toy_maker",
               "label": "Doll and Toy Maker",
-              "label_hi": "गुड़िया और खिलौना निर्माता"
+              "label_hi": "गुड़िया और खिलौना निर्माता",
+              "label_bn": "পুতুল ও খেলনা নির্মাতা",
+              "label_ta": "பொம்மை மற்றும் விளையாட்டுப் பொருள் தயாரிப்பாளர்"
             },
             {
               "value": "barber",
               "label": "Barber",
-              "label_hi": "नाई"
+              "label_hi": "नाई",
+              "label_bn": "নাপিত",
+              "label_ta": "முடிதிருத்துநர்"
             },
             {
               "value": "garland_maker",
               "label": "Garland Maker",
-              "label_hi": "मालाकार"
+              "label_hi": "मालाकार",
+              "label_bn": "মালা নির্মাতা",
+              "label_ta": "மாலை தயாரிப்பாளர்"
             },
             {
               "value": "washerman",
               "label": "Washerman",
-              "label_hi": "धोबी"
+              "label_hi": "धोबी",
+              "label_bn": "ধোপা",
+              "label_ta": "சலவைத் தொழிலாளர்"
             },
             {
               "value": "tailor",
               "label": "Tailor",
-              "label_hi": "दर्जी"
+              "label_hi": "दर्जी",
+              "label_bn": "দর্জি",
+              "label_ta": "தையல்காரர்"
             },
             {
               "value": "fishing_net_maker",
               "label": "Fishing Net Maker",
-              "label_hi": "मछली पकड़ने का जाल निर्माता"
+              "label_hi": "मछली पकड़ने का जाल निर्माता",
+              "label_bn": "মাছ ধরার জাল নির্মাতা",
+              "label_ta": "மீன்பிடி வலை தயாரிப்பாளர்"
             }
-          ]
+          ],
+          "label_bn": "পেশা বা ব্যবসা",
+          "label_ta": "தொழில் அல்லது வர்த்தகம்",
+          "question_bn": "আপনার ঐতিহ্যবাহী পেশা বা ব্যবসা কী?",
+          "question_ta": "உங்கள் பாரம்பரிய தொழில் அல்லது வர்த்தகம் என்ன?"
         },
         {
           "field_id": "is_family_traditional_trade",
@@ -642,14 +848,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "ঐতিহ্যগতভাবে শেখা পারিবারিক পেশা",
+          "label_ta": "பாரம்பரியமாகக் கற்ற குடும்பத் தொழில்",
+          "question_bn": "এটি কি গুরু-শিষ্য পরম্পরায় শেখা আপনার পারিবারিক পেশা?",
+          "question_ta": "இது குரு-சிஷ்ய பாரம்பரியத்தில் கற்ற உங்கள் குடும்பத் தொழிலா?"
         },
         {
           "field_id": "business_address_type",
@@ -663,19 +877,29 @@
             {
               "value": "aadhaar_address",
               "label": "Same as Aadhaar address",
-              "label_hi": "आधार पते के समान"
+              "label_hi": "आधार पते के समान",
+              "label_bn": "আধারের ঠিকানার মতো",
+              "label_ta": "ஆதார் முகவரியே"
             },
             {
               "value": "current_address",
               "label": "Same as current address",
-              "label_hi": "वर्तमान पते के समान"
+              "label_hi": "वर्तमान पते के समान",
+              "label_bn": "বর্তমান ঠিকানার মতো",
+              "label_ta": "தற்போதைய முகவரியே"
             },
             {
               "value": "other",
               "label": "Other address",
-              "label_hi": "अन्य पता"
+              "label_hi": "अन्य पता",
+              "label_bn": "অন্য ঠিকানা",
+              "label_ta": "வேறு முகவரி"
             }
-          ]
+          ],
+          "label_bn": "ব্যবসার ঠিকানা",
+          "label_ta": "தொழில் முகவரி",
+          "question_bn": "ব্যবসার জন্য আপনি কোন ঠিকানা ব্যবহার করেন?",
+          "question_ta": "உங்கள் தொழிலுக்கு எந்த முகவரியைப் பயன்படுத்துகிறீர்கள்?"
         },
         {
           "field_id": "business_address",
@@ -688,9 +912,15 @@
           "show_when": {
             "field_id": "business_address_type",
             "equals": "other"
-          }
+          },
+          "label_bn": "সম্পূর্ণ ব্যবসার ঠিকানা",
+          "label_ta": "முழுமையான தொழில் முகவரி",
+          "question_bn": "আপনার সম্পূর্ণ ব্যবসার ঠিকানা লিখুন।",
+          "question_ta": "உங்கள் முழுமையான தொழில் முகவரியை உள்ளிடவும்."
         }
-      ]
+      ],
+      "section_name_bn": "পেশা ও ব্যবসার বিবরণ",
+      "section_name_ta": "தொழில் மற்றும் வர்த்தக விவரங்கள்"
     },
     {
       "section_id": "savings_bank_details",
@@ -704,7 +934,11 @@
           "question": "What is the name registered with your bank account?",
           "question_hi": "आपके बैंक खाते में दर्ज नाम क्या है?",
           "type": "text",
-          "required": true
+          "required": true,
+          "label_bn": "ব্যাংক অ্যাকাউন্টধারীর নাম",
+          "label_ta": "வங்கிக் கணக்கு வைத்திருப்பவரின் பெயர்",
+          "question_bn": "আপনার ব্যাংক অ্যাকাউন্টে নিবন্ধিত নাম কী?",
+          "question_ta": "உங்கள் வங்கிக் கணக்கில் பதிவு செய்யப்பட்ட பெயர் என்ன?"
         },
         {
           "field_id": "ifsc_code",
@@ -717,7 +951,11 @@
           "validation": {
             "pattern": "^[A-Z]{4}0[A-Z0-9]{6}$",
             "message": "Enter a valid IFSC code."
-          }
+          },
+          "label_bn": "আইএফএসসি কোড",
+          "label_ta": "IFSC குறியீடு",
+          "question_bn": "আপনার ব্যাংকের আইএফএসসি কোড লিখুন।",
+          "question_ta": "உங்கள் வங்கியின் IFSC குறியீட்டை உள்ளிடவும்."
         },
         {
           "field_id": "bank_name",
@@ -726,7 +964,11 @@
           "question": "Please select your bank.",
           "question_hi": "कृपया अपना बैंक चुनें।",
           "type": "text",
-          "required": true
+          "required": true,
+          "label_bn": "ব্যাংকের নাম",
+          "label_ta": "வங்கியின் பெயர்",
+          "question_bn": "আপনার ব্যাংক নির্বাচন করুন।",
+          "question_ta": "உங்கள் வங்கியைத் தேர்ந்தெடுக்கவும்."
         },
         {
           "field_id": "bank_branch_name",
@@ -735,7 +977,11 @@
           "question": "Please select your bank branch.",
           "question_hi": "कृपया अपनी बैंक शाखा चुनें।",
           "type": "text",
-          "required": true
+          "required": true,
+          "label_bn": "ব্যাংক শাখার নাম",
+          "label_ta": "வங்கிக் கிளையின் பெயர்",
+          "question_bn": "আপনার ব্যাংক শাখা নির্বাচন করুন।",
+          "question_ta": "உங்கள் வங்கிக் கிளையைத் தேர்ந்தெடுக்கவும்."
         },
         {
           "field_id": "bank_account_number",
@@ -745,7 +991,11 @@
           "question_hi": "कृपया अपना बैंक खाता नंबर दर्ज करें।",
           "type": "password",
           "required": true,
-          "sensitive": true
+          "sensitive": true,
+          "label_bn": "ব্যাংক অ্যাকাউন্ট নম্বর",
+          "label_ta": "வங்கிக் கணக்கு எண்",
+          "question_bn": "আপনার ব্যাংক অ্যাকাউন্ট নম্বর লিখুন।",
+          "question_ta": "உங்கள் வங்கிக் கணக்கு எண்ணை உள்ளிடவும்."
         },
         {
           "field_id": "confirm_bank_account_number",
@@ -756,9 +1006,15 @@
           "type": "password",
           "required": true,
           "sensitive": true,
-          "matches_field": "bank_account_number"
+          "matches_field": "bank_account_number",
+          "label_bn": "ব্যাংক অ্যাকাউন্ট নম্বর নিশ্চিত করুন",
+          "label_ta": "வங்கிக் கணக்கு எண்ணை உறுதிப்படுத்தவும்",
+          "question_bn": "আপনার ব্যাংক অ্যাকাউন্ট নম্বর আবার লিখুন।",
+          "question_ta": "உங்கள் வங்கிக் கணக்கு எண்ணை மீண்டும் உள்ளிடவும்."
         }
-      ]
+      ],
+      "section_name_bn": "সঞ্চয়ী ব্যাংক অ্যাকাউন্টের বিবরণ",
+      "section_name_ta": "சேமிப்பு வங்கிக் கணக்கு விவரங்கள்"
     },
     {
       "section_id": "credit_support",
@@ -777,14 +1033,22 @@
             {
               "value": "yes",
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": "maybe_later",
               "label": "Maybe later",
-              "label_hi": "शायद बाद में"
+              "label_hi": "शायद बाद में",
+              "label_bn": "হয়তো পরে",
+              "label_ta": "பின்னர் தேவைப்படலாம்"
             }
-          ]
+          ],
+          "label_bn": "ঋণ সহায়তা প্রয়োজন",
+          "label_ta": "கடன் உதவி தேவை",
+          "question_bn": "আপনার কি ঋণ সহায়তা প্রয়োজন?",
+          "question_ta": "உங்களுக்கு கடன் உதவி தேவையா?"
         },
         {
           "field_id": "credit_amount",
@@ -799,7 +1063,11 @@
           "show_when": {
             "field_id": "credit_support_required",
             "equals": "yes"
-          }
+          },
+          "label_bn": "প্রয়োজনীয় ঋণের পরিমাণ",
+          "label_ta": "தேவையான கடன் தொகை",
+          "question_bn": "আপনার কত টাকা ঋণ সহায়তা প্রয়োজন?",
+          "question_ta": "உங்களுக்கு எவ்வளவு கடன் உதவி தேவை?"
         },
         {
           "field_id": "preferred_bank_type",
@@ -813,18 +1081,26 @@
             {
               "value": "savings_bank",
               "label": "Same as savings bank",
-              "label_hi": "बचत बैंक के समान"
+              "label_hi": "बचत बैंक के समान",
+              "label_bn": "সঞ্চয়ী ব্যাংকের মতো",
+              "label_ta": "சேமிப்பு வங்கியே"
             },
             {
               "value": "other",
               "label": "Another bank",
-              "label_hi": "अन्य बैंक"
+              "label_hi": "अन्य बैंक",
+              "label_bn": "অন্য ব্যাংক",
+              "label_ta": "வேறு வங்கி"
             }
           ],
           "show_when": {
             "field_id": "credit_support_required",
             "equals": "yes"
-          }
+          },
+          "label_bn": "ঋণের জন্য পছন্দের ব্যাংক",
+          "label_ta": "கடனுக்கான விருப்ப வங்கி",
+          "question_bn": "আপনি কি সঞ্চয়ী ব্যাংক নাকি অন্য ব্যাংক থেকে ঋণ চান?",
+          "question_ta": "உங்கள் சேமிப்பு வங்கியிலிருந்தா அல்லது வேறு வங்கியிலிருந்தா கடன் பெற விரும்புகிறீர்கள்?"
         },
         {
           "field_id": "preferred_loan_bank",
@@ -837,7 +1113,11 @@
           "show_when": {
             "field_id": "preferred_bank_type",
             "equals": "other"
-          }
+          },
+          "label_bn": "পছন্দের ঋণদাতা ব্যাংক",
+          "label_ta": "விருப்பக் கடன் வங்கி",
+          "question_bn": "ঋণের জন্য আপনার পছন্দের ব্যাংক নির্বাচন করুন।",
+          "question_ta": "கடனுக்கான உங்கள் விருப்ப வங்கியைத் தேர்ந்தெடுக்கவும்."
         },
         {
           "field_id": "preferred_loan_branch",
@@ -850,7 +1130,11 @@
           "show_when": {
             "field_id": "preferred_bank_type",
             "equals": "other"
-          }
+          },
+          "label_bn": "পছন্দের ঋণ শাখা",
+          "label_ta": "விருப்பக் கடன் கிளை",
+          "question_bn": "আপনার পছন্দের ব্যাংক শাখা নির্বাচন করুন।",
+          "question_ta": "உங்கள் விருப்ப வங்கிக் கிளையைத் தேர்ந்தெடுக்கவும்."
         },
         {
           "field_id": "loan_purpose",
@@ -863,7 +1147,11 @@
           "show_when": {
             "field_id": "credit_support_required",
             "equals": "yes"
-          }
+          },
+          "label_bn": "ঋণের উদ্দেশ্য",
+          "label_ta": "கடனின் நோக்கம்",
+          "question_bn": "ঋণের উদ্দেশ্য কী?",
+          "question_ta": "கடனின் நோக்கம் என்ன?"
         },
         {
           "field_id": "existing_loan_outstanding",
@@ -877,7 +1165,11 @@
           "show_when": {
             "field_id": "credit_support_required",
             "equals": "yes"
-          }
+          },
+          "label_bn": "বর্তমান বকেয়া ঋণ",
+          "label_ta": "தற்போதைய நிலுவைக் கடன்",
+          "question_bn": "আপনার বর্তমান বকেয়া ঋণের পরিমাণ কত?",
+          "question_ta": "உங்கள் தற்போதைய நிலுவைக் கடன் தொகை எவ்வளவு?"
         },
         {
           "field_id": "monthly_family_income",
@@ -891,9 +1183,15 @@
           "show_when": {
             "field_id": "credit_support_required",
             "equals": "yes"
-          }
+          },
+          "label_bn": "পরিবারের মোট মাসিক আয়",
+          "label_ta": "மொத்த மாத குடும்ப வருமானம்",
+          "question_bn": "আপনার পরিবারের মোট মাসিক আয় কত?",
+          "question_ta": "உங்கள் குடும்பத்தின் மொத்த மாத வருமானம் எவ்வளவு?"
         }
-      ]
+      ],
+      "section_name_bn": "ঋণ সহায়তা",
+      "section_name_ta": "கடன் உதவி"
     },
     {
       "section_id": "digital_incentive",
@@ -912,14 +1210,22 @@
             {
               "value": true,
               "label": "Yes",
-              "label_hi": "हाँ"
+              "label_hi": "हाँ",
+              "label_bn": "হ্যাঁ",
+              "label_ta": "ஆம்"
             },
             {
               "value": false,
               "label": "No",
-              "label_hi": "नहीं"
+              "label_hi": "नहीं",
+              "label_bn": "না",
+              "label_ta": "இல்லை"
             }
-          ]
+          ],
+          "label_bn": "ইউপিআই আইডি আছে কি না",
+          "label_ta": "UPI ID உள்ளதா",
+          "question_bn": "আপনার কি ইউপিআই আইডি আছে?",
+          "question_ta": "உங்களிடம் UPI ID உள்ளதா?"
         },
         {
           "field_id": "upi_id",
@@ -936,7 +1242,11 @@
           "validation": {
             "pattern": "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+$",
             "message": "Enter a valid UPI ID."
-          }
+          },
+          "label_bn": "ইউপিআই আইডি",
+          "label_ta": "UPI ID",
+          "question_bn": "আপনার ইউপিআই আইডি লিখুন।",
+          "question_ta": "உங்கள் UPI ID-ஐ உள்ளிடவும்."
         },
         {
           "field_id": "upi_linked_mobile",
@@ -953,9 +1263,15 @@
           "validation": {
             "pattern": "^[6-9][0-9]{9}$",
             "message": "Enter a valid ten-digit mobile number."
-          }
+          },
+          "label_bn": "ইউপিআই-সংযুক্ত মোবাইল নম্বর",
+          "label_ta": "UPI-யுடன் இணைக்கப்பட்ட கைப்பேசி எண்",
+          "question_bn": "আপনার ইউপিআই আইডির সঙ্গে যুক্ত মোবাইল নম্বর লিখুন।",
+          "question_ta": "உங்கள் UPI ID-யுடன் இணைக்கப்பட்ட கைப்பேசி எண்ணை உள்ளிடவும்."
         }
-      ]
+      ],
+      "section_name_bn": "ডিজিটাল প্রণোদনা",
+      "section_name_ta": "டிஜிட்டல் ஊக்கத்தொகை"
     },
     {
       "section_id": "skill_training_toolkit",
@@ -969,7 +1285,11 @@
           "question": "Have you understood the skill training benefits?",
           "question_hi": "क्या आपने कौशल प्रशिक्षण के लाभ समझ लिए हैं?",
           "type": "checkbox",
-          "required": true
+          "required": true,
+          "label_bn": "দক্ষতা প্রশিক্ষণের সুবিধা বোঝা হয়েছে",
+          "label_ta": "திறன் பயிற்சிப் பயன்கள் புரிந்தன",
+          "question_bn": "আপনি কি দক্ষতা প্রশিক্ষণের সুবিধাগুলি বুঝেছেন?",
+          "question_ta": "திறன் பயிற்சியின் பயன்களைப் புரிந்துகொண்டீர்களா?"
         },
         {
           "field_id": "toolkit_benefits_understood",
@@ -978,9 +1298,15 @@
           "question": "Have you understood the toolkit benefits?",
           "question_hi": "क्या आपने टूलकिट के लाभ समझ लिए हैं?",
           "type": "checkbox",
-          "required": true
+          "required": true,
+          "label_bn": "টুলকিটের সুবিধা বোঝা হয়েছে",
+          "label_ta": "கருவித்தொகுப்புப் பயன்கள் புரிந்தன",
+          "question_bn": "আপনি কি টুলকিটের সুবিধাগুলি বুঝেছেন?",
+          "question_ta": "கருவித்தொகுப்பின் பயன்களைப் புரிந்துகொண்டீர்களா?"
         }
-      ]
+      ],
+      "section_name_bn": "দক্ষতা প্রশিক্ষণ ও টুলকিট",
+      "section_name_ta": "திறன் பயிற்சி மற்றும் கருவித்தொகுப்பு"
     },
     {
       "section_id": "marketing_support",
@@ -999,31 +1325,47 @@
             {
               "value": "quality_certification",
               "label": "Quality certification",
-              "label_hi": "गुणवत्ता प्रमाणन"
+              "label_hi": "गुणवत्ता प्रमाणन",
+              "label_bn": "গুণমান শংসাপত্র",
+              "label_ta": "தரச் சான்றிதழ்"
             },
             {
               "value": "branding_packaging",
               "label": "Branding and packaging",
-              "label_hi": "ब्रांडिंग और पैकेजिंग"
+              "label_hi": "ब्रांडिंग और पैकेजिंग",
+              "label_bn": "ব্র্যান্ডিং ও প্যাকেজিং",
+              "label_ta": "வர்த்தக முத்திரை மற்றும் பொதியிடல்"
             },
             {
               "value": "ecommerce_onboarding",
               "label": "E-commerce onboarding",
-              "label_hi": "ई-कॉमर्स ऑनबोर्डिंग"
+              "label_hi": "ई-कॉमर्स ऑनबोर्डिंग",
+              "label_bn": "ই-কমার্সে অন্তর্ভুক্তি",
+              "label_ta": "மின்வணிக இணைப்பு"
             },
             {
               "value": "advertising_publicity",
               "label": "Advertising and publicity",
-              "label_hi": "विज्ञापन और प्रचार"
+              "label_hi": "विज्ञापन और प्रचार",
+              "label_bn": "বিজ্ঞাপন ও প্রচার",
+              "label_ta": "விளம்பரம் மற்றும் பிரசாரம்"
             },
             {
               "value": "trade_fair_participation",
               "label": "Trade fair participation",
-              "label_hi": "व्यापार मेले में भागीदारी"
+              "label_hi": "व्यापार मेले में भागीदारी",
+              "label_bn": "বাণিজ্য মেলায় অংশগ্রহণ",
+              "label_ta": "வர்த்தகக் கண்காட்சியில் பங்கேற்பு"
             }
-          ]
+          ],
+          "label_bn": "প্রয়োজনীয় বিপণন সহায়তা",
+          "label_ta": "தேவையான சந்தைப்படுத்தல் ஆதரவு",
+          "question_bn": "আপনার কী ধরনের বিপণন সহায়তা প্রয়োজন?",
+          "question_ta": "உங்களுக்கு எந்த வகையான சந்தைப்படுத்தல் ஆதரவு தேவை?"
         }
-      ]
+      ],
+      "section_name_bn": "বিপণন সহায়তা",
+      "section_name_ta": "சந்தைப்படுத்தல் ஆதரவு"
     },
     {
       "section_id": "declaration",
@@ -1037,7 +1379,11 @@
           "question": "Do you confirm that the entered information is correct?",
           "question_hi": "क्या आप पुष्टि करते हैं कि दर्ज की गई जानकारी सही है?",
           "type": "checkbox",
-          "required": true
+          "required": true,
+          "label_bn": "তথ্য সঠিক",
+          "label_ta": "தகவல் சரியானது",
+          "question_bn": "প্রদত্ত তথ্য সঠিক বলে কি আপনি নিশ্চিত করছেন?",
+          "question_ta": "உள்ளிட்ட தகவல் சரியானது என்பதை உறுதிப்படுத்துகிறீர்களா?"
         },
         {
           "field_id": "terms_accepted",
@@ -1046,7 +1392,11 @@
           "question": "Do you accept the terms and conditions?",
           "question_hi": "क्या आप नियम और शर्तें स्वीकार करते हैं?",
           "type": "checkbox",
-          "required": true
+          "required": true,
+          "label_bn": "শর্তাবলি গৃহীত",
+          "label_ta": "விதிமுறைகள் ஏற்கப்பட்டன",
+          "question_bn": "আপনি কি শর্তাবলি গ্রহণ করছেন?",
+          "question_ta": "விதிமுறைகளை ஏற்கிறீர்களா?"
         },
         {
           "field_id": "submission_status",
@@ -1055,7 +1405,9 @@
           "type": "hidden",
           "required": true,
           "default_value": "demo_not_submitted",
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "আবেদন জমার অবস্থা",
+          "label_ta": "விண்ணப்பச் சமர்ப்பிப்பு நிலை"
         },
         {
           "field_id": "registration_number",
@@ -1064,9 +1416,16 @@
           "type": "text",
           "required": false,
           "prototype_generated": true,
-          "user_editable": false
+          "user_editable": false,
+          "label_bn": "নিবন্ধন নম্বর",
+          "label_ta": "பதிவு எண்"
         }
-      ]
+      ],
+      "section_name_bn": "ঘোষণা ও শর্তাবলি",
+      "section_name_ta": "உறுதிமொழி மற்றும் விதிமுறைகள்"
     }
-  ]
+  ],
+  "form_name_hi": "पीएम विश्वकर्मा कारीगर पंजीकरण",
+  "form_name_bn": "পিএম বিশ্বকর্মা কারিগর নিবন্ধন",
+  "form_name_ta": "பிஎம் விஸ்வகர்மா கைவினைஞர் பதிவு"
 }

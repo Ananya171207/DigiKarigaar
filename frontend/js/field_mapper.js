@@ -113,116 +113,80 @@ function normalizePhoneNumber(answer) {
  */
 function convertDigitWords(answer) {
   const digitWords = {
-    zero: "0",
-    one: "1",
-    two: "2",
-    three: "3",
-    four: "4",
-    five: "5",
-    six: "6",
-    seven: "7",
-    eight: "8",
-    nine: "9",
-
-    शून्य: "0",
-    जीरो: "0",
-    एक: "1",
-    दो: "2",
-    तीन: "3",
-    चार: "4",
-    पांच: "5",
-    पाँच: "5",
-    छह: "6",
-    सात: "7",
-    आठ: "8",
-    नौ: "9"
+    zero: "0", one: "1", two: "2", three: "3", four: "4",
+    five: "5", six: "6", seven: "7", eight: "8", nine: "9",
+    शून्य: "0", जीरो: "0", एक: "1", दो: "2", तीन: "3",
+    चार: "4", पांच: "5", पाँच: "5", छह: "6", सात: "7",
+    आठ: "8", नौ: "9",
+    শূন্য: "0", জিরো: "0", এক: "1", দুই: "2", তিন: "3",
+    চার: "4", পাঁচ: "5", ছয়: "6", সাত: "7", আট: "8", নয়: "9",
+    பூஜ்ஜியம்: "0", சுழியம்: "0", ஒன்று: "1", இரண்டு: "2",
+    மூன்று: "3", நான்கு: "4", ஐந்து: "5", ஆறு: "6",
+    ஏழு: "7", எட்டு: "8", ஒன்பது: "9"
   };
 
-  return answer
+  const nativeDigits = {
+    "০": "0", "১": "1", "২": "2", "৩": "3", "৪": "4",
+    "৫": "5", "৬": "6", "৭": "7", "৮": "8", "৯": "9",
+    "௦": "0", "௧": "1", "௨": "2", "௩": "3", "௪": "4",
+    "௫": "5", "௬": "6", "௭": "7", "௮": "8", "௯": "9"
+  };
+
+  return String(answer)
     .toLowerCase()
+    .replace(/[০-৯௦-௯]/g, digit => nativeDigits[digit])
     .split(/\s+/)
-    .map((word) => digitWords[word] ?? word)
+    .map(word => digitWords[word] ?? word)
     .join("");
 }
-
 
 /**
  * Converts yes/no answers into true or false.
  */
 function normalizeBoolean(answer) {
-  if (typeof answer === "boolean") {
-    return answer;
-  }
+  if (typeof answer === "boolean") return answer;
 
-  const normalizedAnswer = String(answer)
-    .trim()
-    .toLowerCase();
-
+  const normalizedAnswer = String(answer).trim().toLowerCase();
   const positiveAnswers = [
-    "yes",
-    "true",
-    "haan",
-    "ha",
-    "हाँ",
-    "हां",
-    "जी हाँ",
-    "सही",
-    "स्वीकार"
+    "yes", "true", "haan", "ha", "हाँ", "हां", "जी हाँ",
+    "सही", "स्वीकार", "হ্যাঁ", "হ্যা", "সত্য", "সম্মত",
+    "ஆம்", "ஆமாம்", "உண்மை", "ஏற்கிறேன்"
   ];
-
   const negativeAnswers = [
-    "no",
-    "false",
-    "nahi",
-    "नहीं",
-    "नही",
-    "ना"
+    "no", "false", "nahi", "nahin", "नहीं", "नही", "ना",
+    "না", "নয়", "মিথ্যা", "இல்லை", "வேண்டாம்", "தவறு"
   ];
 
-  if (positiveAnswers.includes(normalizedAnswer)) {
-    return true;
-  }
-
-  if (negativeAnswers.includes(normalizedAnswer)) {
-    return false;
-  }
-
+  if (positiveAnswers.includes(normalizedAnswer)) return true;
+  if (negativeAnswers.includes(normalizedAnswer)) return false;
   return null;
 }
-
 
 /**
  * Matches spoken answers with a dropdown option.
  */
 function normalizeSelectValue(answer, options = []) {
-  const normalizedAnswer = String(answer)
-    .trim()
-    .toLowerCase();
+  const normalizedAnswer = String(answer).trim().toLowerCase();
 
-  const matchedOption = options.find((option) => {
-    const value = String(option.value).toLowerCase();
-    const englishLabel = String(
-      option.label || ""
-    ).toLowerCase();
+  const matchedOption = options.find(option => {
+    const candidates = [
+      option.value,
+      option.label,
+      option.label_hi,
+      option.label_bn,
+      option.label_ta
+    ]
+      .filter(value => value !== undefined && value !== null)
+      .map(value => String(value).trim().toLowerCase())
+      .filter(Boolean);
 
-    const hindiLabel = String(
-      option.label_hi || ""
-    ).toLowerCase();
-
-    return (
-      normalizedAnswer === value ||
-      normalizedAnswer === englishLabel ||
-      normalizedAnswer === hindiLabel ||
-      normalizedAnswer.includes(englishLabel) ||
-      normalizedAnswer.includes(hindiLabel)
+    return candidates.some(candidate =>
+      normalizedAnswer === candidate || normalizedAnswer.includes(candidate)
     );
   });
 
-  return matchedOption
-    ? matchedOption.value
-    : String(answer).trim();
+  return matchedOption ? matchedOption.value : String(answer).trim();
 }
-
 
 /**
  * Normalizes multiple selected options.
@@ -410,7 +374,7 @@ export function validateFormAnswers(
     if (
       field.matches_field &&
       value !==
-        mappedFields[field.matches_field]
+      mappedFields[field.matches_field]
     ) {
       errors[field.field_id] =
         `${field.label} does not match.`;
