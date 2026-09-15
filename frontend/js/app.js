@@ -124,6 +124,7 @@ const state = {
   photoFile: null,
   photoPreviewUrl: null,
   enhancedImageUrl: null,
+  
 
   answers: {},
 
@@ -1544,17 +1545,45 @@ function startQAFlow() {
 // PRODUCT VOICE
 // ==========================================================
 
+let productVoiceFlowRunning = false;
+
 document
   .getElementById("qaStartBtn")
   .addEventListener(
     "click",
     async () => {
 
+      /*
+       * Prevent double-clicks from starting
+       * two voice flows together.
+       */
+      if (productVoiceFlowRunning) {
+        return;
+      }
+
+      productVoiceFlowRunning = true;
+
+      const qaStartBtn =
+        document.getElementById(
+          "qaStartBtn"
+        );
+
+      const manualFallback =
+        document.getElementById(
+          "qaManualFallback"
+        );
+
+      qaStartBtn.disabled = true;
+
+      if (manualFallback) {
+        manualFallback.hidden = true;
+        manualFallback.open = false;
+      }
+
       const langCode =
         state.language
           ? state.language.code
           : "hi-IN";
-
 
       document
         .getElementById(
@@ -1563,50 +1592,91 @@ document
         .textContent =
         "Sun raha hoon...";
 
+      document
+        .getElementById(
+          "qaLiveTranscript"
+        )
+        .textContent = "";
 
       try {
+        const questions =
+          localizedProductQuestions();
 
         const answers =
           await startVoiceFlow(
-
-            localizedProductQuestions(),
-
+            questions,
             langCode,
-
             onQAProgress
-
           );
 
+        const missingAnswer =
+          questions.some(
+            (question) =>
+              !answers[
+                question.field_id
+              ] ||
+              !answers[
+                question.field_id
+              ].trim()
+          );
 
-        state.answers =
-          answers;
+        if (missingAnswer) {
+          throw new Error(
+            "One or more answers were not heard."
+          );
+        }
 
+        state.answers = answers;
 
         await generateListing();
 
-      }
-
-      catch (err) {
-
-        console.error(err);
-
+      } catch (error) {
+        console.error(
+          "Product voice flow stopped:",
+          error
+        );
 
         state.error =
           "Voice samajh nahi aaya. Type karke try karein.";
 
-
         document
           .getElementById(
-            "qaManualFallback"
+            "qaStatus"
           )
-          .hidden = false;
+          .textContent =
+          "Voice samajh nahi aaya. Neeche type karke try karein.";
 
+        if (manualFallback) {
+          manualFallback.hidden = false;
+          manualFallback.open = true;
+        }
+
+      } finally {
+        productVoiceFlowRunning = false;
+        qaStartBtn.disabled = false;
       }
-
     }
   );
+document
+  .getElementById("qaTypeBtn")
+  .addEventListener(
+    "click",
+    () => {
+      const manualFallback =
+        document.getElementById(
+          "qaManualFallback"
+        );
 
+      manualFallback.hidden = false;
+      manualFallback.open = true;
 
+      document
+        .getElementById(
+          "qaManualInput"
+        )
+        .focus();
+    }
+  );
 function onQAProgress(
   index,
   total,
@@ -1722,6 +1792,69 @@ document
 // ==========================================================
 // PRODUCT LISTING GENERATION
 // ==========================================================
+function normalizePriceRange(
+  priceRange,
+  fallbackPrice
+) {
+  const fallback =
+    Number(fallbackPrice) || 0;
+
+  if (Array.isArray(priceRange)) {
+    const low =
+      Number(
+        priceRange[0] ?? fallback
+      );
+
+    const high =
+      Number(
+        priceRange[1] ??
+        priceRange[0] ??
+        fallback
+      );
+
+    return [low, high];
+  }
+
+  if (
+    priceRange &&
+    typeof priceRange === "object"
+  ) {
+    const low =
+      priceRange.low ??
+      priceRange.min ??
+      priceRange.minimum ??
+      priceRange.min_price ??
+      priceRange.lower_bound ??
+      fallback;
+
+    const high =
+      priceRange.high ??
+      priceRange.max ??
+      priceRange.maximum ??
+      priceRange.max_price ??
+      priceRange.upper_bound ??
+      low;
+
+    return [
+      Number(low),
+      Number(high)
+    ];
+  }
+
+  if (
+    Number.isFinite(
+      Number(priceRange)
+    )
+  ) {
+    const price =
+      Number(priceRange);
+
+    return [price, price];
+  }
+
+  return [fallback, fallback];
+}
+
 
 async function generateListing() {
 
@@ -1811,8 +1944,10 @@ async function generateListing() {
 
 
   state.priceRange =
-    priceResult.price_range;
-
+      normalizePriceRange(
+      priceResult.price_range,
+      priceResult.predicted_price
+  );
 
   renderListingScreen();
 
@@ -3921,59 +4056,114 @@ async function finishSubsidyApplication() {
 // ==========================================================
 
 async function renderInventory() {
-
-  const products =
-    await getProducts();
-
-
   const grid =
     document.getElementById(
       "inventoryGrid"
     );
 
+  if (!grid) {
+    console.error(
+      "inventoryGrid was not found."
+    );
+
+    return;
+  }
+
+  let products = [];
+
+  try {
+    const result =
+      await getProducts();
+
+    if (Array.isArray(result)) {
+      products = result;
+
+    } else if (
+      result &&
+      Array.isArray(result.products)
+    ) {
+      products =
+        result.products;
+    }
+
+  } catch (error) {
+    /*
+     * Keep Inventory usable even when
+     * the backend route is unavailable.
+     */
+    console.warn(
+      "Products could not be loaded:",
+      error
+    );
+
+    products = [];
+  }
+
+  const productMarkup =
+    products
+      .map((product) => {
+        const pendingBadge =
+          product.status &&
+          product.status !== "synced"
+
+            ? `
+              <span class="pending-badge">
+                Pending
+              </span>
+            `
+
+            : "";
+
+        const price =
+          Number(
+            product.predicted_price
+          ) || 0;
+
+        return `
+          <div class="thumb">
+            &#128247;
+
+            <span>
+              ₹${price}
+            </span>
+
+            ${pendingBadge}
+          </div>
+        `;
+      })
+      .join("");
 
   grid.innerHTML =
-    products
-      .map(
-        (p) => {
+    productMarkup +
+    `
+      <button
+        class="thumb"
+        type="button"
+        id="inventoryAddProductBtn"
+      >
+        +
+      </button>
+    `;
 
-          const pendingBadge =
+  const inventoryAddProductBtn =
+    document.getElementById(
+      "inventoryAddProductBtn"
+    );
 
-            p.status &&
-              p.status !==
-              "synced"
-
-              ? '<span class="pending-badge">Pending</span>'
-
-              : "";
-
-
-          return `
-
-            <div class="thumb">
-
-              &#128247;
-
-              <span>
-                ₹${p.predicted_price}
-              </span>
-
-              ${pendingBadge}
-
-            </div>
-
-          `;
-
+  if (inventoryAddProductBtn) {
+    inventoryAddProductBtn
+      .addEventListener(
+        "click",
+        () => {
+          document
+            .getElementById(
+              "addProductBtn"
+            )
+            .click();
         }
-      )
-      .join("")
-
-    +
-
-    '<button class="thumb" onclick="document.getElementById(\'addProductBtn\').click()">+</button>';
-
+      );
+  }
 }
-
 
 // ==========================================================
 // BOOT

@@ -74,10 +74,6 @@ function listenForVoiceAnswer(
       window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      console.error(
-        "Speech recognition is not supported in this browser."
-      );
-
       resolve("");
       return;
     }
@@ -92,9 +88,9 @@ function listenForVoiceAnswer(
     recognition.interimResults = true;
 
     let finalText = "";
+    let latestText = "";
     let completed = false;
     let timer = null;
-
 
     function finish() {
       if (completed) {
@@ -107,9 +103,13 @@ function listenForVoiceAnswer(
         clearTimeout(timer);
       }
 
-      resolve(finalText.trim());
+      resolve(
+        (
+          finalText.trim() ||
+          latestText.trim()
+        )
+      );
     }
-
 
     recognition.onresult = (event) => {
       let interimText = "";
@@ -120,7 +120,8 @@ function listenForVoiceAnswer(
         index++
       ) {
         const transcript =
-          event.results[index][0].transcript;
+          event.results[index][0]
+            .transcript;
 
         if (
           event.results[index].isFinal
@@ -128,20 +129,18 @@ function listenForVoiceAnswer(
           finalText +=
             transcript + " ";
         } else {
-          interimText +=
-            transcript;
+          interimText += transcript;
         }
       }
 
-      const liveText =
+      latestText =
         `${finalText} ${interimText}`
           .trim();
 
       if (onLiveText) {
-        onLiveText(liveText);
+        onLiveText(latestText);
       }
     };
-
 
     recognition.onerror = (event) => {
       console.warn(
@@ -152,19 +151,11 @@ function listenForVoiceAnswer(
       finish();
     };
 
-
-    recognition.onend = () => {
-      finish();
-    };
-
+    recognition.onend = finish;
 
     try {
       recognition.start();
 
-      /*
-       * Maximum listening time so the
-       * demo cannot remain stuck.
-       */
       timer = setTimeout(() => {
         try {
           recognition.stop();
@@ -183,7 +174,6 @@ function listenForVoiceAnswer(
     }
   });
 }
-
 
 // ==========================================================
 // VOICE-DRIVEN QUESTION FLOW
@@ -204,17 +194,18 @@ async function startVoiceFlow(
     const question =
       questionList[index];
 
-    /*
-     * Wait until the question finishes speaking
-     * before activating the microphone.
-     *
-     * This prevents speech recognition from
-     * hearing the app's own voice.
-     */
     await speakVoicePrompt(
       question.prompt,
       languageCode
     );
+
+    /*
+     * Small gap prevents the microphone
+     * from hearing the spoken question.
+     */
+    await new Promise((resolve) => {
+      setTimeout(resolve, 400);
+    });
 
     if (onProgress) {
       onProgress(
@@ -227,7 +218,6 @@ async function startVoiceFlow(
     const answerText =
       await listenForVoiceAnswer(
         languageCode,
-
         (liveText) => {
           if (onProgress) {
             onProgress(
@@ -239,8 +229,18 @@ async function startVoiceFlow(
         }
       );
 
+    /*
+     * Stop the flow and show typing instead
+     * of repeatedly asking or using an empty answer.
+     */
+    if (!answerText.trim()) {
+      throw new Error(
+        `No answer received for ${question.field_id}`
+      );
+    }
+
     answers[question.field_id] =
-      answerText;
+      answerText.trim();
   }
 
   return answers;
