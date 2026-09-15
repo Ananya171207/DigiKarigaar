@@ -825,6 +825,419 @@ document
 
   });
 
+// ==========================================================
+// HOME VOICE ASSISTANT
+// ==========================================================
+
+const assistantVoiceBtn =
+  document.getElementById(
+    "assistantVoiceBtn"
+  );
+
+
+function containsVoicePhrase(
+  command,
+  phrases
+) {
+  return phrases.some(
+    (phrase) =>
+      command.includes(phrase)
+  );
+}
+
+
+function detectHomeVoiceIntent(
+  spokenText
+) {
+  const command =
+    String(spokenText || "")
+      .toLowerCase()
+      .replace(/[.,!?।]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+
+  /*
+   * Add Product is checked first so:
+   * "मुझे अपना सामान डालना है"
+   * opens the Add Product flow.
+   */
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "add product",
+        "add a product",
+        "new product",
+        "take photo",
+        "product photo",
+        "samaan dal",
+        "saman dal",
+        "saaman daal",
+        "samaan daal",
+        "samaan jod",
+        "utpad jod",
+        "सामान डाल",
+        "सामान जोड़",
+        "उत्पाद जोड़",
+        "नया उत्पाद",
+        "फोटो लेना",
+        "পণ্য যোগ",
+        "জিনিস যোগ",
+        "ছবি তুল",
+        "பொருள் சேர்க்க",
+        "தயாரிப்பு சேர்க்க",
+        "புகைப்படம் எடுக்க"
+      ]
+    )
+  ) {
+    return "add_product";
+  }
+
+
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "government subsidy",
+        "subsidy",
+        "government scheme",
+        "sarkari yojana",
+        "सरकारी योजना",
+        "सब्सिडी",
+        "योजना",
+        "ভর্তুকি",
+        "সরকারি প্রকল্প",
+        "மானியம்",
+        "அரசு திட்டம்"
+      ]
+    )
+  ) {
+    return "subsidy";
+  }
+
+
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "marketplace",
+        "sell online",
+        "sell product",
+        "amazon",
+        "flipkart",
+        "ondc",
+        "online bech",
+        "बाज़ार में बेच",
+        "बाजार में बेच",
+        "ऑनलाइन बेच",
+        "मार्केटप्लेस",
+        "অনলাইনে বিক্রি",
+        "মার্কেটপ্লেস",
+        "ஆன்லைனில் விற்க",
+        "சந்தையில் விற்க"
+      ]
+    )
+  ) {
+    return "marketplace";
+  }
+
+
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "manage inventory",
+        "inventory",
+        "stock",
+        "my products",
+        "mera stock",
+        "samaan dekh",
+        "saman dekh",
+        "इन्वेंटरी",
+        "स्टॉक",
+        "सामान देख",
+        "मेरा सामान दिख",
+        "ইনভেন্টরি",
+        "স্টক",
+        "পণ্য দেখ",
+        "சரக்கு",
+        "இருப்பு",
+        "பொருட்களை பார்க்க"
+      ]
+    )
+  ) {
+    return "inventory";
+  }
+
+
+  return null;
+}
+
+
+function speakHomeMessage(
+  message,
+  languageCode
+) {
+  if (!window.speechSynthesis) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      message
+    );
+
+  utterance.lang =
+    languageCode || "hi-IN";
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+}
+
+
+function openHomeVoiceIntent(
+  intent,
+  languageCode
+) {
+  if (intent === "add_product") {
+    document
+      .getElementById("addProductBtn")
+      .click();
+
+    speakHomeMessage(
+      uiText(
+        "Please take or choose a clear product photo.",
+        "कृपया अपने उत्पाद की साफ़ फोटो लीजिए।",
+        "অনুগ্রহ করে পণ্যের একটি পরিষ্কার ছবি তুলুন।",
+        "தயவுசெய்து பொருளின் தெளிவான புகைப்படத்தை எடுக்கவும்."
+      ),
+      languageCode
+    );
+
+    return;
+  }
+
+
+  if (intent === "subsidy") {
+    document
+      .getElementById("subsidyBtn")
+      .click();
+
+    speakHomeMessage(
+      uiText(
+        "Opening government schemes.",
+        "सरकारी योजनाएँ खोल रही हूँ।",
+        "সরকারি প্রকল্প খোলা হচ্ছে।",
+        "அரசு திட்டங்கள் திறக்கப்படுகின்றன."
+      ),
+      languageCode
+    );
+
+    return;
+  }
+
+
+if (intent === "marketplace") {
+  document
+    .getElementById("b2bBtn")
+    .click();
+
+  speakHomeMessage(
+    uiText(
+      "Opening marketplace options.",
+      "मार्केटप्लेस के विकल्प खोल रही हूँ।",
+      "মার্কেটপ্লেসের বিকল্প খোলা হচ্ছে।",
+      "சந்தை விருப்பங்கள் திறக்கப்படுகின்றன."
+    ),
+    languageCode
+  );
+
+  return;
+}
+
+
+  if (intent === "inventory") {
+    const inventoryButton =
+      document.querySelector(
+        '[data-nav="inventory"]'
+      );
+
+    if (inventoryButton) {
+      inventoryButton.click();
+    }
+
+    speakHomeMessage(
+      uiText(
+        "Opening your inventory.",
+        "आपकी इन्वेंटरी खोल रही हूँ।",
+        "আপনার ইনভেন্টরি খোলা হচ্ছে।",
+        "உங்கள் சரக்கு திறக்கப்படுகிறது."
+      ),
+      languageCode
+    );
+  }
+}
+
+
+if (assistantVoiceBtn) {
+  assistantVoiceBtn.addEventListener(
+    "click",
+    async () => {
+      /*
+       * Prevent multiple recognition sessions when
+       * the user taps repeatedly.
+       */
+      if (
+        assistantVoiceBtn.dataset.listening ===
+        "true"
+      ) {
+        return;
+      }
+
+      const languageCode =
+        state.language
+          ? state.language.code
+          : "hi-IN";
+
+      const homeGreeting =
+        document.getElementById(
+          "homeGreeting"
+        );
+
+      assistantVoiceBtn.dataset.listening =
+        "true";
+
+      assistantVoiceBtn.disabled = true;
+
+      assistantVoiceBtn.classList.add(
+        "live"
+      );
+
+      if (homeGreeting) {
+        homeGreeting.textContent =
+          uiText(
+            "Listening...",
+            "सुन रही हूँ...",
+            "শুনছি...",
+            "கேட்டுக்கொண்டிருக்கிறேன்..."
+          );
+      }
+
+
+      try {
+        /*
+         * Reuse the existing voice-flow contract with
+         * one home-command question.
+         */
+        const answers =
+          await startVoiceFlow(
+            [
+              {
+                field_id: "home_command",
+
+                prompt: uiText(
+                  "What would you like to do?",
+                  "आप क्या करना चाहेंगे?",
+                  "আপনি কী করতে চান?",
+                  "நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?"
+                )
+              }
+            ],
+
+            languageCode,
+
+            (
+              index,
+              total,
+              liveText
+            ) => {
+              if (
+                homeGreeting &&
+                liveText
+              ) {
+                homeGreeting.textContent =
+                  liveText;
+              }
+            }
+          );
+
+
+        const spokenCommand =
+          answers.home_command || "";
+
+        console.log(
+          "Home voice command:",
+          spokenCommand
+        );
+
+
+        const intent =
+          detectHomeVoiceIntent(
+            spokenCommand
+          );
+
+
+        if (intent) {
+          openHomeVoiceIntent(
+            intent,
+            languageCode
+          );
+        } else {
+          speakHomeMessage(
+            uiText(
+              "I could not understand. Please say add product, subsidy, marketplace, or inventory.",
+              "मैं समझ नहीं पाई। कृपया उत्पाद जोड़ें, सरकारी योजना, मार्केटप्लेस या इन्वेंटरी कहें।",
+              "আমি বুঝতে পারিনি। পণ্য যোগ, সরকারি প্রকল্প, মার্কেটপ্লেস অথবা ইনভেন্টরি বলুন।",
+              "எனக்குப் புரியவில்லை. பொருள் சேர்க்க, அரசு திட்டம், சந்தை அல்லது சரக்கு என்று கூறவும்."
+            ),
+            languageCode
+          );
+        }
+
+      } catch (error) {
+        console.error(
+          "Home voice assistant failed:",
+          error
+        );
+
+        speakHomeMessage(
+          uiText(
+            "Voice could not be started. Please try again.",
+            "आवाज़ शुरू नहीं हो सकी। कृपया दोबारा कोशिश करें।",
+            "ভয়েস চালু করা যায়নি। আবার চেষ্টা করুন।",
+            "குரலைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
+          ),
+          languageCode
+        );
+
+      } finally {
+        assistantVoiceBtn.dataset.listening =
+          "false";
+
+        assistantVoiceBtn.disabled = false;
+
+        assistantVoiceBtn.classList.remove(
+          "live"
+        );
+
+        /*
+         * Restore the greeting only if no feature
+         * was opened and we are still on Home.
+         */
+        if (
+          state.screen === "home" &&
+          homeGreeting
+        ) {
+          applyAppLanguage();
+        }
+      }
+    }
+  );
+}
 
 // ==========================================================
 // NORMAL NAVIGATION BUTTONS (Inventory / Home / Profile)
