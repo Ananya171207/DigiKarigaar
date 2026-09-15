@@ -77,18 +77,37 @@ const LANGUAGES = [
 const PRODUCT_QUESTIONS = [
   {
     field_id: "material",
-    prompt: "Yeh kis cheez se bana hai?"
+    prompt: "What material is this made from?",
+    prompt_hi: "यह किस सामग्री से बना है?",
+    prompt_bn: "এটি কোন উপাদান দিয়ে তৈরি?",
+    prompt_ta: "இது எந்தப் பொருளால் செய்யப்பட்டது?"
   },
   {
     field_id: "category",
-    prompt: "Yeh kis category mein aata hai?"
+    prompt: "Which category does this product belong to?",
+    prompt_hi: "यह उत्पाद किस श्रेणी में आता है?",
+    prompt_bn: "এই পণ্যটি কোন বিভাগে পড়ে?",
+    prompt_ta: "இந்தத் தயாரிப்பு எந்த வகையைச் சேர்ந்தது?"
   },
   {
     field_id: "size",
-    prompt: "Iska size ya lambai kitni hai?"
-  },
+    prompt: "What is its size or length?",
+    prompt_hi: "इसका आकार या लंबाई कितनी है?",
+    prompt_bn: "এর আকার বা দৈর্ঘ্য কত?",
+    prompt_ta: "இதன் அளவு அல்லது நீளம் என்ன?"
+  }
 ];
 
+function localizedProductQuestions() {
+  const language = currentLanguage();
+
+  return PRODUCT_QUESTIONS.map((question) => ({
+    ...question,
+    prompt:
+      question[`prompt_${language}`] ||
+      question.prompt
+  }));
+}
 
 // ==========================================================
 // SHARED STATE
@@ -176,6 +195,25 @@ function showScreen(name, options) {
     name === "lang" ||
     name === "home";
 
+    const globalNav =
+  document.getElementById("globalNav");
+
+if (globalNav) {
+  globalNav.hidden = name === "lang";
+
+  globalNav
+    .querySelectorAll("[data-nav]")
+    .forEach((navButton) => {
+      navButton.classList.toggle(
+        "active",
+        navButton.dataset.nav === name
+      );
+    });
+}
+
+if (name === "profile") {
+  syncProfileLanguageDropdown();
+}
 
   state.screen = name;
 }
@@ -369,7 +407,281 @@ function uiText(english, hindi, bengali, tamil) {
 
 }
 
+function setLanguageElement(
+  id,
+  english,
+  hindi,
+  bengali,
+  tamil
+) {
+  const element =
+    document.getElementById(id);
 
+  if (!element) return;
+
+  element.textContent =
+    uiText(
+      english,
+      hindi,
+      bengali,
+      tamil
+    );
+}
+
+
+function syncProfileLanguageDropdown() {
+  const dropdown =
+    document.getElementById(
+      "profileLanguageSelect"
+    );
+
+  if (dropdown && state.language) {
+    dropdown.value =
+      state.language.code;
+  }
+}
+
+
+function applyAppLanguage() {
+  document.documentElement.lang =
+    currentLanguage();
+
+  setLanguageElement(
+    "homeGreeting",
+    "Namaste! What would you like to do today?",
+    "नमस्ते! आज आप क्या करना चाहते हैं?",
+    "নমস্কার! আজ আপনি কী করতে চান?",
+    "வணக்கம்! இன்று நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?"
+  );
+
+  setLanguageElement(
+    "homeNavLabel",
+    "Home",
+    "होम",
+    "হোম",
+    "முகப்பு"
+  );
+
+  setLanguageElement(
+    "profileNavLabel",
+    "Profile",
+    "प्रोफ़ाइल",
+    "প্রোফাইল",
+    "சுயவிவரம்"
+  );
+
+  setLanguageElement(
+    "profileLanguageLabel",
+    "Language",
+    "भाषा",
+    "ভাষা",
+    "மொழி"
+  );
+
+  setLanguageElement(
+    "profilePhoneLabel",
+    "Phone number",
+    "फ़ोन नंबर",
+    "ফোন নম্বর",
+    "தொலைபேசி எண்"
+  );
+
+  setLanguageElement(
+    "profilePayoutLabel",
+    "Bank / payout details",
+    "बैंक / भुगतान विवरण",
+    "ব্যাংক / পেমেন্টের বিবরণ",
+    "வங்கி / பணப்பரிவர்த்தனை விவரங்கள்"
+  );
+
+  setLanguageElement(
+    "profileSub",
+    "Digi-Karigar member",
+    "Digi-Karigar सदस्य",
+    "Digi-Karigar সদস্য",
+    "Digi-Karigar உறுப்பினர்"
+  );
+
+  setLanguageElement(
+    "logoutBtn",
+    "Log out",
+    "लॉग आउट",
+    "লগ আউট",
+    "வெளியேறு"
+  );
+
+  setLanguageElement(
+    "photoPlaceholder",
+    "Tap to take or choose a photo",
+    "फोटो लेने या चुनने के लिए टैप करें",
+    "ছবি তুলতে বা বেছে নিতে ট্যাপ করুন",
+    "புகைப்படம் எடுக்க அல்லது தேர்வு செய்யத் தட்டவும்"
+  );
+
+  setLanguageElement(
+    "enhanceBtn",
+    "Enhance & continue",
+    "फोटो सुधारें और आगे बढ़ें",
+    "ছবি উন্নত করে এগিয়ে যান",
+    "படத்தை மேம்படுத்தித் தொடரவும்"
+  );
+
+  setLanguageElement(
+    "skipPhotoBtn",
+    "Skip for this demo",
+    "इस डेमो के लिए छोड़ें",
+    "এই ডেমোর জন্য এড়িয়ে যান",
+    "இந்த டெமோவில் தவிர்க்கவும்"
+  );
+
+  setLanguageElement(
+    "retakePhotoBtn",
+    "Retake photo",
+    "फोटो दोबारा लें",
+    "আবার ছবি তুলুন",
+    "மீண்டும் படம் எடுக்கவும்"
+  );
+
+  setLanguageElement(
+    "continueToQABtn",
+    "Continue",
+    "आगे बढ़ें",
+    "এগিয়ে যান",
+    "தொடரவும்"
+  );
+
+  setLanguageElement(
+    "qaStatus",
+    "Tap to start talking to your AI manager",
+    "अपने AI मैनेजर से बात करने के लिए टैप करें",
+    "আপনার AI ম্যানেজারের সঙ্গে কথা বলতে ট্যাপ করুন",
+    "உங்கள் AI மேலாளருடன் பேசத் தட்டவும்"
+  );
+
+  setLanguageElement(
+    "confirmListingBtn",
+    "Yes, list it",
+    "हाँ, इसे लिस्ट करें",
+    "হ্যাঁ, তালিকাভুক্ত করুন",
+    "ஆம், பட்டியலிடவும்"
+  );
+
+  setLanguageElement(
+    "editAnswersBtn",
+    "Change my answers",
+    "मेरे उत्तर बदलें",
+    "আমার উত্তর পরিবর্তন করুন",
+    "என் பதில்களை மாற்றவும்"
+  );
+
+  setLanguageElement(
+    "applySubsidyBtn",
+    "Check Government Subsidy",
+    "सरकारी सब्सिडी देखें",
+    "সরকারি ভর্তুকি দেখুন",
+    "அரசு மானியத்தைப் பார்க்கவும்"
+  );
+
+  setLanguageElement(
+    "listOnMarketplaceBtn",
+    "List on Marketplace",
+    "मार्केटप्लेस पर लिस्ट करें",
+    "মার্কেটপ্লেসে তালিকাভুক্ত করুন",
+    "சந்தையில் பட்டியலிடவும்"
+  );
+
+  setLanguageElement(
+    "startSubsidyFormBtn",
+    "Start Application",
+    "आवेदन शुरू करें",
+    "আবেদন শুরু করুন",
+    "விண்ணப்பத்தைத் தொடங்கவும்"
+  );
+
+  setLanguageElement(
+    "subsidyVoicePrompt",
+    "Tap the microphone and answer",
+    "माइक्रोफ़ोन टैप करके उत्तर दें",
+    "মাইক্রোফোনে ট্যাপ করে উত্তর দিন",
+    "மைக்ரோஃபோனைத் தட்டி பதிலளிக்கவும்"
+  );
+
+  setLanguageElement(
+    "subsidyNextBtn",
+    "Next",
+    "अगला",
+    "পরবর্তী",
+    "அடுத்து"
+  );
+
+  setLanguageElement(
+    "createAnotherBtn",
+    "Create another listing",
+    "एक और लिस्टिंग बनाएँ",
+    "আরেকটি লিস্টিং তৈরি করুন",
+    "மற்றொரு பட்டியலை உருவாக்கவும்"
+  );
+
+  const homeCardTranslations = {
+  home_subsidy: {
+    en: "Government Subsidy",
+    hi: "सरकारी सब्सिडी",
+    bn: "সরকারি ভর্তুকি",
+    ta: "அரசு மானியம்"
+  },
+
+  home_marketplace: {
+    en: "Sell on Marketplace",
+    hi: "मार्केटप्लेस पर बेचें",
+    bn: "মার্কেটপ্লেসে বিক্রি করুন",
+    ta: "சந்தையில் விற்கவும்"
+  },
+
+  home_inventory: {
+    en: "Manage Inventory",
+    hi: "इन्वेंटरी प्रबंधित करें",
+    bn: "ইনভেন্টরি পরিচালনা করুন",
+    ta: "சரக்குகளை நிர்வகிக்கவும்"
+  }
+};
+
+document
+  .querySelectorAll("[data-i18n]")
+  .forEach((element) => {
+    const translations =
+      homeCardTranslations[
+        element.dataset.i18n
+      ];
+
+    if (translations) {
+      element.textContent =
+        translations[currentLanguage()] ||
+        translations.en;
+    }
+  });
+
+document
+  .querySelectorAll(
+    "[data-i18n-secondary]"
+  )
+  .forEach((element) => {
+    const translations =
+      homeCardTranslations[
+        element.dataset.i18nSecondary
+      ];
+
+    if (translations) {
+      const secondaryLanguage =
+        currentLanguage() === "en"
+          ? "hi"
+          : "en";
+
+      element.textContent =
+        translations[secondaryLanguage];
+    }
+  });
+  syncProfileLanguageDropdown();
+}
 // ==========================================================
 // SCREEN: LANGUAGE
 // ==========================================================
@@ -415,69 +727,64 @@ function renderLanguageGrid() {
 function onLanguageTap(lang) {
 
   if (
-    state.previewLangCode ===
-    lang.code
+    state.previewLangCode === lang.code
   ) {
 
     state.language = lang;
+    state.previewLangCode = lang.code;
 
+    try {
+      localStorage.setItem(
+        "digikarigar_language",
+        lang.code
+      );
+    } catch (error) {
+      console.warn(
+        "Language preference could not be saved."
+      );
+    }
 
+    // Update all visible text to the selected language
+    applyAppLanguage();
+
+    // Update the top bar
     setTopbar(
       "Digi-Karigar",
-      "Aapka AI manager"
+      uiText(
+        "Your AI manager",
+        "आपका AI मैनेजर",
+        "আপনার AI ম্যানেজার",
+        "உங்கள் AI மேலாளர்"
+      )
     );
-
 
     updateOnlineDot();
 
-
-    document
-      .getElementById("homeGreeting")
-      .textContent = uiText(
-        "Namaste! What would you like to do today?",
-        "नमस्ते! आज क्या करना है?",
-        "নমস্কার! আজ আপনি কী করতে চান?",
-        "வணக்கம்! இன்று நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?"
-      );
-
-
     showScreen("home");
 
-  }
+  } else {
 
-  else {
-
-    state.previewLangCode =
-      lang.code;
-
+    // First tap previews and speaks the language
+    state.previewLangCode = lang.code;
 
     if (window.speechSynthesis) {
 
-      window
-        .speechSynthesis
-        .cancel();
-
+      window.speechSynthesis.cancel();
 
       const utter =
         new SpeechSynthesisUtterance(
           lang.greeting
         );
 
-      utter.lang =
-        lang.code;
+      utter.lang = lang.code;
 
-
-      window
-        .speechSynthesis
-        .speak(utter);
-
+      window.speechSynthesis.speak(
+        utter
+      );
     }
 
-
     renderLanguageGrid();
-
   }
-
 }
 
 
@@ -842,7 +1149,7 @@ document
         const answers =
           await startVoiceFlow(
 
-            PRODUCT_QUESTIONS,
+            localizedProductQuestions(),
 
             langCode,
 
@@ -909,15 +1216,17 @@ function onQAProgress(
   );
 
 
-  document
-    .getElementById(
-      "qaStatus"
-    )
-    .textContent =
-    PRODUCT_QUESTIONS[index]
-      ? PRODUCT_QUESTIONS[index].prompt
-      : "";
+const translatedQuestions =
+  localizedProductQuestions();
 
+document
+  .getElementById(
+    "qaStatus"
+  )
+  .textContent =
+  translatedQuestions[index]
+    ? translatedQuestions[index].prompt
+    : "";
 
   document
     .getElementById(
@@ -1411,6 +1720,62 @@ document
 // ==========================================================
 // PROFILE SCREEN (placeholder — wire to real account data)
 // ==========================================================
+const profileLanguageSelect =
+  document.getElementById(
+    "profileLanguageSelect"
+  );
+
+if (profileLanguageSelect) {
+  profileLanguageSelect.addEventListener(
+    "change",
+    () => {
+      const selectedLanguage =
+        LANGUAGES.find(
+          (language) =>
+            language.code ===
+            profileLanguageSelect.value
+        );
+
+      if (!selectedLanguage) return;
+
+      state.language =
+        selectedLanguage;
+
+      state.previewLangCode =
+        selectedLanguage.code;
+
+      try {
+        localStorage.setItem(
+          "digikarigar_language",
+          selectedLanguage.code
+        );
+      } catch (error) {
+        console.warn(
+          "Language preference could not be saved."
+        );
+      }
+
+      applyAppLanguage();
+
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+
+        const confirmation =
+          new SpeechSynthesisUtterance(
+            selectedLanguage.greeting
+          );
+
+        confirmation.lang =
+          selectedLanguage.code;
+
+        window.speechSynthesis.speak(
+          confirmation
+        );
+      }
+    }
+  );
+}
+
 
 const logoutBtn =
   document.getElementById(
@@ -1429,6 +1794,16 @@ if (logoutBtn) {
       state.language = null;
 
       state.previewLangCode = null;
+
+      try {
+        localStorage.removeItem(
+          "digikarigar_language"
+        );
+      } catch (error) {
+        console.warn(
+          "Language preference could not be cleared."
+        );
+      }
 
       showScreen("lang");
 
@@ -3254,6 +3629,18 @@ const marketplaceButton =
 
 if (marketplaceButton) {
   marketplaceButton.addEventListener(
+    "click",
+    openMarketplaceScreen
+  );
+}
+
+const listOnMarketplaceButton =
+  document.getElementById(
+    "listOnMarketplaceBtn"
+  );
+
+if (listOnMarketplaceButton) {
+  listOnMarketplaceButton.addEventListener(
     "click",
     openMarketplaceScreen
   );
