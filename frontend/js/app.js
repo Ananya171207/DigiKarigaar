@@ -622,6 +622,8 @@ function applyAppLanguage() {
     "மற்றொரு பட்டியலை உருவாக்கவும்"
   );
   
+// ...existing code...
+
 const homeCardTranslations = {
   home_add_product: {
     en: "Add a Product",
@@ -635,52 +637,22 @@ const homeCardTranslations = {
     hi: "सरकारी सब्सिडी",
     bn: "সরকারি ভর্তুকি",
     ta: "அரசு மானியம்"
-  },
-
-  home_marketplace: {
-    en: "Sell on Marketplace",
-    hi: "मार्केटप्लेस पर बेचें",
-    bn: "মার্কেটপ্লেসে বিক্রি করুন",
-    ta: "சந்தையில் விற்கவும்"
-  },
-
-  home_inventory: {
-    en: "Manage Inventory",
-    hi: "इन्वेंटरी प्रबंधित करें",
-    bn: "ইনভেন্টরি পরিচালনা করুন",
-    ta: "சரக்குகளை நிர்வகிக்கவும்"
   }
 };
 
-    home_marketplace: {
-      en: "Sell on Marketplace",
-      hi: "मार्केटप्लेस पर बेचें",
-      bn: "মার্কেটপ্লেসে বিক্রি করুন",
-      ta: "சந்தையில் விற்கவும்"
-    },
+document
+  .querySelectorAll("[data-i18n]")
+  .forEach((element) => {
+    const translations = homeCardTranslations[element.dataset.i18n];
 
-    home_inventory: {
-      en: "Manage Inventory",
-      hi: "इन्वेंटरी प्रबंधित करें",
-      bn: "ইনভেন্টরি পরিচালনা করুন",
-      ta: "சரக்குகளை நிர்வகிக்கவும்"
+    if (translations) {
+      element.textContent =
+        translations[currentLanguage()] ||
+        translations.en;
     }
-  };
+  });
 
-  document
-    .querySelectorAll("[data-i18n]")
-    .forEach((element) => {
-      const translations =
-        homeCardTranslations[
-        element.dataset.i18n
-        ];
-
-      if (translations) {
-        element.textContent =
-          translations[currentLanguage()] ||
-          translations.en;
-      }
-    });
+// ...existing code...
 
   document
     .querySelectorAll(
