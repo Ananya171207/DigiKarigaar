@@ -236,7 +236,6 @@ function showScreen(name, options) {
       : "hi-IN"
   );
 }
-  announceScreen(name, state.language ? state.language.code : "hi-IN");
 }
 
 
@@ -633,6 +632,14 @@ function applyAppLanguage() {
     "अगला",
     "পরবর্তী",
     "அடுத்து"
+  );
+
+  setLanguageElement(
+  "subsidyBackBtn",
+  "Back",
+  "पीछे",
+  "পিছনে",
+  "பின்செல்"
   );
 
   setLanguageElement(
@@ -1401,46 +1408,107 @@ document
     "click",
     async () => {
 
+      if (!state.photoFile) {
+        return;
+      }
+
       setTopbar(
         "Photo saaf kar raha hoon",
         "Ek second..."
       );
 
+      try {
+        /*
+         * Image enhancement requires
+         * the Flask backend.
+         */
+        if (!navigator.onLine) {
+          throw new Error(
+            "Offline mode"
+          );
+        }
 
-      const result =
-        await enhanceImage(
-          state.photoFile
+        const result =
+          await enhanceImage(
+            state.photoFile
+          );
+
+        state.enhancedImageUrl =
+          result.enhanced_image_url;
+
+        document
+          .getElementById(
+            "originalImg"
+          )
+          .src =
+          state.photoPreviewUrl;
+
+        document
+          .getElementById(
+            "enhancedImg"
+          )
+          .src =
+          state.enhancedImageUrl;
+
+        setTopbar(
+          "Photo saaf kar diya",
+          "Auto brightness & contrast"
         );
 
+      } catch (error) {
+        console.warn(
+          "Enhancement unavailable. Using original photo:",
+          error
+        );
 
-      state.enhancedImageUrl =
-        result.enhanced_image_url;
+        /*
+         * Save the photo Blob in IndexedDB.
+         */
+        try {
+          await capturePhoto(
+            state.photoFile,
+            crypto.randomUUID()
+          );
+        } catch (saveError) {
+          console.warn(
+            "Photo could not be stored offline:",
+            saveError
+          );
+        }
 
+        /*
+         * Show the original photo in both
+         * places while offline.
+         */
+        state.enhancedImageUrl =
+          state.photoPreviewUrl;
 
-      document
-        .getElementById(
-          "originalImg"
-        )
-        .src =
-        state.photoPreviewUrl;
+        document
+          .getElementById(
+            "originalImg"
+          )
+          .src =
+          state.photoPreviewUrl;
 
+        document
+          .getElementById(
+            "enhancedImg"
+          )
+          .src =
+          state.photoPreviewUrl;
 
-      document
-        .getElementById(
-          "enhancedImg"
-        )
-        .src =
-        state.enhancedImageUrl;
+        setTopbar(
+          isHindi()
+            ? "फोटो ऑफलाइन सेव है"
+            : "Photo saved offline",
 
-
-      setTopbar(
-        "Photo saaf kar diya",
-        "Auto brightness & contrast"
-      );
-
+          isHindi()
+            ? "ऑनलाइन होने पर सुधार होगा"
+            : "Enhancement will be available online"
+        );
+      }
 
       showScreen("enhance");
-
     }
   );
 
@@ -1910,14 +1978,65 @@ async function generateListing() {
     state.answers;
 
 
-  const priceResult =
-    await predictPrice({
+  let priceResult;
 
+try {
+  if (!navigator.onLine) {
+    throw new Error(
+      "Offline price prediction"
+    );
+  }
+
+  priceResult =
+    await predictPrice({
       material,
       category,
       size
-
     });
+
+} catch (error) {
+  console.warn(
+    "Using offline price estimate:",
+    error
+  );
+
+  let offlinePrice = 450;
+
+  const normalizedSize =
+    String(size || "")
+      .toLowerCase();
+
+  if (
+    normalizedSize.includes("small") ||
+    normalizedSize.includes("छोट")
+  ) {
+    offlinePrice = 250;
+  }
+
+  if (
+    normalizedSize.includes("large") ||
+    normalizedSize.includes("बड़")
+  ) {
+    offlinePrice = 850;
+  }
+
+  priceResult = {
+    predicted_price:
+      offlinePrice,
+
+    price_range: [
+      Math.round(
+        offlinePrice * 0.9
+      ),
+      Math.round(
+        offlinePrice * 1.1
+      )
+    ],
+
+    source:
+      "offline_estimate"
+  };
+}
 
 
   // Local, zero-dependency template — used as-is if the Gemini call below
@@ -1938,62 +2057,73 @@ async function generateListing() {
   let highlights = [];
   let highlightsHi = [];
 
-  try {
-
-    const listingResult =
-      await generateListingFromBackend({
-
-        category,
-        material,
-        size,
-        estimated_price:
-          priceResult.predicted_price ??
-          priceResult.estimated_price ??
-          null,
-        productNameInput:
+  if (navigator.onLine) {
+    try {
+      const listingResult =
+        await generateListingFromBackend({
           category,
-        transcriptionInput:
-          extra_details || ""
+          material,
+          size,
 
-      });
+          estimated_price:
+            priceResult.predicted_price ??
+            priceResult.estimated_price ??
+            null,
 
-    if (
-      listingResult &&
-      listingResult.listing
-    ) {
+          productNameInput:
+            category,
 
-      const l =
-        listingResult.listing;
+          transcriptionInput:
+            extra_details || ""
+        });
 
-      title =
-        l.title || title;
+      if (
+        listingResult &&
+        listingResult.listing
+      ) {
+        const listing =
+          listingResult.listing;
 
-      description =
-        l.description || description;
+        title =
+          listing.title ||
+          title;
 
-      titleHi =
-        l.title_hi || "";
+        description =
+          listing.description ||
+          description;
 
-      descriptionHi =
-        l.description_hi || "";
+        titleHi =
+          listing.title_hi ||
+          "";
 
-      highlights =
-        l.highlights || [];
+        descriptionHi =
+          listing.description_hi ||
+          "";
 
-      highlightsHi =
-        l.highlights_hi || [];
+        highlights =
+          listing.highlights ||
+          [];
 
+        highlightsHi =
+          listing.highlights_hi ||
+          [];
+      }
+
+    } catch (error) {
+      console.warn(
+        "Online listing generation failed. Using local listing:",
+        error
+      );
     }
 
-  }
-
-  catch (err) {
-
-    console.error(
-      "Gemini listing generation failed, using local fallback:",
-      err
+  } else {
+    /*
+     * title and description were already created
+     * locally above this block.
+     */
+    console.info(
+      "Offline mode: using local listing template."
     );
-
   }
 
 
@@ -2431,20 +2561,34 @@ document
     "click",
     async () => {
 
-      const saved =
-        await saveProduct(
-          state.product
+      try {
+        const saved =
+          await saveProduct(
+            state.product
+          );
+
+        state.product =
+          saved;
+
+        renderDoneScreen();
+
+        showScreen("done");
+
+      } catch (error) {
+        console.error(
+          "Product could not be saved:",
+          error
         );
 
-
-      state.product =
-        saved;
-
-
-      renderDoneScreen();
-
-      showScreen("done");
-
+        alert(
+          uiText(
+            "The product could not be saved.",
+            "उत्पाद सेव नहीं हो पाया।",
+            "পণ্যটি সংরক্ষণ করা যায়নি।",
+            "தயாரிப்பைச் சேமிக்க முடியவில்லை."
+          )
+        );
+      }
     }
   );
 
@@ -4159,7 +4303,64 @@ function normalizeSubsidyVoiceAnswer(
   return String(spoken).trim();
 
 }
+// ==========================================================
+// SUBSIDY BACK BUTTON
+// ==========================================================
 
+const subsidyBackBtn =
+  document.getElementById(
+    "subsidyBackBtn"
+  );
+
+if (subsidyBackBtn) {
+  subsidyBackBtn.addEventListener(
+    "click",
+    moveToPreviousSubsidySection
+  );
+}
+
+function moveToPreviousSubsidySection() {
+
+  /*
+   * If this is not the first form section,
+   * move to the previous section.
+   */
+  if (state.subsidySectionIndex > 0) {
+
+    state.subsidySectionIndex -= 1;
+
+    state.subsidyVoiceFieldIndex = 0;
+
+    document
+      .getElementById(
+        "subsidyTranscript"
+      )
+      .textContent = "";
+
+    renderCurrentSubsidySection();
+
+    return;
+  }
+
+  /*
+   * On the first section, return to the
+   * Government Schemes screen.
+   */
+  setTopbar(
+    isHindi()
+      ? "सरकारी योजनाएँ"
+      : "Government Schemes",
+
+    isHindi()
+      ? "कारीगर सहायता"
+      : "Artisan support"
+  );
+
+  showScreen(
+    "subsidy",
+    { isBack: true }
+  );
+}
 
 // ==========================================================
 // SUBSIDY NEXT BUTTON
@@ -4308,41 +4509,94 @@ async function renderInventory() {
     return;
   }
 
-  let products = [];
+  let localProducts = [];
+  let serverProducts = [];
 
+  /*
+   * First load products saved in IndexedDB.
+   * These are available online and offline.
+   */
   try {
-    const result =
-      await getProducts();
-
-    if (Array.isArray(result)) {
-      products = result;
-
-    } else if (
-      result &&
-      Array.isArray(result.products)
-    ) {
-      products =
-        result.products;
-    }
+    localProducts =
+      await getAllRecords(
+        "products"
+      );
 
   } catch (error) {
-    /*
-     * Keep Inventory usable even when
-     * the backend route is unavailable.
-     */
     console.warn(
-      "Products could not be loaded:",
+      "Local products could not be loaded:",
       error
     );
 
-    products = [];
+    localProducts = [];
   }
+
+  /*
+   * Request backend products only when online.
+   */
+  if (navigator.onLine) {
+    try {
+      const result =
+        await getProducts();
+
+      if (Array.isArray(result)) {
+        serverProducts = result;
+
+      } else if (
+        result &&
+        Array.isArray(
+          result.products
+        )
+      ) {
+        serverProducts =
+          result.products;
+      }
+
+    } catch (error) {
+      console.warn(
+        "Server products could not be loaded. Using local inventory:",
+        error
+      );
+
+      serverProducts = [];
+    }
+  }
+
+  /*
+   * Combine local and backend products.
+   * product_id prevents duplicates.
+   */
+  const productMap =
+    new Map();
+
+  localProducts.forEach(
+    (product) => {
+      productMap.set(
+        product.product_id,
+        product
+      );
+    }
+  );
+
+  serverProducts.forEach(
+    (product) => {
+      productMap.set(
+        product.product_id,
+        product
+      );
+    }
+  );
+
+  const products =
+    Array.from(
+      productMap.values()
+    );
 
   const productMarkup =
     products
       .map((product) => {
+
         const pendingBadge =
-          product.status &&
           product.status !== "synced"
 
             ? `
@@ -4394,11 +4648,14 @@ async function renderInventory() {
       .addEventListener(
         "click",
         () => {
-          document
-            .getElementById(
+          const addProductBtn =
+            document.getElementById(
               "addProductBtn"
-            )
-            .click();
+            );
+
+          if (addProductBtn) {
+            addProductBtn.click();
+          }
         }
       );
   }

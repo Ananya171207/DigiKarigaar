@@ -34,6 +34,202 @@ function fakeDelay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// ==========================================================
+// OFFLINE PRODUCT FALLBACKS
+// ==========================================================
+
+function createOfflinePriceEstimate({
+  material,
+  category,
+  size
+}) {
+  const categoryText =
+    String(category || "")
+      .toLowerCase();
+
+  const materialText =
+    String(material || "")
+      .toLowerCase();
+
+  const sizeText =
+    String(size || "")
+      .toLowerCase();
+
+  let estimatedPrice = 450;
+
+  /*
+   * Basic category-based estimate.
+   * This is not an AI prediction.
+   */
+  if (
+    categoryText.includes("textile") ||
+    categoryText.includes("fabric") ||
+    categoryText.includes("कपड़")
+  ) {
+    estimatedPrice = 650;
+  }
+
+  else if (
+    categoryText.includes("jewellery") ||
+    categoryText.includes("jewelry") ||
+    categoryText.includes("आभूषण")
+  ) {
+    estimatedPrice = 900;
+  }
+
+  else if (
+    categoryText.includes("wood") ||
+    materialText.includes("wood") ||
+    materialText.includes("लकड़ी")
+  ) {
+    estimatedPrice = 800;
+  }
+
+  else if (
+    categoryText.includes("pottery") ||
+    materialText.includes("clay") ||
+    materialText.includes("मिट्टी")
+  ) {
+    estimatedPrice = 500;
+  }
+
+  /*
+   * Adjust using product size.
+   */
+  if (
+    sizeText.includes("small") ||
+    sizeText.includes("छोट")
+  ) {
+    estimatedPrice =
+      Math.round(
+        estimatedPrice * 0.7
+      );
+  }
+
+  else if (
+    sizeText.includes("large") ||
+    sizeText.includes("बड़")
+  ) {
+    estimatedPrice =
+      Math.round(
+        estimatedPrice * 1.5
+      );
+  }
+
+  const minimumPrice =
+    Math.round(
+      estimatedPrice * 0.9
+    );
+
+  const maximumPrice =
+    Math.round(
+      estimatedPrice * 1.1
+    );
+
+  return {
+    status: "success",
+
+    predicted_price:
+      estimatedPrice,
+
+    estimated_price:
+      estimatedPrice,
+
+    price_range: [
+      minimumPrice,
+      maximumPrice
+    ],
+
+    price_range_details: {
+      min: minimumPrice,
+      max: maximumPrice
+    },
+
+    source:
+      "offline_rule_estimate",
+
+    reason:
+      "Provisional offline estimate based on category, material and size."
+  };
+}
+
+
+function createOfflineListing({
+  category,
+  material,
+  size,
+  estimated_price,
+  productNameInput,
+  transcriptionInput
+}) {
+  const safeCategory =
+    String(
+      category || "Handicraft"
+    ).trim();
+
+  const safeMaterial =
+    String(
+      material || "Handmade"
+    ).trim();
+
+  const safeSize =
+    String(
+      size || "Standard"
+    ).trim();
+
+  const title =
+    String(
+      productNameInput || ""
+    ).trim() ||
+
+    `Handcrafted ${safeMaterial} ${safeCategory}`;
+
+  const spokenDescription =
+    String(
+      transcriptionInput || ""
+    ).trim();
+
+  const description =
+    spokenDescription ||
+
+    `A handcrafted ${safeCategory.toLowerCase()} made from ${safeMaterial.toLowerCase()}. ` +
+    `This ${safeSize.toLowerCase()} product reflects traditional Indian craftsmanship.`;
+
+  return {
+    status: "success",
+
+    listing: {
+      title,
+
+      category:
+        safeCategory,
+
+      description,
+
+      highlights: [
+        `Made from ${safeMaterial}`,
+        `Size: ${safeSize}`,
+        "Handcrafted by an Indian artisan"
+      ],
+
+      tags: [
+        safeCategory.toLowerCase(),
+        safeMaterial.toLowerCase(),
+        "handcrafted",
+        "indian-artisan"
+      ],
+
+      price:
+        Number(
+          estimated_price
+        ) || 450,
+
+      source:
+        "offline_template"
+    }
+  };
+}
+
 /** Small helper so every real call fails loudly and predictably instead of
  * crashing on res.json() when the server returns a non-JSON error page
  * (which is exactly what produced your "Unexpected end of JSON input"). */
@@ -111,33 +307,158 @@ async function generateListingFromBackend({
   productNameInput,
   transcriptionInput,
 }) {
-  const res = await smartFetch(`${API_BASE}/generate-listing`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      category,
-      material,
-      size,
-      estimated_price,
-      productNameInput,
-      transcriptionInput,
-    }),
-  });
-  return parseJsonOrThrow(res, "Generate listing");
+  const listingDetails = {
+    category,
+    material,
+    size,
+    estimated_price,
+    productNameInput,
+    transcriptionInput
+  };
+
+  /*
+   * Do not call Flask while offline.
+   */
+  if (!isOnline()) {
+    console.info(
+      "Offline mode: using local listing template."
+    );
+
+    return createOfflineListing(
+      listingDetails
+    );
+  }
+
+  try {
+    const response =
+      await smartFetch(
+        `${API_BASE}/generate-listing`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify(
+            listingDetails
+          )
+        }
+      );
+
+    return await parseJsonOrThrow(
+      response,
+      "Generate listing"
+    );
+
+  } catch (error) {
+    console.warn(
+      "Listing backend unavailable. Using local template:",
+      error
+    );
+
+    return createOfflineListing(
+      listingDetails
+    );
+  }
 }
 
 /** Saves a product listing (draft, or final). Matches the Product object contract. */
-async function saveProduct(product) {
+async function saveProduct(
+  product
+) {
+  const pendingProduct = {
+    ...product,
+    status: "pending"
+  };
+
   if (FAKE_MODE) {
     await fakeDelay(500);
-    return { ...product, status: isOnline() ? "listed" : "draft" };
+
+    await saveRecordLocally(
+      "products",
+      pendingProduct
+    );
+
+    return pendingProduct;
   }
-  const res = await smartFetch(`${API_BASE}/api/products`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(product),
-  });
-  return parseJsonOrThrow(res, "Save product");
+
+  /*
+   * When definitely offline, do not call Flask.
+   * Store the product directly in IndexedDB.
+   */
+  if (!isOnline()) {
+    await saveRecordLocally(
+      "products",
+      pendingProduct
+    );
+
+    console.info(
+      "Product saved locally and marked pending."
+    );
+
+    return pendingProduct;
+  }
+
+  try {
+    /*
+     * Try saving to Flask while online.
+     */
+    const response =
+      await smartFetch(
+        `${API_BASE}/api/products`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify(
+            product
+          )
+        }
+      );
+
+    const serverProduct =
+      await parseJsonOrThrow(
+        response,
+        "Save product"
+      );
+
+    const syncedProduct = {
+      ...product,
+      ...serverProduct,
+      status:
+        serverProduct.status ||
+        "synced"
+    };
+
+    /*
+     * Keep an IndexedDB copy for offline Inventory.
+     */
+    await saveRecordLocally(
+      "products",
+      syncedProduct
+    );
+
+    return syncedProduct;
+
+  } catch (error) {
+    /*
+     * This also handles the case where the browser
+     * says it is online but Flask is not running.
+     */
+    console.warn(
+      "Backend unavailable. Product saved locally:",
+      error
+    );
+
+    await saveRecordLocally(
+      "products",
+      pendingProduct
+    );
+
+    return pendingProduct;
+  }
 }
 
 /** Fetches saved products for the inventory screen. */
@@ -145,12 +466,57 @@ async function getProducts() {
   if (FAKE_MODE) {
     await fakeDelay(300);
     return [
-      { product_id: "demo-1", title: "Handwoven cotton stole", predicted_price: 650, enhanced_image_url: "" },
-      { product_id: "demo-2", title: "Clay diya set", predicted_price: 420, enhanced_image_url: "" },
+      {
+        product_id: "demo-1",
+        title:
+          "Handwoven cotton stole",
+        predicted_price: 650,
+        enhanced_image_url: "",
+        status: "synced"
+      },
+      {
+        product_id: "demo-2",
+        title: "Clay diya set",
+        predicted_price: 420,
+        enhanced_image_url: "",
+        status: "synced"
+      }
     ];
   }
-  const res = await smartFetch(`${API_BASE}/api/products`, { method: "GET" });
-  return parseJsonOrThrow(res, "Load products");
+
+  /*
+   * Read directly from IndexedDB offline.
+   */
+  if (!isOnline()) {
+    return getAllRecords(
+      "products"
+    );
+  }
+
+  try {
+    const response =
+      await smartFetch(
+        `${API_BASE}/api/products`,
+        {
+          method: "GET"
+        }
+      );
+
+    return await parseJsonOrThrow(
+      response,
+      "Load products"
+    );
+
+  } catch (error) {
+    console.warn(
+      "Backend inventory unavailable. Loading local products:",
+      error
+    );
+
+    return getAllRecords(
+      "products"
+    );
+  }
 }
 
 async function getSubsidySchemes() {

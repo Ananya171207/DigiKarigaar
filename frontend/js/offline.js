@@ -55,26 +55,87 @@ async function getAllRecords(storeName) {
   });
 }
 
-// TEMPORARY stand-in for the real backend call. Replace the inside of
-// this function with real fetch() calls per data type once the Flask
-// backend exists -- nothing else in this file needs to change.
-function fakeSendToServer(record) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (navigator.onLine) resolve();
-      else reject(new Error('offline'));
-    }, 600);
-  });
+const OFFLINE_API_BASE =
+  "http://127.0.0.1:5000";
+
+async function sendRecordToServer(
+  storeName,
+  record
+) {
+  if (!navigator.onLine) {
+    throw new Error(
+      "No network connection"
+    );
+  }
+
+  if (storeName === "products") {
+    const response =
+      await fetch(
+        `${OFFLINE_API_BASE}/api/products`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+          body: JSON.stringify(
+            record
+          )
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        `Product sync failed: ${response.status}`
+      );
+    }
+
+    return response.json();
+  }
+
+  /*
+   * Routes for photos, subsidy forms and
+   * orders will be connected separately.
+   */
+  throw new Error(
+    `Sync route not configured for ${storeName}`
+  );
 }
 
 // Shared sync logic used by all four data types below.
-async function trySyncRecord(storeName, record) {
+async function trySyncRecord(
+  storeName,
+  record
+) {
   try {
-    await fakeSendToServer(record);
-    record.status = 'synced';
-    await saveRecordLocally(storeName, record);
-  } catch (err) {
-    // stays 'pending' -- syncAllPending() retries it once back online
+    await sendRecordToServer(
+      storeName,
+      record
+    );
+
+    record.status = "synced";
+
+    await saveRecordLocally(
+      storeName,
+      record
+    );
+
+    return true;
+
+  } catch (error) {
+    record.status = "pending";
+
+    await saveRecordLocally(
+      storeName,
+      record
+    );
+
+    console.warn(
+      `${storeName} remains pending:`,
+      error.message
+    );
+
+    return false;
   }
 }
 

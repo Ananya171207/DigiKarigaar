@@ -1050,3 +1050,14 @@ textarea {
     padding-right: 34px;
   }
 }
+
+.subsidy-form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.subsidy-form-actions .btn {
+  margin-top: 0;
+}
