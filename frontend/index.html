@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digi-Karigar</title>
+
+  <!-- Fixes the /favicon.ico 404 in your console without needing an extra file -->
+  <link rel="icon" href="data:,">
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="manifest" href="manifest.json" />
+</head>
+
+<body>
+
+<div id="app">
+
+  <!-- =====================================================
+       PERSISTENT TOP BAR
+       ===================================================== -->
+  <header id="topbar" class="topbar" hidden>
+    <div class="brand-logo" aria-label="Digi-Karigar artisan logo">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path d="M17 8h14" />
+        <path d="M19 8c0 5 2 7 2 10-6 3-9 8-9 14 0 5 5 8 12 8s12-3 12-8c0-6-3-11-9-14 0-3 2-5 2-10" />
+        <path d="M15 29c5 3 13 3 18 0" />
+        <path d="M17 35c4 2 10 2 14 0" />
+      </svg>
+    </div>
+    <div class="topbar-text">
+      <div id="topbarTitle" class="topbar-title"></div>
+      <div id="topbarSub" class="topbar-sub"></div>
+    </div>
+    <span id="onlineDot" class="online-dot"></span>
+    <button id="backBtn" class="backbtn" hidden>&#10005;</button>
+  </header>
+
+
+  <!-- =====================================================
+       SCREEN: LANGUAGE
+       ===================================================== -->
+  <section data-screen="lang" class="screen">
+    <div class="ks-body">
+      <p class="ks-prompt center-text">
+        सुनने के लिए टैप करें
+        <br />
+        <span class="hint">Tap to hear it, tap again to choose</span>
+      </p>
+      <div id="langGrid" class="lang-grid"><!-- app.js renders language buttons here --></div>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: HOME
+       Order: Add Product first (the primary action), then the
+       two secondary actions as cards styled like the Inventory
+       cards below, instead of plain outline buttons.
+       ===================================================== -->
+  <section data-screen="home" class="screen" hidden>
+    <div class="ks-body">
+
+      <div class="spacer"></div>
+
+      <p id="homeGreeting" class="ks-prompt center-text"></p>
+
+      <!-- Main Add Product mic button -->
+      <div class="mic-wrap">
+        <button
+          id="assistantVoiceBtn"
+          class="mic-btn"
+          type="button"
+          aria-label="Talk to Digi-Karigar"
+          >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="8" y1="22" x2="16" y2="22" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Secondary actions, card-styled to match Inventory -->
+      <div class="home-actions">
+        <button
+            id="addProductBtn"
+            class="action-card add-product"
+            type="button"
+          >
+            <span class="action-icon">&#10133;</span>
+          
+            <span class="action-text">
+              <span
+                class="action-en"
+                data-i18n="home_add_product"
+              >
+                Add a Product
+              </span>
+          
+              <span
+                class="action-hi"
+                data-i18n-secondary="home_add_product"
+              >
+                उत्पाद जोड़ें
+              </span>
+            </span>
+          </button>
+        <button id="subsidyBtn" class="action-card subsidy">
+          <span class="action-icon">&#127963;</span>
+          <span class="action-text">
+            <span class="action-en" data-i18n="home_subsidy">Government Subsidy</span>
+            <span class="action-hi" data-i18n-secondary="home_subsidy">सरकारी सब्सिडी</span>
+          </span>
+        </button>
+
+        <button id="b2bBtn" class="action-card b2b">
+          <span class="action-icon">&#128722;</span>
+          <span class="action-text">
+            <span class="action-en" data-i18n="home_marketplace">Sell on Marketplace</span>
+            <span class="action-hi" data-i18n-secondary="home_marketplace">बाज़ार में बेचें</span>
+          </span>
+        </button>
+
+        <button class="action-card inventory" data-nav="inventory" type="button">
+          <span class="action-icon">&#128230;</span>
+          <span class="action-text">
+            <span class="action-en" data-i18n="home_inventory">Manage Inventory</span>
+            <span class="action-hi" data-i18n-secondary="home_inventory">इन्वेंटरी प्रबंधित करें</span>
+          </span>
+        </button>
+      </div>
+
+      <div class="spacer"></div>
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: PHOTO
+       ===================================================== -->
+  <section data-screen="photo" class="screen" hidden>
+    <div class="ks-body">
+      <label for="photoInput" class="upload-box">
+        <img id="photoPreview" src="" alt="" hidden />
+        <span id="photoPlaceholder">Tap to take or choose a photo</span>
+      </label>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" hidden />
+      <div class="spacer"></div>
+      <button id="enhanceBtn" class="btn btn-primary" disabled>Enhance &amp; continue</button>
+      <button id="skipPhotoBtn" class="btn btn-secondary">Skip for this demo</button>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: ENHANCE
+       Fixed: both photos sit in equal square frames (object-fit:
+       contain) so neither gets cropped or shrunk — see .compare-frame
+       in css/style.css. Bottom now has two clear actions: Continue,
+       or go back and retake.
+       ===================================================== -->
+  <section data-screen="enhance" class="screen" hidden>
+    <div class="ks-body">
+
+  <div class="compare-row">
+
+  <!-- Original image -->
+  <div class="compare-col">
+    <div class="compare-heading">
+      <span>Original Photo</span>
+      <span class="compare-badge">Before</span>
+    </div>
+
+    <div class="compare-frame">
+      <img
+        id="originalImg"
+        src=""
+        alt="Original product photo"
+      />
+    </div>
+  </div>
+  
+  
+    <!-- Enhanced image -->
+    <div class="compare-col">
+      <div class="compare-heading">
+        <span>Enhanced Photo</span>
+        <span class="compare-badge enhanced-badge">
+          AI Enhanced
+        </span>
+      </div>
+  
+      <div class="compare-frame enhanced-frame">
+        <img
+          id="enhancedImg"
+          src=""
+          alt="Enhanced product photo"
+        />
+      </div>
+    </div>
+  
+  </div>
+  
+  
+  <div class="enhance-actions">
+  
+    <button
+      id="retakePhotoBtn"
+      class="btn btn-secondary"
+    >
+      Retake photo
+    </button>
+  
+    <button
+      id="continueToQABtn"
+      class="btn btn-primary"
+    >
+      Continue
+    </button>
+  
+  </div>
+  </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: QA
+       ===================================================== -->
+  <section data-screen="qa" class="screen" hidden>
+    <div class="ks-body">
+      <div id="qaDots" class="dots"></div>
+      <p id="qaStatus" class="ks-prompt center-text">Tap to start talking to your AI manager</p>
+
+      <div class="mic-wrap">
+        <button id="qaStartBtn" class="mic-btn">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="8" y1="22" x2="16" y2="22" />
+          </svg>
+        </button>
+        <button
+        id="qaTypeBtn"
+        type="button"
+        class="btn btn-secondary"
+        >
+  Type answers instead
+</button>
+        <div id="qaLiveTranscript" class="live-transcript"></div>
+      </div>
+
+      <details id="qaManualFallback" class="field" hidden>
+        <summary class="hint">Type answers instead</summary>
+        <textarea id="qaManualInput" placeholder="material: cotton, category: bag, size: large, extra_details: hand-stitched..."></textarea>
+        <button id="qaManualSubmitBtn" class="btn btn-secondary">Use typed answers</button>
+      </details>
+
+      <div class="spacer"></div>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: LISTING REVIEW
+       ===================================================== -->
+  <section data-screen="listing" class="screen" hidden>
+    <div class="ks-body">
+
+      <div id="listingError" class="error-box" hidden></div>
+      <img id="listingImg" src="" alt="" class="listing-photo" hidden />
+
+      <div class="card">
+        <div class="card-title">Title</div>
+        <div id="listingTitle" class="card-body"></div>
+        <div id="listingTitleHi" class="card-body lang-hi" hidden></div>
+      </div>
+
+      <div class="card">
+        <button id="descSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
+        <div id="listingDescription" class="card-body"></div>
+        <div id="listingDescriptionHi" class="card-body lang-hi" hidden></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Highlights</div>
+        <ul id="listingHighlights" class="highlights-list"></ul>
+        <ul id="listingHighlightsHi" class="highlights-list lang-hi"></ul>
+      </div>
+
+      <div class="price-box">
+        <button id="priceSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
+        <div id="listingPrice" class="price-value"></div>
+      </div>
+
+      <button id="confirmListingBtn" class="btn btn-primary">Yes, list it</button>
+      <button id="editAnswersBtn" class="btn btn-secondary">Change my answers</button>
+
+      <button id="applySubsidyBtn" class="btn btn-secondary">Check Government Subsidy</button>
+      <button id="listOnMarketplaceBtn" class="btn btn-secondary">List on Marketplace</button>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: SUBSIDY
+       ===================================================== -->
+  <section data-screen="subsidy" class="screen" hidden>
+    <div class="ks-body">
+      <h2>Government Schemes</h2>
+      <p class="hint">Available schemes for artisans</p>
+      <div id="subsidySchemeList" class="scheme-list"><!-- app.js renders schemes here --></div>
+      <div class="spacer"></div>
+      <button id="startSubsidyFormBtn" class="btn btn-primary">Start Application</button>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: SUBSIDY FORM
+       ===================================================== -->
+  <section data-screen="subsidyForm" class="screen" hidden>
+    <div class="ks-body">
+      <div class="form-progress">
+        <span id="subsidySectionName"></span>
+        <span id="subsidyProgress"></span>
+      </div>
+
+      <div id="subsidyFormContainer"><!-- app.js dynamically renders schema fields here --></div>
+
+      <div class="voice-assistant-box">
+        <p id="subsidyVoicePrompt" class="ks-prompt center-text">Tap the microphone and answer</p>
+        <button id="subsidyVoiceBtn" class="mic-btn" type="button">&#127908;</button>
+        <div id="subsidyTranscript" class="live-transcript"></div>
+      </div>
+
+      <div class="subsidy-form-actions">
+  <button
+    id="subsidyBackBtn"
+    class="btn btn-secondary"
+    type="button"
+  >
+    Back
+  </button>
+
+  <button
+    id="subsidyNextBtn"
+    class="btn btn-primary"
+    type="button"
+  >
+    Next
+  </button>
+</div>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: B2B / MARKETPLACE
+       ===================================================== -->
+  <section data-screen="b2b" class="screen" hidden>
+    <div class="ks-body">
+      <h2>Sell Online</h2>
+      <p class="hint">Choose where you want to sell your product</p>
+      <div id="b2bChannelList" class="channel-list"><!-- app.js renders marketplace buttons --></div>
+    </div>
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: DONE
+       ===================================================== -->
+  <section data-screen="done" class="screen" hidden>
+    <div class="ks-body center-text">
+      <div class="spacer"></div>
+      <div id="doneIcon"></div>
+      <p id="doneMessage" class="ks-prompt"></p>
+      <div class="spacer"></div>
+    </div>
+
+    <button id="createAnotherBtn" class="btn btn-secondary" style="max-width:calc(480px - 36px); margin:0 18px 12px;">Create another listing</button>
+
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: INVENTORY
+       Sales & Payments + Stock tracker cards, folded in from
+       the friend's file (moved from inline <style> into
+       css/style.css as .inv-* classes).
+       ===================================================== -->
+  <section data-screen="inventory" class="screen" hidden>
+    <div class="ks-body inv-section">
+
+      <div class="inv-card">
+        <div class="inv-card-heading">
+          Sales &amp; Payments
+          <span class="hi">बिक्री और भुगतान</span>
+        </div>
+
+        <div class="inv-stat-row">
+          <div class="inv-stat-label">
+            <span class="en">Total Sales this month</span>
+            <span class="hi">इस महीने कुल बिक्री</span>
+          </div>
+          <div id="invTotalSales" class="inv-stat-value positive">₹20,000</div>
+        </div>
+
+        <div class="inv-stat-row">
+          <div class="inv-stat-label">
+            <span class="en">Pending / Upcoming Payment</span>
+            <span class="hi">बकाया भुगतान</span>
+          </div>
+          <div>
+            <div id="invPendingPayment" class="inv-stat-value pending">₹6,000</div>
+            <div id="invPendingNote" class="inv-pending-note">Friday / शुक्रवार को आएंगे</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="inv-card">
+        <div class="inv-card-heading">
+          Stock &amp; Sales Tracker
+          <span class="hi">स्टॉक और बिक्री ट्रैकर</span>
+        </div>
+
+        <div id="invItemList">
+
+  <!-- Diyas -->
+  <div class="inv-item-row">
+    <div class="inv-item-name">
+      Diyas <span class="hi">(दीये)</span>
+    </div>
+
+    <div class="inv-item-nums">
+      <div class="inv-num-box total">
+        <span class="num">500</span>
+        <span class="lbl-en">Total</span>
+        <span class="lbl-hi">कुल</span>
+      </div>
+
+      <div class="inv-num-box sold">
+        <span class="num">280</span>
+        <span class="lbl-en">Sold</span>
+        <span class="lbl-hi">बिके</span>
+      </div>
+
+      <div class="inv-num-box remaining">
+        <span class="num">220</span>
+        <span class="lbl-en">Remaining</span>
+        <span class="lbl-hi">बचे</span>
+      </div>
+    </div>
+
+    <div class="inv-progress-track">
+      <div class="inv-progress-fill" style="width:56%"></div>
+    </div>
+  </div>
+
+  <!-- Vases -->
+  <div class="inv-item-row">
+    <div class="inv-item-name">
+      Vases <span class="hi">(फूलदान)</span>
+    </div>
+
+    <div class="inv-item-nums">
+      <div class="inv-num-box total">
+        <span class="num">50</span>
+        <span class="lbl-en">Total</span>
+        <span class="lbl-hi">कुल</span>
+      </div>
+
+      <div class="inv-num-box sold">
+        <span class="num">23</span>
+        <span class="lbl-en">Sold</span>
+        <span class="lbl-hi">बिके</span>
+      </div>
+
+      <div class="inv-num-box remaining">
+        <span class="num">27</span>
+        <span class="lbl-en">Remaining</span>
+        <span class="lbl-hi">बचे</span>
+      </div>
+    </div>
+
+    <div class="inv-progress-track">
+      <div class="inv-progress-fill" style="width:46%"></div>
+    </div>
+  </div>
+
+  <!-- Handicrafts -->
+  <div class="inv-item-row">
+    <div class="inv-item-name">
+      Handicrafts <span class="hi">(हस्तशिल्प)</span>
+    </div>
+
+    <div class="inv-item-nums">
+      <div class="inv-num-box total">
+        <span class="num">40</span>
+        <span class="lbl-en">Total</span>
+        <span class="lbl-hi">कुल</span>
+      </div>
+
+      <div class="inv-num-box sold">
+        <span class="num">28</span>
+        <span class="lbl-en">Sold</span>
+        <span class="lbl-hi">बिके</span>
+      </div>
+
+      <div class="inv-num-box remaining">
+        <span class="num">12</span>
+        <span class="lbl-en">Remaining</span>
+        <span class="lbl-hi">बचे</span>
+      </div>
+    </div>
+
+    <div class="inv-progress-track">
+      <div class="inv-progress-fill" style="width:70%"></div>
+    </div>
+  </div>
+
+</div>
+      </div>
+
+      <div id="inventoryGrid" class="grid2"><!-- app.js renders product tiles here --></div>
+      <div class="spacer"></div>
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       SCREEN: PROFILE  (new — placeholder scaffold)
+       app.js doesn't populate this yet; wire it up to whatever
+       artisan/user record you're already storing.
+       ===================================================== -->
+  <section data-screen="profile" class="screen" hidden>
+    <div class="ks-body">
+
+      <div class="profile-header">
+        <div id="profileAvatar" class="profile-avatar" aria-label="Artisan profile">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M17 8h14" />
+            <path d="M19 8c0 5 2 7 2 10-6 3-9 8-9 14 0 5 5 8 12 8s12-3 12-8c0-6-3-11-9-14 0-3 2-5 2-10" />
+            <path d="M15 29c5 3 13 3 18 0" />
+          </svg>
+        </div>
+        <div id="profileName" class="profile-name">Artisan Name</div>
+        <div id="profileSub" class="profile-sub">Digi-Karigar member</div>
+      </div>
+
+      <div class="profile-list">
+        <label class="profile-row profile-language-row" for="profileLanguageSelect">
+          <span id="profileLanguageLabel" class="profile-setting-label">Language</span>
+          <select id="profileLanguageSelect" class="profile-language-select" aria-label="Choose app language">
+            <option value="hi-IN">हिंदी</option>
+            <option value="en-IN">English</option>
+            <option value="bn-IN">বাংলা</option>
+            <option value="ta-IN">தமிழ்</option>
+          </select>
+        </label>
+        <div class="profile-row">
+          <span id="profilePhoneLabel" class="profile-setting-label">Phone number</span>
+          <span id="profilePhone">—</span>
+        </div>
+        <div class="profile-row">
+          <span id="profilePayoutLabel" class="profile-setting-label">Bank / payout details</span>
+          <span id="profilePayout">—</span>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <button id="logoutBtn" class="btn btn-secondary">Log out</button>
+    </div>
+
+  </section>
+
+  <!-- Persistent footer shown on every screen after language selection -->
+  <nav id="globalNav" class="navrow global-nav" aria-label="Main navigation" hidden>
+    <button data-nav="home" class="navicon" type="button" aria-label="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 11.5 12 4l9 7.5" />
+        <path d="M5.5 10v10h13V10" />
+        <path d="M9.5 20v-6h5v6" />
+      </svg>
+      <span id="homeNavLabel" class="nav-label">Home</span>
+    </button>
+    <button data-nav="profile" class="navicon" type="button" aria-label="Profile">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4.5 21c.8-4.2 3.3-6.5 7.5-6.5s6.7 2.3 7.5 6.5" />
+      </svg>
+      <span id="profileNavLabel" class="nav-label">Profile</span>
+    </button>
+  </nav>
+
+
+</div>
+
+
+<!-- =========================================================
+     SCRIPT LOAD ORDER
+     ========================================================= -->
+<script src="js/voice_flow.js"></script>
+<script src="js/offline.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

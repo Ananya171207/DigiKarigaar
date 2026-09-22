@@ -1,0 +1,16 @@
+uploads/*
+!uploads/.gitkeep
+__pycache__/
+*.pyc
+sample.png
+sample.jpg
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Generated uploads
+uploads/*
+!uploads/.gitkeep
+
+.env

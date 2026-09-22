@@ -1,0 +1,352 @@
+[
+  {
+    "channel_id": "internal_b2b",
+    "channel_name": "Artisan B2B Marketplace",
+    "channel_name_hi": "कारीगर B2B मार्केटप्लेस",
+    "channel_name_bn": "কারিগর বি২বি মার্কেটপ্লেস",
+    "channel_name_ta": "கைவினைஞர் B2B சந்தை",
+    "listing_mode": "internal",
+    "enabled": true,
+    "requires_registration": false,
+    "prototype_status": "available",
+    "description": "List products inside Digi-Karigar so verified B2B buyers can discover artisans and send bulk enquiries.",
+    "description_hi": "Digi-Karigar के अंदर उत्पाद सूचीबद्ध करें ताकि सत्यापित B2B खरीदार कारीगरों को खोज सकें और थोक पूछताछ भेज सकें।",
+    "description_bn": "Digi-Karigar-এর মধ্যে পণ্য তালিকাভুক্ত করুন, যাতে যাচাইকৃত B2B ক্রেতারা কারিগরদের খুঁজে পেয়ে পাইকারি অনুসন্ধান পাঠাতে পারেন।",
+    "description_ta": "Digi-Karigar-இல் பொருட்களைப் பட்டியலிட்டு, சரிபார்க்கப்பட்ட B2B வாங்குபவர்கள் கைவினைஞர்களைக் கண்டறிந்து மொத்த விசாரணைகளை அனுப்ப உதவுங்கள்.",
+    "benefits": [
+      "No separate marketplace registration",
+      "Direct visibility to B2B buyers",
+      "Bulk-order enquiry support"
+    ],
+    "benefits_hi": [
+      "अलग मार्केटप्लेस पंजीकरण की आवश्यकता नहीं",
+      "B2B खरीदारों को सीधी दृश्यता",
+      "थोक ऑर्डर पूछताछ सहायता"
+    ],
+    "benefits_bn": [
+      "আলাদা মার্কেটপ্লেস নিবন্ধন প্রয়োজন নেই",
+      "B2B ক্রেতাদের কাছে সরাসরি দৃশ্যমানতা",
+      "পাইকারি অর্ডার অনুসন্ধান সহায়তা"
+    ],
+    "benefits_ta": [
+      "தனி சந்தைப் பதிவு தேவையில்லை",
+      "B2B வாங்குபவர்களுக்கு நேரடி தெரிவுநிலை",
+      "மொத்த ஆர்டர் விசாரணை ஆதரவு"
+    ],
+    "required_details": [
+      "Product name and description",
+      "Product image",
+      "Material and category",
+      "Price and available quantity"
+    ],
+    "required_details_hi": [
+      "उत्पाद का नाम और विवरण",
+      "उत्पाद की तस्वीर",
+      "सामग्री और श्रेणी",
+      "मूल्य और उपलब्ध मात्रा"
+    ],
+    "required_details_bn": [
+      "পণ্যের নাম ও বিবরণ",
+      "পণ্যের ছবি",
+      "উপাদান ও বিভাগ",
+      "মূল্য ও উপলভ্য পরিমাণ"
+    ],
+    "required_details_ta": [
+      "தயாரிப்புப் பெயர் மற்றும் விளக்கம்",
+      "தயாரிப்புப் படம்",
+      "மூலப்பொருள் மற்றும் வகை",
+      "விலை மற்றும் கிடைக்கும் அளவு"
+    ],
+    "process_steps": [
+      "Complete the product details",
+      "Review the generated listing",
+      "Publish to the internal B2B marketplace"
+    ],
+    "process_steps_hi": [
+      "उत्पाद का विवरण पूरा करें",
+      "तैयार सूची की समीक्षा करें",
+      "आंतरिक B2B मार्केटप्लेस पर प्रकाशित करें"
+    ],
+    "process_steps_bn": [
+      "পণ্যের বিবরণ পূরণ করুন",
+      "তৈরি তালিকা পর্যালোচনা করুন",
+      "অভ্যন্তরীণ B2B মার্কেটপ্লেসে প্রকাশ করুন"
+    ],
+    "process_steps_ta": [
+      "தயாரிப்பு விவரங்களைப் பூர்த்தி செய்யவும்",
+      "உருவாக்கப்பட்ட பட்டியலை மதிப்பாய்வு செய்யவும்",
+      "உள்ளக B2B சந்தையில் வெளியிடவும்"
+    ],
+    "prototype_notice": "This channel is simulated inside the Digi-Karigar prototype.",
+    "prototype_notice_hi": "यह चैनल Digi-Karigar प्रोटोटाइप के अंदर सिम्युलेट किया गया है।",
+    "prototype_notice_bn": "এই চ্যানেলটি Digi-Karigar প্রোটোটাইপের মধ্যে অনুকরণ করা হয়েছে।",
+    "prototype_notice_ta": "இந்தச் சேனல் Digi-Karigar முன்மாதிரிக்குள் உருவகப்படுத்தப்படுகிறது."
+  },
+  {
+    "channel_id": "amazon_karigar",
+    "channel_name": "Amazon Karigar",
+    "channel_name_hi": "अमेज़न कारीगर",
+    "channel_name_bn": "অ্যামাজন কারিগর",
+    "channel_name_ta": "Amazon Karigar",
+    "listing_mode": "external",
+    "enabled": true,
+    "requires_registration": true,
+    "registration_schema": "marketplace_registration_schema.json",
+    "listing_schema": "marketplace_listing_schema.json",
+    "prototype_status": "prepared_only",
+    "description": "Prepare the artisan’s seller-registration details and handcrafted-product listing for Amazon.",
+    "description_hi": "Amazon के लिए कारीगर के विक्रेता-पंजीकरण विवरण और हस्तनिर्मित उत्पाद सूची तैयार करें।",
+    "description_bn": "Amazon-এর জন্য কারিগরের বিক্রেতা-নিবন্ধনের তথ্য ও হস্তনির্মিত পণ্যের তালিকা প্রস্তুত করুন।",
+    "description_ta": "Amazon-க்கான கைவினைஞரின் விற்பனையாளர் பதிவுத் தகவலையும் கைவினைப் பொருள் பட்டியலையும் தயாரிக்கவும்.",
+    "benefits": [
+      "Access to online customers",
+      "Seller tools for listings and inventory",
+      "Multiple fulfilment choices"
+    ],
+    "benefits_hi": [
+      "ऑनलाइन ग्राहकों तक पहुँच",
+      "लिस्टिंग और इन्वेंटरी के लिए विक्रेता टूल",
+      "कई पूर्ति और डिलीवरी विकल्प"
+    ],
+    "benefits_bn": [
+      "অনলাইন ক্রেতাদের কাছে পৌঁছানো",
+      "তালিকা ও মজুত পরিচালনার বিক্রেতা টুল",
+      "একাধিক অর্ডার পূরণ ও সরবরাহের বিকল্প"
+    ],
+    "benefits_ta": [
+      "ஆன்லைன் வாடிக்கையாளர்களை அணுகுதல்",
+      "பட்டியல் மற்றும் இருப்புக்கான விற்பனையாளர் கருவிகள்",
+      "பல நிறைவேற்றல் மற்றும் விநியோக விருப்பங்கள்"
+    ],
+    "required_details": [
+      "GST number or PAN, as applicable",
+      "Active bank account",
+      "Pickup address and contact details",
+      "Product images, dimensions and description"
+    ],
+    "required_details_hi": [
+      "लागू होने पर GST नंबर या PAN",
+      "सक्रिय बैंक खाता",
+      "पिकअप पता और संपर्क विवरण",
+      "उत्पाद की तस्वीरें, माप और विवरण"
+    ],
+    "required_details_bn": [
+      "প্রযোজ্য ক্ষেত্রে GST নম্বর বা PAN",
+      "সক্রিয় ব্যাংক অ্যাকাউন্ট",
+      "পিকআপ ঠিকানা ও যোগাযোগের তথ্য",
+      "পণ্যের ছবি, মাপ ও বিবরণ"
+    ],
+    "required_details_ta": [
+      "பொருந்தும் வகையில் GST எண் அல்லது PAN",
+      "செயலில் உள்ள வங்கிக் கணக்கு",
+      "பொருள் சேகரிப்பு முகவரி மற்றும் தொடர்பு விவரங்கள்",
+      "தயாரிப்புப் படங்கள், அளவுகள் மற்றும் விளக்கம்"
+    ],
+    "process_steps": [
+      "Prepare seller-registration information",
+      "Prepare the product listing",
+      "Review all information",
+      "Continue on the official marketplace for verification and submission"
+    ],
+    "process_steps_hi": [
+      "विक्रेता-पंजीकरण जानकारी तैयार करें",
+      "उत्पाद सूची तैयार करें",
+      "सभी जानकारी की समीक्षा करें",
+      "सत्यापन और जमा करने के लिए आधिकारिक मार्केटप्लेस पर आगे बढ़ें"
+    ],
+    "process_steps_bn": [
+      "বিক্রেতা-নিবন্ধনের তথ্য প্রস্তুত করুন",
+      "পণ্যের তালিকা প্রস্তুত করুন",
+      "সব তথ্য পর্যালোচনা করুন",
+      "যাচাই ও জমা দেওয়ার জন্য সরকারি মার্কেটপ্লেসে এগিয়ে যান"
+    ],
+    "process_steps_ta": [
+      "விற்பனையாளர் பதிவுத் தகவலைத் தயாரிக்கவும்",
+      "தயாரிப்புப் பட்டியலைத் தயாரிக்கவும்",
+      "அனைத்துத் தகவலையும் மதிப்பாய்வு செய்யவும்",
+      "சரிபார்ப்பு மற்றும் சமர்ப்பிப்பிற்காக அதிகாரப்பூர்வ சந்தைக்குச் செல்லவும்"
+    ],
+    "prototype_notice": "The prototype prepares information only. The artisan must complete OTP, verification and final submission on Amazon.",
+    "prototype_notice_hi": "प्रोटोटाइप केवल जानकारी तैयार करता है। OTP, सत्यापन और अंतिम जमा कारीगर को Amazon पर पूरा करना होगा।",
+    "prototype_notice_bn": "প্রোটোটাইপটি শুধু তথ্য প্রস্তুত করে। OTP, যাচাই ও চূড়ান্ত জমা কারিগরকে Amazon-এ সম্পূর্ণ করতে হবে।",
+    "prototype_notice_ta": "முன்மாதிரி தகவலை மட்டுமே தயாரிக்கிறது. OTP, சரிபார்ப்பு மற்றும் இறுதிச் சமர்ப்பிப்பை கைவினைஞர் Amazon-இல் முடிக்க வேண்டும்."
+  },
+  {
+    "channel_id": "flipkart_samarth",
+    "channel_name": "Flipkart Samarth",
+    "channel_name_hi": "फ्लिपकार्ट समर्थ",
+    "channel_name_bn": "ফ্লিপকার্ট সমর্থ",
+    "channel_name_ta": "Flipkart Samarth",
+    "listing_mode": "external",
+    "enabled": true,
+    "requires_registration": true,
+    "registration_schema": "marketplace_registration_schema.json",
+    "listing_schema": "marketplace_listing_schema.json",
+    "prototype_status": "prepared_only",
+    "description": "Prepare seller onboarding and product-listing information for Flipkart Samarth.",
+    "description_hi": "Flipkart Samarth के लिए विक्रेता ऑनबोर्डिंग और उत्पाद सूची की जानकारी तैयार करें।",
+    "description_bn": "Flipkart Samarth-এর জন্য বিক্রেতা অনবোর্ডিং ও পণ্যের তালিকার তথ্য প্রস্তুত করুন।",
+    "description_ta": "Flipkart Samarth-க்கான விற்பனையாளர் இணைப்பு மற்றும் தயாரிப்புப் பட்டியல் தகவலைத் தயாரிக்கவும்.",
+    "benefits": [
+      "Digital marketplace reach",
+      "Structured product catalogue",
+      "Support for artisans and small producers"
+    ],
+    "benefits_hi": [
+      "डिजिटल मार्केटप्लेस तक पहुँच",
+      "व्यवस्थित उत्पाद कैटलॉग",
+      "कारीगरों और छोटे उत्पादकों के लिए सहायता"
+    ],
+    "benefits_bn": [
+      "ডিজিটাল মার্কেটপ্লেসে পৌঁছানো",
+      "সুসংগঠিত পণ্য ক্যাটালগ",
+      "কারিগর ও ক্ষুদ্র উৎপাদকদের সহায়তা"
+    ],
+    "benefits_ta": [
+      "டிஜிட்டல் சந்தை அணுகல்",
+      "ஒழுங்கமைக்கப்பட்ட தயாரிப்புப் பட்டியல்",
+      "கைவினைஞர்கள் மற்றும் சிறு உற்பத்தியாளர்களுக்கான ஆதரவு"
+    ],
+    "required_details": [
+      "Seller identity and contact details",
+      "PAN and bank details",
+      "Pickup address",
+      "Product information and images"
+    ],
+    "required_details_hi": [
+      "विक्रेता की पहचान और संपर्क विवरण",
+      "PAN और बैंक विवरण",
+      "पिकअप पता",
+      "उत्पाद की जानकारी और तस्वीरें"
+    ],
+    "required_details_bn": [
+      "বিক্রেতার পরিচয় ও যোগাযোগের তথ্য",
+      "PAN ও ব্যাংকের তথ্য",
+      "পিকআপ ঠিকানা",
+      "পণ্যের তথ্য ও ছবি"
+    ],
+    "required_details_ta": [
+      "விற்பனையாளர் அடையாளம் மற்றும் தொடர்பு விவரங்கள்",
+      "PAN மற்றும் வங்கி விவரங்கள்",
+      "பொருள் சேகரிப்பு முகவரி",
+      "தயாரிப்புத் தகவல் மற்றும் படங்கள்"
+    ],
+    "process_steps": [
+      "Prepare seller details",
+      "Choose seller and product categories",
+      "Review the generated listing",
+      "Complete verification and submission on the official marketplace"
+    ],
+    "process_steps_hi": [
+      "विक्रेता विवरण तैयार करें",
+      "विक्रेता और उत्पाद श्रेणियाँ चुनें",
+      "तैयार सूची की समीक्षा करें",
+      "आधिकारिक मार्केटप्लेस पर सत्यापन और जमा पूरा करें"
+    ],
+    "process_steps_bn": [
+      "বিক্রেতার তথ্য প্রস্তুত করুন",
+      "বিক্রেতা ও পণ্য বিভাগ নির্বাচন করুন",
+      "তৈরি তালিকা পর্যালোচনা করুন",
+      "সরকারি মার্কেটপ্লেসে যাচাই ও জমা সম্পূর্ণ করুন"
+    ],
+    "process_steps_ta": [
+      "விற்பனையாளர் விவரங்களைத் தயாரிக்கவும்",
+      "விற்பனையாளர் மற்றும் தயாரிப்பு வகைகளைத் தேர்ந்தெடுக்கவும்",
+      "உருவாக்கப்பட்ட பட்டியலை மதிப்பாய்வு செய்யவும்",
+      "அதிகாரப்பூர்வ சந்தையில் சரிபார்ப்பு மற்றும் சமர்ப்பிப்பை முடிக்கவும்"
+    ],
+    "prototype_notice": "The prototype prepares information only and does not create or submit a real Flipkart seller account.",
+    "prototype_notice_hi": "प्रोटोटाइप केवल जानकारी तैयार करता है और वास्तविक Flipkart विक्रेता खाता बनाता या जमा नहीं करता।",
+    "prototype_notice_bn": "প্রোটোটাইপটি শুধু তথ্য প্রস্তুত করে; এটি বাস্তব Flipkart বিক্রেতা অ্যাকাউন্ট তৈরি বা জমা দেয় না।",
+    "prototype_notice_ta": "முன்மாதிரி தகவலை மட்டுமே தயாரிக்கிறது; உண்மையான Flipkart விற்பனையாளர் கணக்கை உருவாக்கவோ சமர்ப்பிக்கவோ செய்யாது."
+  },
+  {
+    "channel_id": "ondc",
+    "channel_name": "ONDC Seller Network",
+    "channel_name_hi": "ONDC विक्रेता नेटवर्क",
+    "channel_name_bn": "ONDC বিক্রেতা নেটওয়ার্ক",
+    "channel_name_ta": "ONDC விற்பனையாளர் வலைப்பின்னல்",
+    "listing_mode": "external",
+    "enabled": true,
+    "requires_registration": true,
+    "registration_schema": "marketplace_registration_schema.json",
+    "listing_schema": "marketplace_listing_schema.json",
+    "prototype_status": "prepared_only",
+    "description": "Prepare store and product information for onboarding through an ONDC Seller Network Participant.",
+    "description_hi": "ONDC विक्रेता नेटवर्क प्रतिभागी के माध्यम से ऑनबोर्डिंग के लिए स्टोर और उत्पाद की जानकारी तैयार करें।",
+    "description_bn": "ONDC বিক্রেতা নেটওয়ার্ক অংশগ্রহণকারীর মাধ্যমে অনবোর্ডিংয়ের জন্য দোকান ও পণ্যের তথ্য প্রস্তুত করুন।",
+    "description_ta": "ONDC விற்பனையாளர் வலைப்பின்னல் பங்கேற்பாளர் மூலம் இணைவதற்கான கடை மற்றும் தயாரிப்புத் தகவலைத் தயாரிக்கவும்.",
+    "benefits": [
+      "Discovery across participating buyer applications",
+      "Choice of Seller Network Participant",
+      "Digital catalogue and order readiness"
+    ],
+    "benefits_hi": [
+      "भाग लेने वाले खरीदार ऐप्स पर खोजे जाने की संभावना",
+      "विक्रेता नेटवर्क प्रतिभागी चुनने का विकल्प",
+      "डिजिटल कैटलॉग और ऑर्डर की तैयारी"
+    ],
+    "benefits_bn": [
+      "অংশগ্রহণকারী ক্রেতা অ্যাপগুলিতে পণ্য খুঁজে পাওয়ার সুযোগ",
+      "বিক্রেতা নেটওয়ার্ক অংশগ্রহণকারী বেছে নেওয়ার সুযোগ",
+      "ডিজিটাল ক্যাটালগ ও অর্ডারের প্রস্তুতি"
+    ],
+    "benefits_ta": [
+      "பங்கேற்கும் வாங்குபவர் செயலிகளில் கண்டறியப்படும் வாய்ப்பு",
+      "விற்பனையாளர் வலைப்பின்னல் பங்கேற்பாளரைத் தேர்வு செய்தல்",
+      "டிஜிட்டல் பட்டியல் மற்றும் ஆர்டர் தயார்நிலை"
+    ],
+    "required_details": [
+      "Store and seller details",
+      "Bank and tax details, as applicable",
+      "Pickup or business address",
+      "Product catalogue and fulfilment choice"
+    ],
+    "required_details_hi": [
+      "स्टोर और विक्रेता विवरण",
+      "लागू होने पर बैंक और कर विवरण",
+      "पिकअप या व्यवसाय का पता",
+      "उत्पाद कैटलॉग और पूर्ति विकल्प"
+    ],
+    "required_details_bn": [
+      "দোকান ও বিক্রেতার তথ্য",
+      "প্রযোজ্য ক্ষেত্রে ব্যাংক ও করের তথ্য",
+      "পিকআপ বা ব্যবসার ঠিকানা",
+      "পণ্য ক্যাটালগ ও অর্ডার পূরণের পছন্দ"
+    ],
+    "required_details_ta": [
+      "கடை மற்றும் விற்பனையாளர் விவரங்கள்",
+      "பொருந்தும் வகையில் வங்கி மற்றும் வரி விவரங்கள்",
+      "பொருள் சேகரிப்பு அல்லது தொழில் முகவரி",
+      "தயாரிப்புப் பட்டியல் மற்றும் நிறைவேற்றல் தேர்வு"
+    ],
+    "process_steps": [
+      "Select a Seller Network Participant",
+      "Prepare store and seller details",
+      "Prepare the product catalogue",
+      "Complete onboarding with the selected participant"
+    ],
+    "process_steps_hi": [
+      "विक्रेता नेटवर्क प्रतिभागी चुनें",
+      "स्टोर और विक्रेता विवरण तैयार करें",
+      "उत्पाद कैटलॉग तैयार करें",
+      "चुने हुए प्रतिभागी के साथ ऑनबोर्डिंग पूरी करें"
+    ],
+    "process_steps_bn": [
+      "একজন বিক্রেতা নেটওয়ার্ক অংশগ্রহণকারী নির্বাচন করুন",
+      "দোকান ও বিক্রেতার তথ্য প্রস্তুত করুন",
+      "পণ্য ক্যাটালগ প্রস্তুত করুন",
+      "নির্বাচিত অংশগ্রহণকারীর সঙ্গে অনবোর্ডিং সম্পূর্ণ করুন"
+    ],
+    "process_steps_ta": [
+      "விற்பனையாளர் வலைப்பின்னல் பங்கேற்பாளரைத் தேர்ந்தெடுக்கவும்",
+      "கடை மற்றும் விற்பனையாளர் விவரங்களைத் தயாரிக்கவும்",
+      "தயாரிப்புப் பட்டியலைத் தயாரிக்கவும்",
+      "தேர்ந்தெடுத்த பங்கேற்பாளருடன் இணைப்பை முடிக்கவும்"
+    ],
+    "prototype_notice": "The prototype prepares onboarding data only. Actual ONDC onboarding is completed through the selected network participant.",
+    "prototype_notice_hi": "प्रोटोटाइप केवल ऑनबोर्डिंग डेटा तैयार करता है। वास्तविक ONDC ऑनबोर्डिंग चुने हुए नेटवर्क प्रतिभागी के माध्यम से पूरी होती है।",
+    "prototype_notice_bn": "প্রোটোটাইপটি শুধু অনবোর্ডিংয়ের তথ্য প্রস্তুত করে। প্রকৃত ONDC অনবোর্ডিং নির্বাচিত নেটওয়ার্ক অংশগ্রহণকারীর মাধ্যমে সম্পন্ন হয়।",
+    "prototype_notice_ta": "முன்மாதிரி இணைப்புத் தரவை மட்டுமே தயாரிக்கிறது. உண்மையான ONDC இணைப்பு தேர்ந்தெடுக்கப்பட்ட வலைப்பின்னல் பங்கேற்பாளர் மூலம் முடிக்கப்படுகிறது."
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "name": "Digi-Karigar",
+  "short_name": "Digi-Karigar",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#FBF8F3",
+  "theme_color": "#B85042"
+  
+}

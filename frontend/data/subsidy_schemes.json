@@ -1,0 +1,210 @@
+[
+  {
+    "scheme_id": "pm_vishwakarma",
+    "scheme_name": "PM Vishwakarma",
+    "scheme_name_hi": "पीएम विश्वकर्मा",
+    "scheme_name_bn": "পিএম বিশ্বকর্মা",
+    "scheme_name_ta": "பிஎம் விஸ்வகர்மா",
+    "description": "A central government scheme providing training, toolkit incentives, credit and marketing support to traditional artisans.",
+    "description_hi": "पारंपरिक कारीगरों को प्रशिक्षण, टूलकिट प्रोत्साहन, ऋण और विपणन सहायता प्रदान करने वाली केंद्र सरकार की योजना।",
+    "description_bn": "ঐতিহ্যবাহী কারিগরদের প্রশিক্ষণ, টুলকিট প্রণোদনা, ঋণ ও বিপণন সহায়তা প্রদানকারী কেন্দ্রীয় সরকারের একটি প্রকল্প।",
+    "description_ta": "பாரம்பரியக் கைவினைஞர்களுக்குப் பயிற்சி, கருவித்தொகுப்பு ஊக்கத்தொகை, கடன் மற்றும் சந்தைப்படுத்தல் ஆதரவு வழங்கும் மத்திய அரசுத் திட்டம்.",
+    "official_url": "https://pmvishwakarma.gov.in/",
+    "application_mode": "csc_assisted",
+    "minimum_age": 18,
+    "eligible_trades": [
+      "Potter",
+      "Carpenter",
+      "Tailor",
+      "Weaver",
+      "Sculptor"
+    ],
+    "eligible_trades_hi": [
+      "कुम्हार",
+      "बढ़ई",
+      "दर्जी",
+      "बुनकर",
+      "मूर्तिकार"
+    ],
+    "eligible_trades_bn": [
+      "কুমোর",
+      "ছুতার",
+      "দর্জি",
+      "তাঁতি",
+      "ভাস্কর"
+    ],
+    "eligible_trades_ta": [
+      "குயவர்",
+      "தச்சர்",
+      "தையல்காரர்",
+      "நெசவாளர்",
+      "சிற்பி"
+    ],
+    "eligibility_questions": [
+      {
+        "field_id": "government_employee_in_family",
+        "question": "Is there any government employee within your family?",
+        "question_hi": "क्या आपके परिवार में कोई सरकारी कर्मचारी है?",
+        "question_bn": "আপনার পরিবারে কি কোনো সরকারি কর্মচারী আছেন?",
+        "question_ta": "உங்கள் குடும்பத்தில் அரசு ஊழியர் யாராவது உள்ளாரா?",
+        "eligible_answer": false
+      },
+      {
+        "field_id": "similar_scheme_loan_availed",
+        "question": "Have you availed credit under a similar government scheme or have an outstanding PM SVANidhi or MUDRA loan?",
+        "question_hi": "क्या आपने समान सरकारी योजना के तहत ऋण लिया है या PM SVANidhi अथवा MUDRA का कोई बकाया ऋण है?",
+        "question_bn": "আপনি কি অনুরূপ সরকারি প্রকল্পে ঋণ নিয়েছেন অথবা আপনার কোনো PM SVANidhi বা MUDRA ঋণ বকেয়া আছে?",
+        "question_ta": "இதேபோன்ற அரசுத் திட்டத்தில் கடன் பெற்றுள்ளீர்களா அல்லது PM SVANidhi அல்லது MUDRA கடன் நிலுவையில் உள்ளதா?",
+        "eligible_answer": false
+      }
+    ],
+    "required_documents": [
+      "Aadhaar card",
+      "Aadhaar-linked mobile number",
+      "Bank account details",
+      "Ration card, if available"
+    ],
+    "required_documents_hi": [
+      "आधार कार्ड",
+      "आधार से जुड़ा मोबाइल नंबर",
+      "बैंक खाते का विवरण",
+      "राशन कार्ड, यदि उपलब्ध हो"
+    ],
+    "required_documents_bn": [
+      "আধার কার্ড",
+      "আধার-সংযুক্ত মোবাইল নম্বর",
+      "ব্যাংক অ্যাকাউন্টের বিবরণ",
+      "রেশন কার্ড, যদি উপলভ্য থাকে"
+    ],
+    "required_documents_ta": [
+      "ஆதார் அட்டை",
+      "ஆதாருடன் இணைக்கப்பட்ட கைப்பேசி எண்",
+      "வங்கிக் கணக்கு விவரங்கள்",
+      "குடும்ப அட்டை, இருந்தால்"
+    ],
+    "benefits": [
+      "Skill training",
+      "Toolkit incentive",
+      "Credit support up to ₹1,00,000 in the first stage",
+      "Digital transaction incentive",
+      "Marketing support"
+    ],
+    "benefits_hi": [
+      "कौशल प्रशिक्षण",
+      "टूलकिट प्रोत्साहन",
+      "पहले चरण में ₹1,00,000 तक ऋण सहायता",
+      "डिजिटल लेनदेन प्रोत्साहन",
+      "विपणन सहायता"
+    ],
+    "benefits_bn": [
+      "দক্ষতা প্রশিক্ষণ",
+      "টুলকিট প্রণোদনা",
+      "প্রথম পর্যায়ে ₹১,০০,০০০ পর্যন্ত ঋণ সহায়তা",
+      "ডিজিটাল লেনদেন প্রণোদনা",
+      "বিপণন সহায়তা"
+    ],
+    "benefits_ta": [
+      "திறன் பயிற்சி",
+      "கருவித்தொகுப்பு ஊக்கத்தொகை",
+      "முதல் கட்டத்தில் ₹1,00,000 வரை கடன் உதவி",
+      "டிஜிட்டல் பரிவர்த்தனை ஊக்கத்தொகை",
+      "சந்தைப்படுத்தல் ஆதரவு"
+    ],
+    "prototype_notice": "This prototype does not submit an application to the official government portal.",
+    "prototype_notice_hi": "यह प्रोटोटाइप आधिकारिक सरकारी पोर्टल पर आवेदन जमा नहीं करता है।",
+    "prototype_notice_bn": "এই প্রোটোটাইপটি সরকারি পোর্টালে কোনো আবেদন জমা দেয় না।",
+    "prototype_notice_ta": "இந்த முன்மாதிரி அதிகாரப்பூர்வ அரசு இணையதளத்தில் விண்ணப்பத்தைச் சமர்ப்பிக்காது.",
+    "benefit_details": [
+      {
+        "benefit_id": "recognition",
+        "title": "Official Recognition",
+        "title_hi": "आधिकारिक पहचान",
+        "title_bn": "সরকারি স্বীকৃতি",
+        "title_ta": "அதிகாரப்பூர்வ அங்கீகாரம்",
+        "details": "Receive recognition as a Vishwakarma through a PM Vishwakarma Certificate and ID Card.",
+        "details_hi": "पीएम विश्वकर्मा प्रमाणपत्र और पहचान पत्र के माध्यम से विश्वकर्मा के रूप में आधिकारिक पहचान प्राप्त करें।",
+        "details_bn": "পিএম বিশ্বকর্মা শংসাপত্র ও পরিচয়পত্রের মাধ্যমে বিশ্বকর্মা হিসেবে সরকারি স্বীকৃতি পান।",
+        "details_ta": "பிஎம் விஸ்வகர்மா சான்றிதழ் மற்றும் அடையாள அட்டை மூலம் விஸ்வகர்மாவாக அதிகாரப்பூர்வ அங்கீகாரம் பெறலாம்.",
+        "highlight": "Certificate + ID Card",
+        "highlight_hi": "प्रमाणपत्र + पहचान पत्र",
+        "highlight_bn": "শংসাপত্র + পরিচয়পত্র",
+        "highlight_ta": "சான்றிதழ் + அடையாள அட்டை"
+      },
+      {
+        "benefit_id": "skill_training",
+        "title": "Skill Training",
+        "title_hi": "कौशल प्रशिक्षण",
+        "title_bn": "দক্ষতা প্রশিক্ষণ",
+        "title_ta": "திறன் பயிற்சி",
+        "details": "Skill verification is followed by 5–7 days (40 hours) of basic training. Interested artisans can also take 15 days (120 hours) of advanced training. A stipend of ₹500 per day is provided during training.",
+        "details_hi": "कौशल सत्यापन के बाद 5–7 दिनों (40 घंटे) का बुनियादी प्रशिक्षण दिया जाता है। इच्छुक कारीगर 15 दिनों (120 घंटे) का उन्नत प्रशिक्षण भी ले सकते हैं। प्रशिक्षण के दौरान ₹500 प्रतिदिन का वजीफा मिलता है।",
+        "details_bn": "দক্ষতা যাচাইয়ের পর ৫–৭ দিনের (৪০ ঘণ্টা) প্রাথমিক প্রশিক্ষণ দেওয়া হয়। আগ্রহী কারিগরেরা ১৫ দিনের (১২০ ঘণ্টা) উন্নত প্রশিক্ষণও নিতে পারেন। প্রশিক্ষণের সময় প্রতিদিন ₹৫০০ ভাতা দেওয়া হয়।",
+        "details_ta": "திறன் சரிபார்ப்புக்குப் பிறகு 5–7 நாட்கள் (40 மணிநேரம்) அடிப்படைப் பயிற்சி வழங்கப்படும். விருப்பமுள்ள கைவினைஞர்கள் 15 நாட்கள் (120 மணிநேரம்) மேம்பட்ட பயிற்சியையும் பெறலாம். பயிற்சிக் காலத்தில் நாளொன்றுக்கு ₹500 உதவித்தொகை வழங்கப்படும்.",
+        "highlight": "5–7 days basic training • ₹500/day stipend",
+        "highlight_hi": "5–7 दिन बुनियादी प्रशिक्षण • ₹500 प्रतिदिन वजीफा",
+        "highlight_bn": "৫–৭ দিন প্রাথমিক প্রশিক্ষণ • প্রতিদিন ₹৫০০ ভাতা",
+        "highlight_ta": "5–7 நாட்கள் அடிப்படைப் பயிற்சி • நாளொன்றுக்கு ₹500"
+      },
+      {
+        "benefit_id": "toolkit_incentive",
+        "title": "Toolkit Incentive",
+        "title_hi": "टूलकिट प्रोत्साहन",
+        "title_bn": "টুলকিট প্রণোদনা",
+        "title_ta": "கருவித்தொகுப்பு ஊக்கத்தொகை",
+        "details": "A grant of ₹15,000 is provided to help the artisan obtain improved tools for their traditional trade.",
+        "details_hi": "कारीगर को अपने पारंपरिक व्यवसाय के लिए बेहतर औज़ार प्राप्त करने में सहायता हेतु ₹15,000 का अनुदान दिया जाता है।",
+        "details_bn": "কারিগরকে তাঁর ঐতিহ্যবাহী পেশার জন্য উন্নত সরঞ্জাম পেতে সহায়তা হিসেবে ₹১৫,০০০ অনুদান দেওয়া হয়।",
+        "details_ta": "கைவினைஞர் தனது பாரம்பரியத் தொழிலுக்கான மேம்பட்ட கருவிகளைப் பெற ₹15,000 மானியம் வழங்கப்படும்.",
+        "highlight": "₹15,000 grant",
+        "highlight_hi": "₹15,000 अनुदान",
+        "highlight_bn": "₹১৫,০০০ অনুদান",
+        "highlight_ta": "₹15,000 மானியம்"
+      },
+      {
+        "benefit_id": "credit_support",
+        "title": "Collateral-free Credit Support",
+        "title_hi": "बिना गारंटी ऋण सहायता",
+        "title_bn": "জামানতবিহীন ঋণ সহায়তা",
+        "title_ta": "பிணையில்லா கடன் உதவி",
+        "details": "Collateral-free enterprise loans are available in two stages: ₹1 lakh with an 18-month repayment period, followed by ₹2 lakh with a 30-month repayment period. The beneficiary is charged a concessional interest rate of 5%, subject to scheme conditions.",
+        "details_hi": "बिना गारंटी उद्यम ऋण दो चरणों में उपलब्ध है: पहले ₹1 लाख, जिसकी भुगतान अवधि 18 महीने है; उसके बाद ₹2 लाख, जिसकी भुगतान अवधि 30 महीने है। योजना की शर्तों के अनुसार लाभार्थी से 5% की रियायती ब्याज दर ली जाती है।",
+        "details_bn": "জামানতবিহীন উদ্যোগ ঋণ দুই ধাপে পাওয়া যায়: প্রথমে ১৮ মাসের পরিশোধ মেয়াদে ₹১ লক্ষ এবং পরে ৩০ মাসের পরিশোধ মেয়াদে ₹২ লক্ষ। প্রকল্পের শর্ত অনুযায়ী সুবিধাভোগীর জন্য সুদের হার ৫%।",
+        "details_ta": "பிணையில்லா தொழில் கடன் இரண்டு கட்டங்களாகக் கிடைக்கும்: முதலில் 18 மாதத் திருப்பிச் செலுத்தும் காலத்துடன் ₹1 லட்சம்; பின்னர் 30 மாதக் காலத்துடன் ₹2 லட்சம். திட்ட நிபந்தனைகளின்படி பயனாளிக்கு 5% சலுகை வட்டி விதிக்கப்படும்.",
+        "highlight": "Up to ₹3 lakh • 5% interest",
+        "highlight_hi": "₹3 लाख तक • 5% ब्याज",
+        "highlight_bn": "₹৩ লক্ষ পর্যন্ত • ৫% সুদ",
+        "highlight_ta": "₹3 லட்சம் வரை • 5% வட்டி"
+      },
+      {
+        "benefit_id": "digital_transaction",
+        "title": "Digital Transaction Incentive",
+        "title_hi": "डिजिटल लेनदेन प्रोत्साहन",
+        "title_bn": "ডিজিটাল লেনদেন প্রণোদনা",
+        "title_ta": "டிஜிட்டல் பரிவர்த்தனை ஊக்கத்தொகை",
+        "details": "Earn an incentive of ₹1 for each eligible digital transaction, for up to 100 transactions per month.",
+        "details_hi": "प्रत्येक पात्र डिजिटल लेनदेन पर ₹1 का प्रोत्साहन प्राप्त करें, अधिकतम 100 लेनदेन प्रति माह तक।",
+        "details_bn": "প্রতিটি যোগ্য ডিজিটাল লেনদেনে ₹১ প্রণোদনা পান, মাসে সর্বাধিক ১০০টি লেনদেন পর্যন্ত।",
+        "details_ta": "தகுதியான ஒவ்வொரு டிஜிட்டல் பரிவர்த்தனைக்கும் ₹1 ஊக்கத்தொகை பெறலாம்; மாதத்திற்கு அதிகபட்சம் 100 பரிவர்த்தனைகள் வரை.",
+        "highlight": "Up to ₹100 per month",
+        "highlight_hi": "₹100 प्रति माह तक",
+        "highlight_bn": "মাসে ₹১০০ পর্যন্ত",
+        "highlight_ta": "மாதத்திற்கு ₹100 வரை"
+      },
+      {
+        "benefit_id": "marketing_support",
+        "title": "Marketing Support",
+        "title_hi": "विपणन सहायता",
+        "title_bn": "বিপণন সহায়তা",
+        "title_ta": "சந்தைப்படுத்தல் ஆதரவு",
+        "details": "Support may include quality certification, branding and promotion, e-commerce linkage, participation in trade fairs, advertising, publicity and other marketing activities.",
+        "details_hi": "सहायता में गुणवत्ता प्रमाणन, ब्रांडिंग और प्रचार, ई-कॉमर्स से जुड़ाव, व्यापार मेलों में भागीदारी, विज्ञापन, प्रचार-प्रसार और अन्य विपणन गतिविधियाँ शामिल हो सकती हैं।",
+        "details_bn": "সহায়তার মধ্যে গুণমান শংসাপত্র, ব্র্যান্ডিং ও প্রচার, ই-কমার্স সংযোগ, বাণিজ্য মেলায় অংশগ্রহণ, বিজ্ঞাপন, প্রচার এবং অন্যান্য বিপণন কার্যক্রম থাকতে পারে।",
+        "details_ta": "தரச் சான்றிதழ், வர்த்தக முத்திரை மற்றும் விளம்பரம், மின்வணிக இணைப்பு, வர்த்தகக் கண்காட்சிகளில் பங்கேற்பு, விளம்பரம் மற்றும் பிற சந்தைப்படுத்தல் நடவடிக்கைகள் இதில் அடங்கலாம்.",
+        "highlight": "Branding • E-commerce • Trade fairs",
+        "highlight_hi": "ब्रांडिंग • ई-कॉमर्स • व्यापार मेले",
+        "highlight_bn": "ব্র্যান্ডিং • ই-কমার্স • বাণিজ্য মেলা",
+        "highlight_ta": "வர்த்தக முத்திரை • மின்வணிகம் • கண்காட்சிகள்"
+      }
+    ]
+  }
+]
