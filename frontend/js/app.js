@@ -95,6 +95,13 @@ const PRODUCT_QUESTIONS = [
     prompt_hi: "इसका आकार या लंबाई कितनी है?",
     prompt_bn: "এর আকার বা দৈর্ঘ্য কত?",
     prompt_ta: "இதன் அளவு அல்லது நீளம் என்ன?"
+  },
+  {
+    field_id: "extra_details",
+    prompt: "Would you like to say anything else about your product? You can skip this.",
+    prompt_hi: "क्या आप अपने उत्पाद के बारे में कुछ और बताना चाहते हैं? आप इसे छोड़ सकते हैं।",
+    prompt_bn: "আপনি কি আপনার পণ্য সম্পর্কে আর কিছু বলতে চান? আপনি এটি এড়িয়ে যেতে পারেন।",
+    prompt_ta: "உங்கள் தயாரிப்பு பற்றி வேறு எதையாவது சொல்ல விரும்புகிறீர்களா? இதைத் தவிர்க்கலாம்."
   }
 ];
 
@@ -124,6 +131,7 @@ const state = {
   photoFile: null,
   photoPreviewUrl: null,
   enhancedImageUrl: null,
+  
 
   answers: {},
 
@@ -216,6 +224,18 @@ function showScreen(name, options) {
   }
 
   state.screen = name;
+  if (
+  typeof announceScreen ===
+  "function"
+) {
+  announceScreen(
+    name,
+
+    state.language
+      ? state.language.code
+      : "hi-IN"
+  );
+}
 }
 
 
@@ -615,50 +635,66 @@ function applyAppLanguage() {
   );
 
   setLanguageElement(
+  "subsidyBackBtn",
+  "Back",
+  "पीछे",
+  "পিছনে",
+  "பின்செல்"
+  );
+
+  setLanguageElement(
     "createAnotherBtn",
     "Create another listing",
     "एक और लिस्टिंग बनाएँ",
     "আরেকটি লিস্টিং তৈরি করুন",
     "மற்றொரு பட்டியலை உருவாக்கவும்"
   );
+  
+// ...existing code...
 
-  const homeCardTranslations = {
-    home_subsidy: {
-      en: "Government Subsidy",
-      hi: "सरकारी सब्सिडी",
-      bn: "সরকারি ভর্তুকি",
-      ta: "அரசு மானியம்"
-    },
+const homeCardTranslations = {
+  home_add_product: {
+    en: "Add a Product",
+    hi: "उत्पाद जोड़ें",
+    bn: "পণ্য যোগ করুন",
+    ta: "தயாரிப்பைச் சேர்க்கவும்"
+  },
 
-    home_marketplace: {
-      en: "Sell on Marketplace",
-      hi: "मार्केटप्लेस पर बेचें",
-      bn: "মার্কেটপ্লেসে বিক্রি করুন",
-      ta: "சந்தையில் விற்கவும்"
-    },
+  home_subsidy: {
+    en: "Government Subsidy",
+    hi: "सरकारी सब्सिडी",
+    bn: "সরকারি ভর্তুকি",
+    ta: "அரசு மானியம்"
+  },
 
-    home_inventory: {
-      en: "Manage Inventory",
-      hi: "इन्वेंटरी प्रबंधित करें",
-      bn: "ইনভেন্টরি পরিচালনা করুন",
-      ta: "சரக்குகளை நிர்வகிக்கவும்"
+  home_marketplace: {
+    en: "Sell on Marketplace",
+    hi: "बाज़ार में बेचें",
+    bn: "বাজারে বিক্রি করুন",
+    ta: "சந்தையில் விற்கவும்"
+  },
+
+  home_inventory: {
+    en: "Manage Inventory",
+    hi: "इन्वेंटरी प्रबंधित करें",
+    bn: "ইনভেন্টরি পরিচালনা করুন",
+    ta: "சரக்கை நிர்வகிக்கவும்"
+  }
+};
+
+document
+  .querySelectorAll("[data-i18n]")
+  .forEach((element) => {
+    const translations = homeCardTranslations[element.dataset.i18n];
+
+    if (translations) {
+      element.textContent =
+        translations[currentLanguage()] ||
+        translations.en;
     }
-  };
+  });
 
-  document
-    .querySelectorAll("[data-i18n]")
-    .forEach((element) => {
-      const translations =
-        homeCardTranslations[
-        element.dataset.i18n
-        ];
-
-      if (translations) {
-        element.textContent =
-          translations[currentLanguage()] ||
-          translations.en;
-      }
-    });
+// ...existing code...
 
   document
     .querySelectorAll(
@@ -830,6 +866,419 @@ document
 
   });
 
+// ==========================================================
+// HOME VOICE ASSISTANT
+// ==========================================================
+
+const assistantVoiceBtn =
+  document.getElementById(
+    "assistantVoiceBtn"
+  );
+
+
+function containsVoicePhrase(
+  command,
+  phrases
+) {
+  return phrases.some(
+    (phrase) =>
+      command.includes(phrase)
+  );
+}
+
+
+function detectHomeVoiceIntent(
+  spokenText
+) {
+  const command =
+    String(spokenText || "")
+      .toLowerCase()
+      .replace(/[.,!?।]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+
+  /*
+   * Add Product is checked first so:
+   * "मुझे अपना सामान डालना है"
+   * opens the Add Product flow.
+   */
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "add product",
+        "add a product",
+        "new product",
+        "take photo",
+        "product photo",
+        "samaan dal",
+        "saman dal",
+        "saaman daal",
+        "samaan daal",
+        "samaan jod",
+        "utpad jod",
+        "सामान डाल",
+        "सामान जोड़",
+        "उत्पाद जोड़",
+        "नया उत्पाद",
+        "फोटो लेना",
+        "পণ্য যোগ",
+        "জিনিস যোগ",
+        "ছবি তুল",
+        "பொருள் சேர்க்க",
+        "தயாரிப்பு சேர்க்க",
+        "புகைப்படம் எடுக்க"
+      ]
+    )
+  ) {
+    return "add_product";
+  }
+
+
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "government subsidy",
+        "subsidy",
+        "government scheme",
+        "sarkari yojana",
+        "सरकारी योजना",
+        "सब्सिडी",
+        "योजना",
+        "ভর্তুকি",
+        "সরকারি প্রকল্প",
+        "மானியம்",
+        "அரசு திட்டம்"
+      ]
+    )
+  ) {
+    return "subsidy";
+  }
+
+
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "marketplace",
+        "sell online",
+        "sell product",
+        "amazon",
+        "flipkart",
+        "ondc",
+        "online bech",
+        "बाज़ार में बेच",
+        "बाजार में बेच",
+        "ऑनलाइन बेच",
+        "मार्केटप्लेस",
+        "অনলাইনে বিক্রি",
+        "মার্কেটপ্লেস",
+        "ஆன்லைனில் விற்க",
+        "சந்தையில் விற்க"
+      ]
+    )
+  ) {
+    return "marketplace";
+  }
+
+
+  if (
+    containsVoicePhrase(
+      command,
+      [
+        "manage inventory",
+        "inventory",
+        "stock",
+        "my products",
+        "mera stock",
+        "samaan dekh",
+        "saman dekh",
+        "इन्वेंटरी",
+        "स्टॉक",
+        "सामान देख",
+        "मेरा सामान दिख",
+        "ইনভেন্টরি",
+        "স্টক",
+        "পণ্য দেখ",
+        "சரக்கு",
+        "இருப்பு",
+        "பொருட்களை பார்க்க"
+      ]
+    )
+  ) {
+    return "inventory";
+  }
+
+
+  return null;
+}
+
+
+function speakHomeMessage(
+  message,
+  languageCode
+) {
+  if (!window.speechSynthesis) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance =
+    new SpeechSynthesisUtterance(
+      message
+    );
+
+  utterance.lang =
+    languageCode || "hi-IN";
+
+  window.speechSynthesis.speak(
+    utterance
+  );
+}
+
+
+function openHomeVoiceIntent(
+  intent,
+  languageCode
+) {
+  if (intent === "add_product") {
+    document
+      .getElementById("addProductBtn")
+      .click();
+
+    speakHomeMessage(
+      uiText(
+        "Please take or choose a clear product photo.",
+        "कृपया अपने उत्पाद की साफ़ फोटो लीजिए।",
+        "অনুগ্রহ করে পণ্যের একটি পরিষ্কার ছবি তুলুন।",
+        "தயவுசெய்து பொருளின் தெளிவான புகைப்படத்தை எடுக்கவும்."
+      ),
+      languageCode
+    );
+
+    return;
+  }
+
+
+  if (intent === "subsidy") {
+    document
+      .getElementById("subsidyBtn")
+      .click();
+
+    speakHomeMessage(
+      uiText(
+        "Opening government schemes.",
+        "सरकारी योजनाएँ खोल रही हूँ।",
+        "সরকারি প্রকল্প খোলা হচ্ছে।",
+        "அரசு திட்டங்கள் திறக்கப்படுகின்றன."
+      ),
+      languageCode
+    );
+
+    return;
+  }
+
+
+if (intent === "marketplace") {
+  document
+    .getElementById("b2bBtn")
+    .click();
+
+  speakHomeMessage(
+    uiText(
+      "Opening marketplace options.",
+      "मार्केटप्लेस के विकल्प खोल रही हूँ।",
+      "মার্কেটপ্লেসের বিকল্প খোলা হচ্ছে।",
+      "சந்தை விருப்பங்கள் திறக்கப்படுகின்றன."
+    ),
+    languageCode
+  );
+
+  return;
+}
+
+
+  if (intent === "inventory") {
+    const inventoryButton =
+      document.querySelector(
+        '[data-nav="inventory"]'
+      );
+
+    if (inventoryButton) {
+      inventoryButton.click();
+    }
+
+    speakHomeMessage(
+      uiText(
+        "Opening your inventory.",
+        "आपकी इन्वेंटरी खोल रही हूँ।",
+        "আপনার ইনভেন্টরি খোলা হচ্ছে।",
+        "உங்கள் சரக்கு திறக்கப்படுகிறது."
+      ),
+      languageCode
+    );
+  }
+}
+
+
+if (assistantVoiceBtn) {
+  assistantVoiceBtn.addEventListener(
+    "click",
+    async () => {
+      /*
+       * Prevent multiple recognition sessions when
+       * the user taps repeatedly.
+       */
+      if (
+        assistantVoiceBtn.dataset.listening ===
+        "true"
+      ) {
+        return;
+      }
+
+      const languageCode =
+        state.language
+          ? state.language.code
+          : "hi-IN";
+
+      const homeGreeting =
+        document.getElementById(
+          "homeGreeting"
+        );
+
+      assistantVoiceBtn.dataset.listening =
+        "true";
+
+      assistantVoiceBtn.disabled = true;
+
+      assistantVoiceBtn.classList.add(
+        "live"
+      );
+
+      if (homeGreeting) {
+        homeGreeting.textContent =
+          uiText(
+            "Listening...",
+            "सुन रही हूँ...",
+            "শুনছি...",
+            "கேட்டுக்கொண்டிருக்கிறேன்..."
+          );
+      }
+
+
+      try {
+        /*
+         * Reuse the existing voice-flow contract with
+         * one home-command question.
+         */
+        const answers =
+          await startVoiceFlow(
+            [
+              {
+                field_id: "home_command",
+
+                prompt: uiText(
+                  "What would you like to do?",
+                  "आप क्या करना चाहेंगे?",
+                  "আপনি কী করতে চান?",
+                  "நீங்கள் என்ன செய்ய விரும்புகிறீர்கள்?"
+                )
+              }
+            ],
+
+            languageCode,
+
+            (
+              index,
+              total,
+              liveText
+            ) => {
+              if (
+                homeGreeting &&
+                liveText
+              ) {
+                homeGreeting.textContent =
+                  liveText;
+              }
+            }
+          );
+
+
+        const spokenCommand =
+          answers.home_command || "";
+
+        console.log(
+          "Home voice command:",
+          spokenCommand
+        );
+
+
+        const intent =
+          detectHomeVoiceIntent(
+            spokenCommand
+          );
+
+
+        if (intent) {
+          openHomeVoiceIntent(
+            intent,
+            languageCode
+          );
+        } else {
+          speakHomeMessage(
+            uiText(
+              "I could not understand. Please say add product, subsidy, marketplace, or inventory.",
+              "मैं समझ नहीं पाई। कृपया उत्पाद जोड़ें, सरकारी योजना, मार्केटप्लेस या इन्वेंटरी कहें।",
+              "আমি বুঝতে পারিনি। পণ্য যোগ, সরকারি প্রকল্প, মার্কেটপ্লেস অথবা ইনভেন্টরি বলুন।",
+              "எனக்குப் புரியவில்லை. பொருள் சேர்க்க, அரசு திட்டம், சந்தை அல்லது சரக்கு என்று கூறவும்."
+            ),
+            languageCode
+          );
+        }
+
+      } catch (error) {
+        console.error(
+          "Home voice assistant failed:",
+          error
+        );
+
+        speakHomeMessage(
+          uiText(
+            "Voice could not be started. Please try again.",
+            "आवाज़ शुरू नहीं हो सकी। कृपया दोबारा कोशिश करें।",
+            "ভয়েস চালু করা যায়নি। আবার চেষ্টা করুন।",
+            "குரலைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
+          ),
+          languageCode
+        );
+
+      } finally {
+        assistantVoiceBtn.dataset.listening =
+          "false";
+
+        assistantVoiceBtn.disabled = false;
+
+        assistantVoiceBtn.classList.remove(
+          "live"
+        );
+
+        /*
+         * Restore the greeting only if no feature
+         * was opened and we are still on Home.
+         */
+        if (
+          state.screen === "home" &&
+          homeGreeting
+        ) {
+          applyAppLanguage();
+        }
+      }
+    }
+  );
+}
 
 // ==========================================================
 // NORMAL NAVIGATION BUTTONS (Inventory / Home / Profile)
@@ -959,46 +1408,107 @@ document
     "click",
     async () => {
 
+      if (!state.photoFile) {
+        return;
+      }
+
       setTopbar(
         "Photo saaf kar raha hoon",
         "Ek second..."
       );
 
+      try {
+        /*
+         * Image enhancement requires
+         * the Flask backend.
+         */
+        if (!navigator.onLine) {
+          throw new Error(
+            "Offline mode"
+          );
+        }
 
-      const result =
-        await enhanceImage(
-          state.photoFile
+        const result =
+          await enhanceImage(
+            state.photoFile
+          );
+
+        state.enhancedImageUrl =
+          result.enhanced_image_url;
+
+        document
+          .getElementById(
+            "originalImg"
+          )
+          .src =
+          state.photoPreviewUrl;
+
+        document
+          .getElementById(
+            "enhancedImg"
+          )
+          .src =
+          state.enhancedImageUrl;
+
+        setTopbar(
+          "Photo saaf kar diya",
+          "Auto brightness & contrast"
         );
 
+      } catch (error) {
+        console.warn(
+          "Enhancement unavailable. Using original photo:",
+          error
+        );
 
-      state.enhancedImageUrl =
-        result.enhanced_image_url;
+        /*
+         * Save the photo Blob in IndexedDB.
+         */
+        try {
+          await capturePhoto(
+            state.photoFile,
+            crypto.randomUUID()
+          );
+        } catch (saveError) {
+          console.warn(
+            "Photo could not be stored offline:",
+            saveError
+          );
+        }
 
+        /*
+         * Show the original photo in both
+         * places while offline.
+         */
+        state.enhancedImageUrl =
+          state.photoPreviewUrl;
 
-      document
-        .getElementById(
-          "originalImg"
-        )
-        .src =
-        state.photoPreviewUrl;
+        document
+          .getElementById(
+            "originalImg"
+          )
+          .src =
+          state.photoPreviewUrl;
 
+        document
+          .getElementById(
+            "enhancedImg"
+          )
+          .src =
+          state.photoPreviewUrl;
 
-      document
-        .getElementById(
-          "enhancedImg"
-        )
-        .src =
-        state.enhancedImageUrl;
+        setTopbar(
+          isHindi()
+            ? "फोटो ऑफलाइन सेव है"
+            : "Photo saved offline",
 
-
-      setTopbar(
-        "Photo saaf kar diya",
-        "Auto brightness & contrast"
-      );
-
+          isHindi()
+            ? "ऑनलाइन होने पर सुधार होगा"
+            : "Enhancement will be available online"
+        );
+      }
 
       showScreen("enhance");
-
     }
   );
 
@@ -1124,17 +1634,45 @@ function startQAFlow() {
 // PRODUCT VOICE
 // ==========================================================
 
+let productVoiceFlowRunning = false;
+
 document
   .getElementById("qaStartBtn")
   .addEventListener(
     "click",
     async () => {
 
+      /*
+       * Prevent double-clicks from starting
+       * two voice flows together.
+       */
+      if (productVoiceFlowRunning) {
+        return;
+      }
+
+      productVoiceFlowRunning = true;
+
+      const qaStartBtn =
+        document.getElementById(
+          "qaStartBtn"
+        );
+
+      const manualFallback =
+        document.getElementById(
+          "qaManualFallback"
+        );
+
+      qaStartBtn.disabled = true;
+
+      if (manualFallback) {
+        manualFallback.hidden = true;
+        manualFallback.open = false;
+      }
+
       const langCode =
         state.language
           ? state.language.code
           : "hi-IN";
-
 
       document
         .getElementById(
@@ -1143,50 +1681,96 @@ document
         .textContent =
         "Sun raha hoon...";
 
+      document
+        .getElementById(
+          "qaLiveTranscript"
+        )
+        .textContent = "";
 
       try {
+        const questions =
+          localizedProductQuestions();
 
         const answers =
           await startVoiceFlow(
-
-            localizedProductQuestions(),
-
+            questions,
             langCode,
-
             onQAProgress
-
           );
 
+        const missingAnswer =
+          questions
+            .filter(
+              (question) =>
+                question.field_id !== "extra_details"
+            )
+            .some(
+              (question) =>
+                !answers[
+                  question.field_id
+                ] ||
+                !answers[
+                  question.field_id
+                ].trim()
+            );
 
-        state.answers =
-          answers;
+        if (missingAnswer) {
+          throw new Error(
+            "One or more answers were not heard."
+          );
+        }
 
+        state.answers = answers;
 
         await generateListing();
 
-      }
-
-      catch (err) {
-
-        console.error(err);
-
+      } catch (error) {
+        console.error(
+          "Product voice flow stopped:",
+          error
+        );
 
         state.error =
           "Voice samajh nahi aaya. Type karke try karein.";
 
-
         document
           .getElementById(
-            "qaManualFallback"
+            "qaStatus"
           )
-          .hidden = false;
+          .textContent =
+          "Voice samajh nahi aaya. Neeche type karke try karein.";
 
+        if (manualFallback) {
+          manualFallback.hidden = false;
+          manualFallback.open = true;
+        }
+
+      } finally {
+        productVoiceFlowRunning = false;
+        qaStartBtn.disabled = false;
       }
-
     }
   );
+document
+  .getElementById("qaTypeBtn")
+  .addEventListener(
+    "click",
+    () => {
+      const manualFallback =
+        document.getElementById(
+          "qaManualFallback"
+        );
 
+      manualFallback.hidden = false;
+      manualFallback.open = true;
 
+      document
+        .getElementById(
+          "qaManualInput"
+        )
+        .focus();
+    }
+  );
 function onQAProgress(
   index,
   total,
@@ -1302,6 +1886,69 @@ document
 // ==========================================================
 // PRODUCT LISTING GENERATION
 // ==========================================================
+function normalizePriceRange(
+  priceRange,
+  fallbackPrice
+) {
+  const fallback =
+    Number(fallbackPrice) || 0;
+
+  if (Array.isArray(priceRange)) {
+    const low =
+      Number(
+        priceRange[0] ?? fallback
+      );
+
+    const high =
+      Number(
+        priceRange[1] ??
+        priceRange[0] ??
+        fallback
+      );
+
+    return [low, high];
+  }
+
+  if (
+    priceRange &&
+    typeof priceRange === "object"
+  ) {
+    const low =
+      priceRange.low ??
+      priceRange.min ??
+      priceRange.minimum ??
+      priceRange.min_price ??
+      priceRange.lower_bound ??
+      fallback;
+
+    const high =
+      priceRange.high ??
+      priceRange.max ??
+      priceRange.maximum ??
+      priceRange.max_price ??
+      priceRange.upper_bound ??
+      low;
+
+    return [
+      Number(low),
+      Number(high)
+    ];
+  }
+
+  if (
+    Number.isFinite(
+      Number(priceRange)
+    )
+  ) {
+    const price =
+      Number(priceRange);
+
+    return [price, price];
+  }
+
+  return [fallback, fallback];
+}
+
 
 async function generateListing() {
 
@@ -1325,25 +1972,159 @@ async function generateListing() {
   const {
     material,
     category,
-    size
+    size,
+    extra_details
   } =
     state.answers;
 
 
-  const priceResult =
-    await predictPrice({
+  let priceResult;
 
+try {
+  if (!navigator.onLine) {
+    throw new Error(
+      "Offline price prediction"
+    );
+  }
+
+  priceResult =
+    await predictPrice({
       material,
       category,
       size
-
     });
 
+} catch (error) {
+  console.warn(
+    "Using offline price estimate:",
+    error
+  );
 
-  const description =
+  let offlinePrice = 450;
+
+  const normalizedSize =
+    String(size || "")
+      .toLowerCase();
+
+  if (
+    normalizedSize.includes("small") ||
+    normalizedSize.includes("छोट")
+  ) {
+    offlinePrice = 250;
+  }
+
+  if (
+    normalizedSize.includes("large") ||
+    normalizedSize.includes("बड़")
+  ) {
+    offlinePrice = 850;
+  }
+
+  priceResult = {
+    predicted_price:
+      offlinePrice,
+
+    price_range: [
+      Math.round(
+        offlinePrice * 0.9
+      ),
+      Math.round(
+        offlinePrice * 1.1
+      )
+    ],
+
+    source:
+      "offline_estimate"
+  };
+}
+
+
+  // Local, zero-dependency template — used as-is if the Gemini call below
+  // is unavailable or fails, so the listing screen never breaks. This is
+  // exactly the previous behavior, unchanged.
+  let title =
+    buildTitleFromAnswers(
+      state.answers
+    );
+
+  let description =
     buildDescriptionFromAnswers(
       state.answers
     );
+
+  let titleHi = "";
+  let descriptionHi = "";
+  let highlights = [];
+  let highlightsHi = [];
+
+  if (navigator.onLine) {
+    try {
+      const listingResult =
+        await generateListingFromBackend({
+          category,
+          material,
+          size,
+
+          estimated_price:
+            priceResult.predicted_price ??
+            priceResult.estimated_price ??
+            null,
+
+          productNameInput:
+            category,
+
+          transcriptionInput:
+            extra_details || ""
+        });
+
+      if (
+        listingResult &&
+        listingResult.listing
+      ) {
+        const listing =
+          listingResult.listing;
+
+        title =
+          listing.title ||
+          title;
+
+        description =
+          listing.description ||
+          description;
+
+        titleHi =
+          listing.title_hi ||
+          "";
+
+        descriptionHi =
+          listing.description_hi ||
+          "";
+
+        highlights =
+          listing.highlights ||
+          [];
+
+        highlightsHi =
+          listing.highlights_hi ||
+          [];
+      }
+
+    } catch (error) {
+      console.warn(
+        "Online listing generation failed. Using local listing:",
+        error
+      );
+    }
+
+  } else {
+    /*
+     * title and description were already created
+     * locally above this block.
+     */
+    console.info(
+      "Offline mode: using local listing template."
+    );
+  }
 
 
   state.product = {
@@ -1354,12 +2135,20 @@ async function generateListing() {
     artisan_id:
       "demo-artisan",
 
-    title:
-      buildTitleFromAnswers(
-        state.answers
-      ),
+    title,
+
+    title_hi:
+      titleHi,
 
     description,
+
+    description_hi:
+      descriptionHi,
+
+    highlights,
+
+    highlights_hi:
+      highlightsHi,
 
     material:
       material || "",
@@ -1391,8 +2180,10 @@ async function generateListing() {
 
 
   state.priceRange =
-    priceResult.price_range;
-
+      normalizePriceRange(
+      priceResult.price_range,
+      priceResult.predicted_price
+  );
 
   renderListingScreen();
 
@@ -1401,9 +2192,39 @@ async function generateListing() {
 }
 
 
+const DESCRIPTION_PHRASES = {
+  made_from: {
+    en: (material) => `Made from ${material}`,
+    hi: (material) => `${material} से बना`,
+    bn: (material) => `${material} দিয়ে তৈরি`,
+    ta: (material) => `${material} இலிருந்து செய்யப்பட்டது`
+  },
+  category: {
+    en: (category) => `a ${category}`,
+    hi: (category) => `${category} है`,
+    bn: (category) => `একটি ${category}`,
+    ta: (category) => `${category} ஆகும்`
+  },
+  size: {
+    en: (size) => `size ${size}`,
+    hi: (size) => `साइज़ ${size}`,
+    bn: (size) => `আকার ${size}`,
+    ta: (size) => `அளவு ${size}`
+  },
+  fallback: {
+    en: "Handmade product.",
+    hi: "हस्तनिर्मित उत्पाद।",
+    bn: "হস্তনির্মিত পণ্য।",
+    ta: "கையால் செய்யப்பட்ட பொருள்."
+  }
+};
+
 function buildDescriptionFromAnswers(
   answers
 ) {
+
+  const language =
+    currentLanguage();
 
   const parts = [];
 
@@ -1411,7 +2232,22 @@ function buildDescriptionFromAnswers(
   if (answers.material) {
 
     parts.push(
-      `Made from ${answers.material}`
+      DESCRIPTION_PHRASES
+        .made_from[language](
+          answers.material
+        )
+    );
+
+  }
+
+
+  if (answers.category) {
+
+    parts.push(
+      DESCRIPTION_PHRASES
+        .category[language](
+          answers.category
+        )
     );
 
   }
@@ -1420,17 +2256,36 @@ function buildDescriptionFromAnswers(
   if (answers.size) {
 
     parts.push(
-      `size ${answers.size}`
+      DESCRIPTION_PHRASES
+        .size[language](
+          answers.size
+        )
     );
 
   }
 
 
-  return parts.length
+  let description =
+    parts.length
 
-    ? parts.join(", ") + "."
+      ? parts.join(", ") + "."
 
-    : "Handmade product.";
+      : DESCRIPTION_PHRASES
+          .fallback[language];
+
+
+  if (
+    answers.extra_details &&
+    answers.extra_details.trim()
+  ) {
+
+    description +=
+      ` ${answers.extra_details.trim()}`;
+
+  }
+
+
+  return description;
 
 }
 
@@ -1449,7 +2304,8 @@ function buildTitleFromAnswers(
     .filter(Boolean)
     .join(" - ")
 
-    || "Handmade product";
+    || DESCRIPTION_PHRASES
+        .fallback[currentLanguage()];
 
 }
 
@@ -1497,6 +2353,74 @@ function renderListingScreen() {
     )
     .textContent =
     p.description;
+
+
+  const titleHiEl =
+    document.getElementById(
+      "listingTitleHi"
+    );
+
+  if (titleHiEl) {
+
+    titleHiEl.textContent =
+      p.title_hi || "";
+
+    titleHiEl.hidden =
+      !p.title_hi;
+
+  }
+
+
+  const descriptionHiEl =
+    document.getElementById(
+      "listingDescriptionHi"
+    );
+
+  if (descriptionHiEl) {
+
+    descriptionHiEl.textContent =
+      p.description_hi || "";
+
+    descriptionHiEl.hidden =
+      !p.description_hi;
+
+  }
+
+
+  const highlightsEl =
+    document.getElementById(
+      "listingHighlights"
+    );
+
+  if (highlightsEl) {
+
+    highlightsEl.innerHTML =
+      (p.highlights || [])
+        .map(
+          (h) =>
+            `<li>${escapeMarketplaceHTML(h)}</li>`
+        )
+        .join("");
+
+  }
+
+
+  const highlightsHiEl =
+    document.getElementById(
+      "listingHighlightsHi"
+    );
+
+  if (highlightsHiEl) {
+
+    highlightsHiEl.innerHTML =
+      (p.highlights_hi || [])
+        .map(
+          (h) =>
+            `<li>${escapeMarketplaceHTML(h)}</li>`
+        )
+        .join("");
+
+  }
 
 
   const [
@@ -1637,20 +2561,34 @@ document
     "click",
     async () => {
 
-      const saved =
-        await saveProduct(
-          state.product
+      try {
+        const saved =
+          await saveProduct(
+            state.product
+          );
+
+        state.product =
+          saved;
+
+        renderDoneScreen();
+
+        showScreen("done");
+
+      } catch (error) {
+        console.error(
+          "Product could not be saved:",
+          error
         );
 
-
-      state.product =
-        saved;
-
-
-      renderDoneScreen();
-
-      showScreen("done");
-
+        alert(
+          uiText(
+            "The product could not be saved.",
+            "उत्पाद सेव नहीं हो पाया।",
+            "পণ্যটি সংরক্ষণ করা যায়নি।",
+            "தயாரிப்பைச் சேமிக்க முடியவில்லை."
+          )
+        );
+      }
     }
   );
 
@@ -3365,7 +4303,64 @@ function normalizeSubsidyVoiceAnswer(
   return String(spoken).trim();
 
 }
+// ==========================================================
+// SUBSIDY BACK BUTTON
+// ==========================================================
 
+const subsidyBackBtn =
+  document.getElementById(
+    "subsidyBackBtn"
+  );
+
+if (subsidyBackBtn) {
+  subsidyBackBtn.addEventListener(
+    "click",
+    moveToPreviousSubsidySection
+  );
+}
+
+function moveToPreviousSubsidySection() {
+
+  /*
+   * If this is not the first form section,
+   * move to the previous section.
+   */
+  if (state.subsidySectionIndex > 0) {
+
+    state.subsidySectionIndex -= 1;
+
+    state.subsidyVoiceFieldIndex = 0;
+
+    document
+      .getElementById(
+        "subsidyTranscript"
+      )
+      .textContent = "";
+
+    renderCurrentSubsidySection();
+
+    return;
+  }
+
+  /*
+   * On the first section, return to the
+   * Government Schemes screen.
+   */
+  setTopbar(
+    isHindi()
+      ? "सरकारी योजनाएँ"
+      : "Government Schemes",
+
+    isHindi()
+      ? "कारीगर सहायता"
+      : "Artisan support"
+  );
+
+  showScreen(
+    "subsidy",
+    { isBack: true }
+  );
+}
 
 // ==========================================================
 // SUBSIDY NEXT BUTTON
@@ -3501,59 +4496,170 @@ async function finishSubsidyApplication() {
 // ==========================================================
 
 async function renderInventory() {
-
-  const products =
-    await getProducts();
-
-
   const grid =
     document.getElementById(
       "inventoryGrid"
     );
 
+  if (!grid) {
+    console.error(
+      "inventoryGrid was not found."
+    );
+
+    return;
+  }
+
+  let localProducts = [];
+  let serverProducts = [];
+
+  /*
+   * First load products saved in IndexedDB.
+   * These are available online and offline.
+   */
+  try {
+    localProducts =
+      await getAllRecords(
+        "products"
+      );
+
+  } catch (error) {
+    console.warn(
+      "Local products could not be loaded:",
+      error
+    );
+
+    localProducts = [];
+  }
+
+  /*
+   * Request backend products only when online.
+   */
+  if (navigator.onLine) {
+    try {
+      const result =
+        await getProducts();
+
+      if (Array.isArray(result)) {
+        serverProducts = result;
+
+      } else if (
+        result &&
+        Array.isArray(
+          result.products
+        )
+      ) {
+        serverProducts =
+          result.products;
+      }
+
+    } catch (error) {
+      console.warn(
+        "Server products could not be loaded. Using local inventory:",
+        error
+      );
+
+      serverProducts = [];
+    }
+  }
+
+  /*
+   * Combine local and backend products.
+   * product_id prevents duplicates.
+   */
+  const productMap =
+    new Map();
+
+  localProducts.forEach(
+    (product) => {
+      productMap.set(
+        product.product_id,
+        product
+      );
+    }
+  );
+
+  serverProducts.forEach(
+    (product) => {
+      productMap.set(
+        product.product_id,
+        product
+      );
+    }
+  );
+
+  const products =
+    Array.from(
+      productMap.values()
+    );
+
+  const productMarkup =
+    products
+      .map((product) => {
+
+        const pendingBadge =
+          product.status !== "synced"
+
+            ? `
+              <span class="pending-badge">
+                Pending
+              </span>
+            `
+
+            : "";
+
+        const price =
+          Number(
+            product.predicted_price
+          ) || 0;
+
+        return `
+          <div class="thumb">
+            &#128247;
+
+            <span>
+              ₹${price}
+            </span>
+
+            ${pendingBadge}
+          </div>
+        `;
+      })
+      .join("");
 
   grid.innerHTML =
-    products
-      .map(
-        (p) => {
+    productMarkup +
+    `
+      <button
+        class="thumb"
+        type="button"
+        id="inventoryAddProductBtn"
+      >
+        +
+      </button>
+    `;
 
-          const pendingBadge =
+  const inventoryAddProductBtn =
+    document.getElementById(
+      "inventoryAddProductBtn"
+    );
 
-            p.status &&
-              p.status !==
-              "synced"
+  if (inventoryAddProductBtn) {
+    inventoryAddProductBtn
+      .addEventListener(
+        "click",
+        () => {
+          const addProductBtn =
+            document.getElementById(
+              "addProductBtn"
+            );
 
-              ? '<span class="pending-badge">Pending</span>'
-
-              : "";
-
-
-          return `
-
-            <div class="thumb">
-
-              &#128247;
-
-              <span>
-                ₹${p.predicted_price}
-              </span>
-
-              ${pendingBadge}
-
-            </div>
-
-          `;
-
+          if (addProductBtn) {
+            addProductBtn.click();
+          }
         }
-      )
-      .join("")
-
-    +
-
-    '<button class="thumb" onclick="document.getElementById(\'addProductBtn\').click()">+</button>';
-
+      );
+  }
 }
-
 
 // ==========================================================
 // BOOT

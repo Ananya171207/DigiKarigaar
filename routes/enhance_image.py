@@ -136,29 +136,41 @@ def _load_background_photo(path, size=OUTPUT_SIZE):
     return bg
  
  
-def _paste_on_surface(background, cutout_rgba, rest_y_ratio=0.72, max_width_ratio=0.55):
+def _paste_on_surface(background, cutout_rgba, rest_y_ratio=0.80, max_width_ratio=0.70, max_height_ratio=0.70):
     """
     Pastes an RGBA product cutout onto `background` so it looks like it's
     resting ON a surface, rather than floating dead-center.
     """
     bg_w, bg_h = background.size
     fg = cutout_rgba.copy()
+
+    # 1. CROP TRANSPARENT PADDING: Removes empty space so the pot itself is measured
+    bbox = fg.getbbox()
+    if bbox:
+        fg = fg.crop(bbox)
+
     fw, fh = fg.size
- 
+
+    # 2. CALCULATE MAX ALLOWED SIZE (Width & Height)
     max_fg_w = int(bg_w * max_width_ratio)
-    if fw > max_fg_w:
-        scale = max_fg_w / float(fw)
-        fg = fg.resize((max(1, int(fw * scale)), max(1, int(fh * scale))), Image.LANCZOS)
-        fw, fh = fg.size
- 
+    max_fg_h = int(bg_h * max_height_ratio)
+
+    # 3. SCALE UP OR DOWN comfortably without over-shrinking
+    scale_w = max_fg_w / float(fw)
+    scale_h = max_fg_h / float(fh)
+    scale = min(scale_w, scale_h)  # Fit inside max box while keeping aspect ratio
+
+    fg = fg.resize((max(1, int(fw * scale)), max(1, int(fh * scale))), Image.LANCZOS)
+    fw, fh = fg.size
+
+    # 4. POSITION ON SURFACE
     rest_y = int(bg_h * rest_y_ratio)
     pos_x = (bg_w - fw) // 2
     pos_y = rest_y - fh
- 
+
     background = background.copy()
     background.paste(fg, (pos_x, pos_y), fg)
     return background, (pos_x, pos_y, fw, fh)
- 
  
 def _add_contact_shadow(background, box, opacity=70):
     """Soft elliptical shadow right where the product's base meets the
@@ -185,35 +197,42 @@ def _add_contact_shadow(background, box, opacity=70):
     return result.convert("RGB")
  
  
+def create_table_scene(cutout_rgba, size=OUTPUT_SIZE):
+    """Composite the product onto your real table photo."""
+    background = _load_background_photo(TABLE_BG_PATH, size)
+    
+    # rest_y_ratio=0.95 anchors the bottom of the pot near the bottom edge
+    background, box = _paste_on_surface(
+        background, cutout_rgba, rest_y_ratio=0.92, max_width_ratio=0.60, max_height_ratio=0.70
+    )
+    background = _add_contact_shadow(background, box, opacity=90)
+    return background
+
+
+def create_wall_floor_scene(cutout_rgba, size=OUTPUT_SIZE):
+    """Composite the product onto your real wall/floor photo."""
+    background = _load_background_photo(WALL_FLOOR_BG_PATH, size)
+    
+    # rest_y_ratio=0.96 places the pot base directly on the wooden floor line
+    background, box = _paste_on_surface(
+        background, cutout_rgba, rest_y_ratio=0.96, max_width_ratio=0.60, max_height_ratio=0.60
+    )
+    background = _add_contact_shadow(background, box, opacity=80)
+    return background
+
+
 def create_solid_background(cutout_rgba, size=OUTPUT_SIZE, fallback_color=(255, 255, 255)):
-    """Composite onto YOUR real 'clean backdrop' photo if provided, else
-    falls back to plain white."""
+    """Composite onto your clean backdrop photo or white background."""
     if os.path.exists(CLEAN_BG_PATH):
         background = _load_background_photo(CLEAN_BG_PATH, size)
     else:
         background = Image.new("RGB", size, fallback_color)
-    background, box = _paste_on_surface(background, cutout_rgba, rest_y_ratio=0.82, max_width_ratio=0.65)
+    
+    background, box = _paste_on_surface(
+        background, cutout_rgba, rest_y_ratio=0.95, max_width_ratio=0.75, max_height_ratio=0.85
+    )
     background = _add_contact_shadow(background, box, opacity=60)
     return background
- 
- 
-def create_table_scene(cutout_rgba, size=OUTPUT_SIZE):
-    """Composite the product onto YOUR real table photo
-    (backgrounds/table_bg.jpg)."""
-    background = _load_background_photo(TABLE_BG_PATH, size)
-    background, box = _paste_on_surface(background, cutout_rgba, rest_y_ratio=0.75, max_width_ratio=0.5)
-    background = _add_contact_shadow(background, box, opacity=90)
-    return background
- 
- 
-def create_wall_floor_scene(cutout_rgba, size=OUTPUT_SIZE):
-    """Composite the product onto YOUR real wall/floor photo
-    (backgrounds/wall_floor_bg.jpg)."""
-    background = _load_background_photo(WALL_FLOOR_BG_PATH, size)
-    background, box = _paste_on_surface(background, cutout_rgba, rest_y_ratio=0.7, max_width_ratio=0.45)
-    background = _add_contact_shadow(background, box, opacity=80)
-    return background
- 
  
 # ---------------------------------------------------------------------------
 # Route
@@ -276,4 +295,3 @@ def enhance_image():
         },
     }
     return jsonify(response_payload), 200
- 

@@ -67,7 +67,12 @@
 
       <!-- Main Add Product mic button -->
       <div class="mic-wrap">
-        <button id="addProductBtn" class="mic-btn" aria-label="Add product">
+        <button
+          id="assistantVoiceBtn"
+          class="mic-btn"
+          type="button"
+          aria-label="Talk to Digi-Karigar"
+          >
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
             <path d="M19 10v1a7 7 0 0 1-14 0v-1" />
@@ -79,6 +84,29 @@
 
       <!-- Secondary actions, card-styled to match Inventory -->
       <div class="home-actions">
+        <button
+            id="addProductBtn"
+            class="action-card add-product"
+            type="button"
+          >
+            <span class="action-icon">&#10133;</span>
+          
+            <span class="action-text">
+              <span
+                class="action-en"
+                data-i18n="home_add_product"
+              >
+                Add a Product
+              </span>
+          
+              <span
+                class="action-hi"
+                data-i18n-secondary="home_add_product"
+              >
+                उत्पाद जोड़ें
+              </span>
+            </span>
+          </button>
         <button id="subsidyBtn" class="action-card subsidy">
           <span class="action-icon">&#127963;</span>
           <span class="action-text">
@@ -137,24 +165,64 @@
   <section data-screen="enhance" class="screen" hidden>
     <div class="ks-body">
 
-      <div class="compare-row">
-        <div class="compare-col">
-          <div class="compare-frame"><img id="originalImg" src="" alt="Original" /></div>
-          <div class="compare-label">Original</div>
-        </div>
-        <div class="compare-col">
-          <div class="compare-frame"><img id="enhancedImg" src="" alt="Enhanced" /></div>
-          <div class="compare-label">Enhanced</div>
-        </div>
+  <div class="compare-row">
+
+  <!-- Original image -->
+  <div class="compare-col">
+    <div class="compare-heading">
+      <span>Original Photo</span>
+      <span class="compare-badge">Before</span>
+    </div>
+
+    <div class="compare-frame">
+      <img
+        id="originalImg"
+        src=""
+        alt="Original product photo"
+      />
+    </div>
+  </div>
+  
+  
+    <!-- Enhanced image -->
+    <div class="compare-col">
+      <div class="compare-heading">
+        <span>Enhanced Photo</span>
+        <span class="compare-badge enhanced-badge">
+          AI Enhanced
+        </span>
       </div>
-
-      <div class="spacer"></div>
-
-      <div class="enhance-actions">
-        <button id="retakePhotoBtn" class="btn btn-secondary">Retake photo</button>
-        <button id="continueToQABtn" class="btn btn-primary">Continue</button>
+  
+      <div class="compare-frame enhanced-frame">
+        <img
+          id="enhancedImg"
+          src=""
+          alt="Enhanced product photo"
+        />
       </div>
     </div>
+  
+  </div>
+  
+  
+  <div class="enhance-actions">
+  
+    <button
+      id="retakePhotoBtn"
+      class="btn btn-secondary"
+    >
+      Retake photo
+    </button>
+  
+    <button
+      id="continueToQABtn"
+      class="btn btn-primary"
+    >
+      Continue
+    </button>
+  
+  </div>
+  </div>
   </section>
 
 
@@ -175,12 +243,19 @@
             <line x1="8" y1="22" x2="16" y2="22" />
           </svg>
         </button>
+        <button
+        id="qaTypeBtn"
+        type="button"
+        class="btn btn-secondary"
+        >
+  Type answers instead
+</button>
         <div id="qaLiveTranscript" class="live-transcript"></div>
       </div>
 
       <details id="qaManualFallback" class="field" hidden>
         <summary class="hint">Type answers instead</summary>
-        <textarea id="qaManualInput" placeholder="material: cotton, size: large, ..."></textarea>
+        <textarea id="qaManualInput" placeholder="material: cotton, category: bag, size: large, extra_details: hand-stitched..."></textarea>
         <button id="qaManualSubmitBtn" class="btn btn-secondary">Use typed answers</button>
       </details>
 
@@ -201,11 +276,19 @@
       <div class="card">
         <div class="card-title">Title</div>
         <div id="listingTitle" class="card-body"></div>
+        <div id="listingTitleHi" class="card-body lang-hi" hidden></div>
       </div>
 
       <div class="card">
         <button id="descSpeakBtn" class="speak-btn" aria-label="Listen">&#128266;</button>
         <div id="listingDescription" class="card-body"></div>
+        <div id="listingDescriptionHi" class="card-body lang-hi" hidden></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Highlights</div>
+        <ul id="listingHighlights" class="highlights-list"></ul>
+        <ul id="listingHighlightsHi" class="highlights-list lang-hi"></ul>
       </div>
 
       <div class="price-box">
@@ -254,7 +337,23 @@
         <div id="subsidyTranscript" class="live-transcript"></div>
       </div>
 
-      <button id="subsidyNextBtn" class="btn btn-primary" type="button">Next</button>
+      <div class="subsidy-form-actions">
+  <button
+    id="subsidyBackBtn"
+    class="btn btn-secondary"
+    type="button"
+  >
+    Back
+  </button>
+
+  <button
+    id="subsidyNextBtn"
+    class="btn btn-primary"
+    type="button"
+  >
+    Next
+  </button>
+</div>
     </div>
   </section>
 
@@ -328,7 +427,102 @@
           <span class="hi">स्टॉक और बिक्री ट्रैकर</span>
         </div>
 
-        <div id="invItemList"><!-- app.js can render inv-item-row entries here from real data --></div>
+        <div id="invItemList">
+
+  <!-- Diyas -->
+  <div class="inv-item-row">
+    <div class="inv-item-name">
+      Diyas <span class="hi">(दीये)</span>
+    </div>
+
+    <div class="inv-item-nums">
+      <div class="inv-num-box total">
+        <span class="num">500</span>
+        <span class="lbl-en">Total</span>
+        <span class="lbl-hi">कुल</span>
+      </div>
+
+      <div class="inv-num-box sold">
+        <span class="num">280</span>
+        <span class="lbl-en">Sold</span>
+        <span class="lbl-hi">बिके</span>
+      </div>
+
+      <div class="inv-num-box remaining">
+        <span class="num">220</span>
+        <span class="lbl-en">Remaining</span>
+        <span class="lbl-hi">बचे</span>
+      </div>
+    </div>
+
+    <div class="inv-progress-track">
+      <div class="inv-progress-fill" style="width:56%"></div>
+    </div>
+  </div>
+
+  <!-- Vases -->
+  <div class="inv-item-row">
+    <div class="inv-item-name">
+      Vases <span class="hi">(फूलदान)</span>
+    </div>
+
+    <div class="inv-item-nums">
+      <div class="inv-num-box total">
+        <span class="num">50</span>
+        <span class="lbl-en">Total</span>
+        <span class="lbl-hi">कुल</span>
+      </div>
+
+      <div class="inv-num-box sold">
+        <span class="num">23</span>
+        <span class="lbl-en">Sold</span>
+        <span class="lbl-hi">बिके</span>
+      </div>
+
+      <div class="inv-num-box remaining">
+        <span class="num">27</span>
+        <span class="lbl-en">Remaining</span>
+        <span class="lbl-hi">बचे</span>
+      </div>
+    </div>
+
+    <div class="inv-progress-track">
+      <div class="inv-progress-fill" style="width:46%"></div>
+    </div>
+  </div>
+
+  <!-- Handicrafts -->
+  <div class="inv-item-row">
+    <div class="inv-item-name">
+      Handicrafts <span class="hi">(हस्तशिल्प)</span>
+    </div>
+
+    <div class="inv-item-nums">
+      <div class="inv-num-box total">
+        <span class="num">40</span>
+        <span class="lbl-en">Total</span>
+        <span class="lbl-hi">कुल</span>
+      </div>
+
+      <div class="inv-num-box sold">
+        <span class="num">28</span>
+        <span class="lbl-en">Sold</span>
+        <span class="lbl-hi">बिके</span>
+      </div>
+
+      <div class="inv-num-box remaining">
+        <span class="num">12</span>
+        <span class="lbl-en">Remaining</span>
+        <span class="lbl-hi">बचे</span>
+      </div>
+    </div>
+
+    <div class="inv-progress-track">
+      <div class="inv-progress-fill" style="width:70%"></div>
+    </div>
+  </div>
+
+</div>
       </div>
 
       <div id="inventoryGrid" class="grid2"><!-- app.js renders product tiles here --></div>
